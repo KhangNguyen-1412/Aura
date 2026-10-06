@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura | Sổ Bạ Sức Khỏe Tối Ưu</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cerulean: '#007BA7',
+                        'cerulean-dark': '#005b7a',
+                        jasper: '#D73B3E',
+                        'jasper-dark': '#a82c2e',
+                        paper: '#F9F6F0',
+                        ink: '#1A1A1A',
+                        'ink-light': '#4A4A4A',
+                        line: '#D1CCC5'
+                    },
+                    fontFamily: {
+                        playfair: ['"Playfair Display"', 'serif'],
+                        newsreader: ['"Newsreader"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Tùy chỉnh thanh cuộn mang phong cách thanh lịch */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #D1CCC5; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #007BA7; }
+        
+        .editorial-border { border: 1px solid #D1CCC5; }
+        .editorial-border-b { border-bottom: 1px solid #D1CCC5; }
+        .editorial-border-r { border-right: 1px solid #D1CCC5; }
+        
+        /* Hiệu ứng Drop cap cho đoạn văn mở đầu */
+        .drop-cap::first-letter {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            float: left;
+            line-height: 0.8;
+            margin-right: 0.5rem;
+            color: #007BA7;
+            font-weight: bold;
+        }
+
+        /* Animation cho bài tập Kegel */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(215, 59, 62, 0.7); }
+            70% { transform: scale(1.2); box-shadow: 0 0 0 20px rgba(215, 59, 62, 0); }
+            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(215, 59, 62, 0); }
+        }
+        .kegel-active {
+            animation: pulse-ring 4s infinite ease-in-out;
+            background-color: #D73B3E !important;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-paper text-ink font-newsreader antialiased overflow-hidden flex h-screen">
+
+    <div id="camouflage-ui" class="hidden fixed inset-0 bg-white z-[100] flex-col items-center justify-center font-sans">
+        <h1 class="text-4xl font-light text-gray-800 mb-2">Hà Nội</h1>
+        <p class="text-6xl font-thin text-gray-900 mb-8">24°C</p>
+        <div class="flex space-x-6 text-gray-500">
+            <div class="text-center"><p>T2</p><p>25°</p></div>
+            <div class="text-center"><p>T3</p><p>26°</p></div>
+            <div class="text-center"><p>T4</p><p>22°</p></div>
+            <div class="text-center"><p>T5</p><p>24°</p></div>
+        </div>
+        <button onclick="toggleCamouflage()" class="absolute bottom-10 opacity-10 p-4">Khôi phục</button>
+    </div>
+
+    <nav class="w-72 editorial-border-r h-full flex flex-col bg-paper relative z-10 shrink-0">
+        <div class="p-8 editorial-border-b">
+            <h1 class="font-playfair text-4xl font-black text-cerulean tracking-tight uppercase">Aura.</h1>
+            <p class="text-xs text-ink-light uppercase tracking-widest mt-2 border-b border-line pb-2">Bản Khảo Sát Sức Khỏe Tối Ưu</p>
+            <div class="mt-4 flex items-center justify-between">
+                <span class="text-sm italic">Ngày 24 tháng 10, 2026</span>
+                <!-- Nút hoảng loạn -->
+                <button onclick="toggleCamouflage()" class="w-6 h-6 rounded-full border border-jasper flex items-center justify-center group hover:bg-jasper transition-colors" title="Chế độ ngụy trang (Panic Button)">
+                    <div class="w-2 h-2 rounded-full bg-jasper group-hover:bg-white"></div>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto py-6">
+            <ul class="space-y-1">
+                <li><button onclick="nav('module1')" id="nav-module1" class="nav-btn w-full text-left px-8 py-3 text-lg font-playfair hover:text-cerulean transition-colors active-nav text-cerulean font-bold italic">I. Hồ Sơ Y Tế</button></li>
+                <li><button onclick="nav('module2')" id="nav-module2" class="nav-btn w-full text-left px-8 py-3 text-lg font-playfair hover:text-cerulean transition-colors">II. Chu Kỳ Sinh Tinh</button></li>
+                <li><button onclick="nav('module3')" id="nav-module3" class="nav-btn w-full text-left px-8 py-3 text-lg font-playfair hover:text-cerulean transition-colors">III. Nhật Ký Giải Phóng</button></li>
+                <li><button onclick="nav('module4')" id="nav-module4" class="nav-btn w-full text-left px-8 py-3 text-lg font-playfair hover:text-cerulean transition-colors">IV. Bạn Đồng Hành</button></li>
+                <li><button onclick="nav('module5')" id="nav-module5" class="nav-btn w-full text-left px-8 py-3 text-lg font-playfair hover:text-cerulean transition-colors">V. Dinh Dưỡng & Vi Chất</button></li>
+                <li><button onclick="nav('module6')" id="nav-module6" class="nav-btn w-full text-left px-8 py-3 text-lg font-playfair hover:text-cerulean transition-colors">VI. Rèn Luyện Thể Chất</button></li>
+                <li><button onclick="nav('module7')" id="nav-module7" class="nav-btn w-full text-left px-8 py-3 text-lg font-playfair hover:text-cerulean transition-colors">VII. Phân Tích Chuyên Sâu</button></li>
+                <li><button onclick="nav('module8')" id="nav-module8" class="nav-btn w-full text-left px-8 py-3 text-lg font-playfair text-jasper hover:text-jasper-dark transition-colors mt-8">VIII. Thiết Lập Bảo Mật</button></li>
+            </ul>
+        </div>
+        
+        <div class="p-6 editorial-border-t bg-white">
+            <div class="text-center">
+                <div class="text-sm uppercase tracking-widest text-ink-light mb-1">Chỉ số sẵn sàng</div>
+                <div class="text-5xl font-playfair font-black text-cerulean">92<span class="text-2xl text-line">%</span></div>
+                <div class="text-xs text-jasper mt-2 italic">Tối ưu cho việc sinh sản hnay.</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1 h-full overflow-y-auto bg-paper relative">
+        <div class="max-w-4xl mx-auto p-12 pb-24">
+
+            <!-- MODULE 1: Hồ Sơ Cá Nhân -->
+            <section id="module1" class="module-content block">
+                <header class="mb-12 border-b-2 border-ink pb-6">
+                    <h2 class="font-playfair text-5xl font-bold mb-4">Hồ Sơ Y Tế & Sinh Lý</h2>
+                    <p class="text-xl italic text-ink-light drop-cap">Thông tin nền tảng cấu trúc nên các thuật toán đề xuất sinh lý học. Các dữ liệu này được lưu trữ cục bộ và đóng vai trò như một bệnh án điện tử cá nhân.</p>
+                </header>
+
+                <div class="grid grid-cols-2 gap-12">
+                    <div>
+                        <h3 class="font-playfair text-2xl mb-6 text-cerulean border-b border-line pb-2">Chỉ Số Nền Tảng</h3>
+                        <div class="space-y-4 text-lg">
+                            <div class="flex justify-between editorial-border-b pb-2"><span>Tuổi tác:</span> <span class="font-bold">32</span></div>
+                            <div class="flex justify-between editorial-border-b pb-2"><span>Chiều cao (cm):</span> <span class="font-bold">178</span></div>
+                            <div class="flex justify-between editorial-border-b pb-2"><span>Cân nặng (kg):</span> <span class="font-bold">75</span></div>
+                            <div class="flex justify-between editorial-border-b pb-2"><span>BMI (Tỷ lệ cơ thể):</span> <span class="font-bold text-cerulean">23.6 - Chuẩn</span></div>
+                            <div class="flex justify-between editorial-border-b pb-2"><span>Nhịp tim nghỉ (RHR):</span> <span class="font-bold">58 bpm</span></div>
+                        </div>
+                        <p class="mt-4 text-sm text-ink-light italic">*RHR dưới 60 phản ánh thể lực tim mạch xuất sắc, nền tảng tốt cho sức bền.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-playfair text-2xl mb-6 text-jasper border-b border-line pb-2">Bảng Nội Tiết Tố (Gần nhất)</h3>
+                        <div class="space-y-4 text-lg">
+                            <div class="flex justify-between editorial-border-b pb-2"><span>Testosterone T.Phần:</span> <span class="font-bold">680 ng/dL</span></div>
+                            <div class="flex justify-between editorial-border-b pb-2"><span>Testosterone Tự do:</span> <span class="font-bold">14.2 pg/mL</span></div>
+                            <div class="flex justify-between editorial-border-b pb-2"><span>Estradiol (E2):</span> <span class="font-bold">28 pg/mL</span></div>
+                            <div class="flex justify-between editorial-border-b pb-2"><span>Prolactin:</span> <span class="font-bold">8.5 ng/mL</span></div>
+                        </div>
+                        <div class="mt-6 p-4 border border-cerulean bg-white">
+                            <h4 class="font-playfair font-bold text-cerulean mb-2">Mục tiêu hiện tại:</h4>
+                            <p class="italic text-sm">"Tối ưu hóa chất lượng tinh trùng để chuẩn bị sinh con trong 3 tháng tới. Duy trì mức Testosterone tự nhiên trên 700 ng/dL."</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="module2" class="module-content hidden">
+                <header class="mb-12 border-b-2 border-ink pb-6">
+                    <h2 class="font-playfair text-5xl font-bold mb-4">Chu Kỳ Sinh Tinh</h2>
+                    <h3 class="text-2xl italic text-cerulean">Spermatogenesis Cycle Tracker</h3>
+                    <p class="text-lg mt-4">Chu kỳ sinh tinh hoàn chỉnh kéo dài 74 ngày. Biểu đồ dưới đây theo dõi "lứa" tinh binh hiện tại dựa trên các yếu tố tác động trong 2.5 tháng qua.</p>
+                </header>
+
+                <div class="mb-12">
+                    <div class="flex justify-between text-sm uppercase tracking-wider mb-2 font-bold text-ink-light">
+                        <span>Ngày 1 (Nguyên bào)</span>
+                        <span class="text-cerulean">Hiện tại: Ngày 58</span>
+                        <span>Ngày 74 (Trưởng thành)</span>
+                    </div>
+                    <div class="h-4 w-full bg-line rounded-full overflow-hidden relative">
+                        <div class="absolute h-full bg-cerulean w-[78%]"></div>
+                        <div class="absolute h-full w-1 bg-jasper right-[22%]"></div>
+                    </div>
+                    <p class="mt-4 text-center italic text-sm">Lứa tinh trùng hiện tại đang ở giai đoạn trưởng thành tại mào tinh. Sẽ đạt độ chín tối ưu trong 16 ngày tới.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="editorial-border p-6 bg-white">
+                        <h4 class="font-playfair text-2xl mb-4 text-center">Điểm Chất Lượng Dự Kiến</h4>
+                        <div class="text-center text-7xl font-playfair font-black text-cerulean my-6">A-</div>
+                        <ul class="text-sm space-y-2">
+                            <li class="flex justify-between"><span class="text-jasper">Cảnh báo nhiệt độ:</span> <span>An toàn (Không ngâm bồn)</span></li>
+                            <li class="flex justify-between text-cerulean"><span>Dinh dưỡng 70 ngày:</span> <span>Kẽm & C đạt 90%</span></li>
+                            <li class="flex justify-between"><span>Tích lũy (Abstinence):</span> <span>3 ngày (Tối ưu)</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-playfair text-2xl mb-4 border-b border-line pb-2">Lưu Trữ Tinh Dịch Đồ</h4>
+                        <table class="w-full text-left text-sm mt-4">
+                            <thead>
+                                <tr class="text-ink-light uppercase border-b border-line">
+                                    <th class="pb-2">Chỉ số</th>
+                                    <th class="pb-2">Lần cuối (12/2025)</th>
+                                    <th class="pb-2">Chuẩn Y Tế</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-line">
+                                <tr><td class="py-3 font-bold">Thể tích</td><td class="py-3 text-cerulean">3.2 ml</td><td class="py-3 text-ink-light">≥ 1.5 ml</td></tr>
+                                <tr><td class="py-3 font-bold">Mật độ</td><td class="py-3 text-cerulean">45 tr/ml</td><td class="py-3 text-ink-light">≥ 15 tr/ml</td></tr>
+                                <tr><td class="py-3 font-bold">Di động (PR)</td><td class="py-3 text-jasper">38%</td><td class="py-3 text-ink-light">≥ 32%</td></tr>
+                                <tr><td class="py-3 font-bold">Hình thái (Normal)</td><td class="py-3">5%</td><td class="py-3 text-ink-light">≥ 4%</td></tr>
+                            </tbody>
+                        </table>
+                        <button class="mt-6 border border-cerulean text-cerulean px-4 py-2 text-sm uppercase tracking-wider hover:bg-cerulean hover:text-white transition-colors w-full">Nhập Kết Quả Mới</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="module3" class="module-content hidden">
+                <header class="mb-10 border-b border-line pb-6">
+                    <h2 class="font-playfair text-5xl font-bold mb-2">Nhật Ký Giải Phóng</h2>
+                    <p class="text-lg italic text-ink-light">Kiểm soát tần suất để duy trì hàm lượng kẽm, năng lượng thần kinh và chất lượng nội tiết.</p>
+                </header>
+
+                <div class="bg-jasper text-white p-4 mb-8 text-center text-sm tracking-wide">
+                    Hệ thống đề xuất: <strong>Thời điểm vàng thụ thai</strong> đang đến (Dự kiến rụng trứng của Partner A: 3 ngày nữa). Khuyến nghị kiêng xuất tinh từ hôm nay.
+                </div>
+
+                <h3 class="font-playfair text-2xl mb-4 text-cerulean">Bản Ghi Gần Đây</h3>
+                <div class="editorial-border bg-white overflow-hidden mb-10">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-paper border-b border-line">
+                            <tr class="text-ink-light uppercase">
+                                <th class="p-4">Ngày</th>
+                                <th class="p-4">Hình thức</th>
+                                <th class="p-4">Độ cứng (1-10)</th>
+                                <th class="p-4">Độ bền (Phút)</th>
+                                <th class="p-4 text-center">Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-line">
+                            <tr>
+                                <td class="p-4 font-bold">Hôm qua, 22:30</td>
+                                <td class="p-4">Quan hệ (Intercourse)</td>
+                                <td class="p-4"><span class="text-cerulean font-bold text-lg">8.5</span></td>
+                                <td class="p-4">18 phút</td>
+                                <td class="p-4 text-center text-ink-light italic">Thăng hoa, phục hồi nhanh.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-bold">20/10, 08:00</td>
+                                <td class="p-4 text-jasper">Mộng tinh (Nocturnal)</td>
+                                <td class="p-4">-</td>
+                                <td class="p-4">-</td>
+                                <td class="p-4 text-center text-ink-light italic">Giấc ngủ sâu, xả áp lực tự nhiên.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-bold">15/10, 23:00</td>
+                                <td class="p-4 text-ink-light">Thủ dâm (Masturbation)</td>
+                                <td class="p-4"><span class="text-jasper font-bold text-lg">7.0</span></td>
+                                <td class="p-4">8 phút</td>
+                                <td class="p-4 text-center text-ink-light italic">Stress công việc.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="p-6 border border-line bg-paper">
+                        <h4 class="font-playfair text-xl mb-4 font-bold">Tần suất 30 ngày qua</h4>
+                        <div class="text-4xl font-playfair text-center my-4">6 <span class="text-lg font-sans text-ink-light">lần</span></div>
+                        <p class="text-sm text-center italic text-cerulean">Mức độ hợp lý. Không có dấu hiệu cạn kiệt sinh lực (Over-masturbation).</p>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <button class="w-full py-4 bg-cerulean text-white font-playfair text-xl hover:bg-cerulean-dark transition-colors shadow-md">
+                            + Ghi Chép Phiên Mới
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="module4" class="module-content hidden">
+                <header class="mb-12 text-center border-b border-line pb-8">
+                    <h2 class="font-playfair text-5xl font-bold mb-4">Quản Lý Bạn Đồng Hành</h2>
+                    <p class="text-lg italic text-ink-light max-w-2xl mx-auto">Đồng bộ chu kỳ sinh học và thấu hiểu ranh giới cảm xúc để tạo nên sự hòa hợp tuyệt đối. Dữ liệu được mã hóa cục bộ.</p>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <!-- Profile Card -->
+                    <div class="editorial-border bg-white p-8 relative">
+                        <div class="absolute top-0 right-0 bg-cerulean text-white text-xs uppercase px-3 py-1 m-4">Đối tác chính</div>
+                        <h3 class="font-playfair text-3xl mb-1 text-jasper">E.L (Vợ)</h3>
+                        <p class="text-sm text-ink-light italic mb-6">Đồng bộ dữ liệu: Hoạt động</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="text-xs uppercase tracking-widest text-ink-light border-b border-line pb-1 mb-3">Chu kỳ sinh học</h4>
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold">Ngày chu kỳ:</span>
+                                    <span class="text-xl font-playfair text-jasper">Ngày 12</span>
+                                </div>
+                                <div class="w-full bg-line h-2 mt-2">
+                                    <div class="bg-jasper h-2 w-[42%]"></div>
+                                </div>
+                                <p class="text-sm mt-2 italic text-jasper-dark font-bold">Chú ý: Cửa sổ thụ thai (Fertility Window) sẽ mở vào ngày mai.</p>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-xs uppercase tracking-widest text-ink-light border-b border-line pb-1 mb-3">Sức khỏe Tình dục</h4>
+                                <ul class="text-sm space-y-2">
+                                    <li class="flex justify-between"><span>Xét nghiệm STDs gần nhất:</span> <span>01/2026 (Âm tính)</span></li>
+                                    <li class="flex justify-between"><span>Biện pháp tránh thai:</span> <span class="italic">Đang thả để thụ thai</span></li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-xs uppercase tracking-widest text-ink-light border-b border-line pb-1 mb-3">Mức độ Hài lòng (Tháng)</h4>
+                                <div class="flex space-x-1 mt-2">
+                                    <div class="h-8 flex-1 bg-cerulean opacity-80" title="Rất tốt"></div>
+                                    <div class="h-8 flex-1 bg-cerulean" title="Tuyệt vời"></div>
+                                    <div class="h-8 flex-1 bg-cerulean opacity-60" title="Tốt"></div>
+                                    <div class="h-8 flex-1 bg-cerulean" title="Tuyệt vời"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add New Card -->
+                    <div class="editorial-border border-dashed border-2 p-8 flex flex-col items-center justify-center text-ink-light hover:text-cerulean hover:border-cerulean transition-colors cursor-pointer bg-paper">
+                        <span class="text-6xl font-light mb-4">+</span>
+                        <h3 class="font-playfair text-xl">Thêm Hồ Sơ Mới</h3>
+                        <p class="text-sm italic text-center mt-2">Bảo mật bằng FaceID</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="module5" class="module-content hidden">
+                <header class="mb-10 border-b-2 border-ink pb-4">
+                    <h2 class="font-playfair text-5xl font-bold mb-2 text-cerulean">Dinh Dưỡng & Vi Chất</h2>
+                    <p class="text-lg italic">Nhiên liệu quyết định chất lượng nội tiết tố và hệ tuần hoàn mạch máu.</p>
+                </header>
+
+                <div class="grid grid-cols-3 gap-6 mb-12">
+                    <!-- Hydration -->
+                    <div class="col-span-1 border border-line p-6 bg-white text-center">
+                        <h3 class="text-sm uppercase tracking-widest text-ink-light mb-4">Hydration (Lượng nước)</h3>
+                        <div class="relative w-32 h-32 mx-auto rounded-full border-4 border-line flex items-center justify-center">
+                            <div class="absolute inset-0 bg-cerulean rounded-full opacity-20 mt-12"></div> <!-- Giả lập mức nước -->
+                            <span class="text-3xl font-playfair font-bold text-cerulean relative z-10">1.8<span class="text-sm">L</span></span>
+                        </div>
+                        <p class="text-xs mt-4 italic">Mục tiêu: 2.5L. Thiếu nước làm đặc tinh dịch và giảm lưu lượng máu.</p>
+                    </div>
+
+                    <!-- Supplement Stack -->
+                    <div class="col-span-2 border border-line p-6 bg-white">
+                        <h3 class="font-playfair text-2xl mb-4 border-b border-line pb-2">Stack Bổ Sung Hiện Tại</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-5 h-5 text-cerulean focus:ring-cerulean border-gray-300">
+                                <span class="text-lg flex-1">Kẽm Picolinate (30mg)</span>
+                                <span class="text-sm text-ink-light italic">Hỗ trợ sinh tinh</span>
+                            </label>
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-5 h-5 text-cerulean focus:ring-cerulean border-gray-300">
+                                <span class="text-lg flex-1">Vitamin D3 + K2 (5000 IU)</span>
+                                <span class="text-sm text-ink-light italic">Testosterone base</span>
+                            </label>
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 text-cerulean focus:ring-cerulean border-gray-300">
+                                <span class="text-lg flex-1">L-Citrulline (3g)</span>
+                                <span class="text-sm text-jasper italic">Giãn mạch (Pre-workout)</span>
+                            </label>
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" class="w-5 h-5 text-cerulean focus:ring-cerulean border-gray-300">
+                                <span class="text-lg flex-1">Ashwagandha KSM-66</span>
+                                <span class="text-sm text-ink-light italic">Giảm Cortisol</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-50 border border-jasper p-6 text-jasper-dark">
+                    <h4 class="font-playfair text-xl font-bold mb-2 uppercase tracking-wide">Cảnh báo rủi ro</h4>
+                    <p class="text-sm">Dữ liệu ăn uống 3 ngày qua cho thấy bạn nạp lượng lớn <strong>Đậu nành (Phytoestrogen)</strong> và <strong>Cồn (Bia)</strong>. Các chất này ức chế trực tiếp enzyme sản xuất Testosterone. Khuyến cáo cắt giảm ngay để bảo vệ mục tiêu sinh sản.</p>
+                </div>
+            </section>
+
+            <section id="module6" class="module-content hidden">
+                <header class="mb-10 text-center">
+                    <h2 class="font-playfair text-5xl font-bold mb-4">Rèn Luyện Thể Chất & Sinh Lý</h2>
+                    <p class="text-lg italic text-ink-light">Phát triển cơ bắp nền tảng và kiểm soát cơ sàn chậu (Pelvic Floor).</p>
+                </header>
+
+                <div class="grid grid-cols-2 gap-12">
+                    <!-- Kegel Timer -->
+                    <div class="editorial-border bg-white p-8 flex flex-col items-center">
+                        <h3 class="font-playfair text-3xl mb-2 text-cerulean">Kegel & Reverse</h3>
+                        <p class="text-sm text-ink-light mb-8 text-center">Bài tập kiểm soát cơ PC giúp kéo dài thời gian và tăng độ cứng.</p>
+                        
+                        <div id="kegel-circle" class="w-48 h-48 rounded-full border-4 border-cerulean flex items-center justify-center text-2xl font-playfair font-bold text-cerulean transition-all duration-500 mb-8 cursor-pointer select-none" onclick="startKegel()">
+                            Bắt đầu
+                        </div>
+                        
+                        <div class="flex justify-between w-full text-sm font-bold uppercase tracking-widest text-ink-light">
+                            <span id="kegel-instruction">Sẵn sàng</span>
+                            <span>Level: Trung cấp</span>
+                        </div>
+                    </div>
+
+                    <!-- Physical Fitness -->
+                    <div class="flex flex-col">
+                        <h3 class="font-playfair text-2xl mb-6 border-b border-line pb-2">Lịch Tập Tăng Testosterone</h3>
+                        <div class="space-y-4 flex-1">
+                            <div class="bg-paper p-4 editorial-border">
+                                <div class="flex justify-between font-bold mb-1">
+                                    <span>Squat nặng (Compound)</span>
+                                    <span class="text-cerulean">Hoàn thành</span>
+                                </div>
+                                <p class="text-sm text-ink-light italic">Kích thích hệ thần kinh trung ương, giải phóng HGH mạnh nhất.</p>
+                            </div>
+                            <div class="bg-paper p-4 editorial-border">
+                                <div class="flex justify-between font-bold mb-1">
+                                    <span>Sprint / HIIT Cardio</span>
+                                    <span class="text-jasper">Lên lịch (Chiều nay)</span>
+                                </div>
+                                <p class="text-sm text-ink-light italic">Tăng VO2 Max, cải thiện thể lực tuần hoàn cho các "phiên" dài.</p>
+                            </div>
+                             <div class="bg-paper p-4 editorial-border">
+                                <div class="flex justify-between font-bold mb-1">
+                                    <span>Box Breathing (Thở hộp)</span>
+                                    <span class="text-ink-light">Hàng ngày</span>
+                                </div>
+                                <p class="text-sm text-ink-light italic">Giảm Cortisol trước khi ngủ. Giúp hệ phó giao cảm hoạt động tốt.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="module7" class="module-content hidden">
+                <header class="mb-10">
+                    <h2 class="font-playfair text-5xl font-bold mb-4">Phân Tích Tương Quan AI</h2>
+                    <p class="text-lg italic text-ink-light drop-cap">Trí tuệ nhân tạo so sánh chéo các chỉ số để tìm ra "công thức" sức khỏe tối ưu riêng cho cơ thể bạn.</p>
+                </header>
+
+                <div class="editorial-border bg-white p-8 mb-10">
+                    <h3 class="font-playfair text-2xl mb-6 text-center">Tương quan: Chất lượng giấc ngủ & Độ cứng (EQ)</h3>
+                    <div class="relative h-64 w-full">
+                        <canvas id="correlationChart"></canvas>
+                    </div>
+                    <p class="mt-6 text-sm text-center italic max-w-2xl mx-auto"><strong>Phân tích AI:</strong> Có sự tương quan rõ rệt (85%). Những đêm ngủ sâu dưới 1h30m (thường do uống rượu), điểm chất lượng cương cứng (EQ) ngày hôm sau giảm trung bình 1.5 điểm.</p>
+                </div>
+
+                <h3 class="font-playfair text-2xl mb-4 border-b border-line pb-2">Thành Tựu Kỷ Luật</h3>
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="p-6 text-center bg-paper border border-line">
+                        <div class="text-4xl text-cerulean mb-2">🏆</div>
+                        <h4 class="font-bold text-sm uppercase tracking-wide">Chiến Binh Kegel</h4>
+                        <p class="text-xs mt-1 text-ink-light">Duy trì 30 ngày liên tục.</p>
+                    </div>
+                    <div class="p-6 text-center bg-paper border border-line">
+                        <div class="text-4xl text-jasper mb-2">🔥</div>
+                        <h4 class="font-bold text-sm uppercase tracking-wide">Dopamine Reset</h4>
+                        <p class="text-xs mt-1 text-ink-light">Chuỗi 12 ngày không thủ dâm.</p>
+                    </div>
+                    <div class="p-6 text-center bg-paper border border-line opacity-50 grayscale">
+                        <div class="text-4xl mb-2">🏔️</div>
+                        <h4 class="font-bold text-sm uppercase tracking-wide">Đỉnh Cao Nội Tiết</h4>
+                        <p class="text-xs mt-1 text-ink-light">Testo > 800 ng/dL (Chưa đạt).</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="module8" class="module-content hidden">
+                <header class="mb-10 border-b border-jasper pb-4 text-jasper-dark">
+                    <h2 class="font-playfair text-5xl font-bold mb-2">Thiết Lập Bảo Mật & Ẩn Danh</h2>
+                    <p class="text-lg italic">Dữ liệu cá nhân cực kỳ nhạy cảm. Quản lý quyền riêng tư ở mức tối đa.</p>
+                </header>
+
+                <div class="space-y-8 max-w-2xl">
+                    <div class="flex items-center justify-between p-4 border border-line bg-white">
+                        <div>
+                            <h4 class="font-bold text-lg">Khóa Sinh Trắc Học (FaceID/TouchID)</h4>
+                            <p class="text-sm text-ink-light">Yêu cầu xác thực khi mở các module Nhật ký & Bạn đồng hành.</p>
+                        </div>
+                        <div class="w-12 h-6 bg-cerulean rounded-full relative cursor-pointer">
+                            <div class="w-4 h-4 bg-white rounded-full absolute right-1 top-1"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 border border-line bg-white">
+                        <div>
+                            <h4 class="font-bold text-lg">Mã Hóa Đầu Cuối (Local Storage Only)</h4>
+                            <p class="text-sm text-ink-light">Không đồng bộ dữ liệu lên Cloud. Mất máy = Mất dữ liệu.</p>
+                        </div>
+                        <div class="w-12 h-6 bg-cerulean rounded-full relative cursor-pointer">
+                            <div class="w-4 h-4 bg-white rounded-full absolute right-1 top-1"></div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-red-50 border border-jasper">
+                        <h4 class="font-playfair font-bold text-xl text-jasper mb-2">Chế Độ Ngụy Trang (Panic Button)</h4>
+                        <p class="text-sm mb-4">Khi có người đột ngột nhìn vào màn hình, bấm nút đỏ ở góc trên bên trái hoặc vuốt 3 ngón tay xuống để lập tức chuyển app thành giao diện "Dự báo thời tiết".</p>
+                        <button onclick="toggleCamouflage()" class="bg-jasper text-white px-6 py-2 uppercase tracking-widest text-sm hover:bg-jasper-dark">Thử nghiệm Ngụy trang</button>
+                    </div>
+                    
+                    <div class="pt-8 text-center border-t border-line">
+                         <button class="text-jasper italic hover:underline">Xóa toàn bộ dữ liệu ứng dụng vĩnh viễn</button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Điều hướng các Module
+        function nav(targetId) {
+            // Ẩn tất cả module
+            document.querySelectorAll('.module-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            // Hủy active các nút
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('text-cerulean', 'font-bold', 'italic');
+            });
+            
+            // Hiển thị module được chọn
+            document.getElementById(targetId).classList.remove('hidden');
+            document.getElementById(targetId).classList.add('block');
+            
+            // Active nút hiện tại
+            let btn = document.getElementById('nav-' + targetId);
+            if(targetId !== 'module8') {
+                btn.classList.add('text-cerulean', 'font-bold', 'italic');
+            } else {
+                 btn.classList.add('font-bold', 'italic'); // Riêng bảo mật giữ màu đỏ
+            }
+
+            // Render chart nếu vào module 7
+            if(targetId === 'module7' && !window.chartRendered) {
+                renderChart();
+                window.chartRendered = true;
+            }
+        }
+
+        // Panic Button - Ngụy trang
+        function toggleCamouflage() {
+            const camUI = document.getElementById('camouflage-ui');
+            if (camUI.classList.contains('hidden')) {
+                camUI.classList.remove('hidden');
+                camUI.classList.add('flex');
+            } else {
+                camUI.classList.add('hidden');
+                camUI.classList.remove('flex');
+            }
+        }
+
+        // Logic bài tập Kegel đơn giản
+        let kegelInterval;
+        let isKegeling = false;
+        function startKegel() {
+            const circle = document.getElementById('kegel-circle');
+            const inst = document.getElementById('kegel-instruction');
+            
+            if(isKegeling) {
+                clearInterval(kegelInterval);
+                circle.classList.remove('kegel-active');
+                circle.innerText = "Bắt đầu";
+                inst.innerText = "Đã dừng";
+                isKegeling = false;
+                return;
+            }
+
+            isKegeling = true;
+            circle.classList.add('kegel-active');
+            let seconds = 0;
+            let phase = 'siết'; // Siết hoặc thả
+
+            kegelInterval = setInterval(() => {
+                seconds++;
+                if(phase === 'siết') {
+                    circle.innerText = "SIẾT (" + (5 - seconds) + "s)";
+                    inst.innerText = "Giữ chặt cơ PC...";
+                    if(seconds >= 5) { phase = 'thả'; seconds = 0; }
+                } else {
+                    circle.innerText = "THẢ (" + (5 - seconds) + "s)";
+                    inst.innerText = "Thư giãn hoàn toàn...";
+                    circle.style.backgroundColor = 'transparent';
+                    if(seconds >= 5) { phase = 'siết'; seconds = 0; }
+                }
+            }, 1000);
+        }
+
+        // Chart.js cho Module Phân tích
+        function renderChart() {
+            const ctx = document.getElementById('correlationChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+                    datasets: [
+                        {
+                            label: 'Giờ ngủ sâu (Giờ)',
+                            data: [2, 1.8, 0.5, 2.1, 1.5, 2.5, 0.8],
+                            borderColor: '#007BA7',
+                            yAxisID: 'y',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Độ cứng EQ (1-10)',
+                            data: [8, 8.5, 6, 8, 7.5, 9, 6.5],
+                            borderColor: '#D73B3E',
+                            borderDash: [5, 5],
+                            yAxisID: 'y1',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        y: { type: 'linear', display: true, position: 'left', title: {display: true, text: 'Giờ ngủ'} },
+                        y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: {display: true, text: 'Điểm EQ'} }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: "'Newsreader', serif" } } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
