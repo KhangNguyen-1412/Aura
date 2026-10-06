@@ -1,0 +1,46 @@
+mutation CreateSeedData @transaction {
+  user_insertMany(data: [
+    {
+      id: "72175a2d-b08e-4a67-b50a-f0f354f59001",
+      email: "alice@example.com",
+      firstName: "Alice",
+      createdAt: "2023-01-01T00:00:00Z"
+    },
+    {
+      id: "72175a2d-b08e-4a67-b50a-f0f354f59002",
+      email: "bob@example.com",
+      firstName: "Bob",
+      createdAt: "2023-02-01T00:00:00Z"
+    },
+    {
+      id: "72175a2d-b08e-4a67-b50a-f0f354f59003",
+      email: "charlie@example.com",
+      firstName: "Charlie",
+      createdAt: "2023-03-01T00:00:00Z"
+    }
+  ])
+
+  biometricLog_insertMany(data: [
+    { metricType: "heart_rate", value: 72.0, timestamp: "2023-01-05T10:00:00Z", userId: "72175a2d-b08e-4a67-b50a-f0f354f59001" },
+    { metricType: "blood_pressure", value: 120.0, timestamp: "2023-01-06T10:00:00Z", userId: "72175a2d-b08e-4a67-b50a-f0f354f59001" },
+    { metricType: "weight", value: 70.5, timestamp: "2023-02-10T08:00:00Z", userId: "72175a2d-b08e-4a67-b50a-f0f354f59002" }
+  ])
+
+  nutritionLog_insertMany(data: [
+    { foodName: "Apple", timestamp: "2023-01-05T12:00:00Z", calories: 95, userId: "72175a2d-b08e-4a67-b50a-f0f354f59001" },
+    { foodName: "Chicken Breast", timestamp: "2023-01-05T18:00:00Z", calories: 250, userId: "72175a2d-b08e-4a67-b50a-f0f354f59001" },
+    { foodName: "Oatmeal", timestamp: "2023-02-10T09:00:00Z", calories: 150, userId: "72175a2d-b08e-4a67-b50a-f0f354f59002" }
+  ])
+
+  healthGoal_insertMany(data: [
+    { title: "Run 5k", targetValue: 5.0, status: "in-progress", userId: "72175a2d-b08e-4a67-b50a-f0f354f59001" },
+    { title: "Lose Weight", targetValue: 65.0, status: "pending", userId: "72175a2d-b08e-4a67-b50a-f0f354f59002" },
+    { title: "Drink Water", targetValue: 2000.0, status: "completed", userId: "72175a2d-b08e-4a67-b50a-f0f354f59003" }
+  ])
+
+  healthAlert_insertMany(data: [
+    { triggerMetric: "heart_rate", severity: "high", isRead: false, userId: "72175a2d-b08e-4a67-b50a-f0f354f59001" },
+    { triggerMetric: "blood_pressure", severity: "medium", isRead: true, userId: "72175a2d-b08e-4a67-b50a-f0f354f59001" },
+    { triggerMetric: "weight", severity: "low", isRead: false, userId: "72175a2d-b08e-4a67-b50a-f0f354f59002" }
+  ])
+}

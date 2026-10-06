@@ -1,0 +1,46 @@
+type User @table {
+  email: String!
+  firstName: String!
+  createdAt: Timestamp!
+  birthDate: Date
+  targetWeight: Float
+  gender: String
+}
+
+type BiometricLog @table {
+  metricType: String!
+  value: Float!
+  timestamp: Timestamp!
+  unit: String
+  notes: String
+  user: User!
+}
+
+type NutritionLog @table {
+  foodName: String!
+  timestamp: Timestamp!
+  calories: Int
+  protein: Float
+  carbs: Float
+  fats: Float
+  notes: String
+  user: User!
+}
+
+type HealthGoal @table {
+  title: String!
+  targetValue: Float!
+  status: String!
+  description: String
+  deadline: Timestamp
+  user: User!
+}
+
+type HealthAlert @table {
+  triggerMetric: String!
+  severity: String!
+  isRead: Boolean!
+  message: String
+  resolvedAt: Timestamp
+  user: User!
+}
