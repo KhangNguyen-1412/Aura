@@ -400,6 +400,43 @@
             opacity: 1;
             transform: scale(1);
         }
+        /* ================= TÙY CHỈNH DROPDOWN ĐỒNG BỘ GIAO DIỆN (AURA SELECT) ================= */
+        .aura-select-wrapper { position: relative; width: 100%; }
+        .aura-select-display {
+            background-color: #FFFFFF; border: 1px solid #D1CCC5; 
+            min-height: 32px; display: flex; items-center;
+            cursor: pointer; transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23007BA7' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 13px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .aura-select-display:hover { border-color: #007BA7; background-color: #FCFAF7; }
+        .aura-select-display.open { border-color: #007BA7; box-shadow: 0 0 0 3px rgba(0, 123, 167, 0.14); }
+        
+        .aura-select-dropdown {
+            position: absolute; left: 0; right: 0; 
+            background: #FFFFFF; border: 1px solid #007BA7; box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 9999; max-height: 220px; overflow-y: auto; opacity: 0; pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            /* Mặc định xổ xuống */
+            top: calc(100% + 4px); transform: translateY(-8px);
+        }
+        .aura-select-dropdown.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+        /* Xổ ngược lên trên (Drop-up) khi không đủ chỗ */
+        .aura-select-dropdown.drop-up {
+            top: auto; bottom: calc(100% + 4px); transform: translateY(8px);
+            box-shadow: 0 -8px 24px rgba(0,0,0,0.12);
+        }
+        .aura-select-dropdown.drop-up.open { transform: translateY(0); }
+        
+        .aura-select-option {
+            padding: 9px 12px; font-size: 0.75rem; cursor: pointer; transition: background 0.15s, color 0.15s;
+            border-bottom: 1px solid #F9F6F0; color: #1A1A1A;
+        }
+        .aura-select-option:last-child { border-bottom: none; }
+        .aura-select-option:hover { background-color: rgba(0, 123, 167, 0.08); color: #007BA7; }
+        .aura-select-option.selected { background-color: #007BA7; color: #FFFFFF; font-weight: bold; }
     </style>
 </head>
 <body class="bg-paper text-ink font-newsreader antialiased overflow-hidden flex h-screen">
@@ -421,7 +458,7 @@
             <h1 class="font-playfair text-4xl font-black text-cerulean tracking-tight uppercase">Aura.</h1>
             <p class="text-xs text-ink-light uppercase tracking-widest mt-2 border-b border-line pb-2">Bản Khảo Sát Sức Khỏe Tối Ưu</p>
             <div class="mt-4 flex items-center justify-between">
-                <span class="text-sm italic">Ngày 24 tháng 10, 2026</span>
+                <span id="sidebar-current-datetime" class="text-sm italic font-medium text-cerulean">Đang tải...</span>
                 <!-- Nút hoảng loạn -->
                 <button onclick="toggleCamouflage()" class="w-6 h-6 rounded-full border border-jasper flex items-center justify-center group hover:bg-jasper transition-colors" title="Chế độ ngụy trang (Panic Button)">
                     <div class="w-2 h-2 rounded-full bg-jasper group-hover:bg-white"></div>
@@ -649,10 +686,10 @@
                         </button>
                     </div>
 
-                    <div class="editorial-border bg-white overflow-x-auto">
+                    <div class="editorial-border bg-white overflow-auto max-h-[400px]">
                         <table class="w-full text-left text-xs">
                             <thead>
-                                <tr class="bg-paper editorial-border-b text-ink-light uppercase tracking-wider font-bold">
+                                <tr class="bg-paper editorial-border-b text-ink-light uppercase tracking-wider font-bold sticky top-0 z-10 shadow-sm">
                                     <th class="p-3">Ngày Lấy Mẫu</th>
                                     <th class="p-3">Testo TP</th>
                                     <th class="p-3">Free Testo</th>
@@ -680,27 +717,31 @@
                     <p class="text-lg mt-4">Chu kỳ sinh tinh hoàn chỉnh kéo dài 74 ngày. Biểu đồ dưới đây theo dõi "lứa" tinh binh hiện tại dựa trên các yếu tố tác động trong 2.5 tháng qua.</p>
                 </header>
 
-                <div class="mb-12">
+                <div class="mb-12 mt-4">
                     <div class="flex justify-between text-sm uppercase tracking-wider mb-2 font-bold text-ink-light">
-                        <span>Ngày 1 (Nguyên bào)</span>
-                        <span class="text-cerulean">Hiện tại: Ngày 58</span>
-                        <span>Ngày 74 (Trưởng thành)</span>
+                        <span>Vừa giải phóng (Rỗng)</span>
+                        <span id="cycle-current-day-text" class="text-cerulean font-bold">Tích lũy: Đang tính...</span>
+                        <span>Đầy kho (Tối ưu: 3+ ngày)</span>
                     </div>
                     <div class="h-4 w-full bg-line rounded-full overflow-hidden relative">
-                        <div class="absolute h-full bg-cerulean w-[78%]"></div>
-                        <div class="absolute h-full w-1 bg-jasper right-[22%]"></div>
+                        <!-- Thanh tiến trình sẽ chạy từ 0 đến 100% dựa vào số ngày nghỉ ngơi -->
+                        <div id="cycle-progress-bar" class="absolute h-full bg-cerulean transition-all duration-1000" style="width: 0%"></div>
                     </div>
-                    <p class="mt-4 text-center italic text-sm">Lứa tinh trùng hiện tại đang ở giai đoạn trưởng thành tại mào tinh. Sẽ đạt độ chín tối ưu trong 16 ngày tới.</p>
+                    <p id="cycle-status-message" class="mt-5 text-center italic text-sm leading-relaxed p-4 bg-white border border-line">
+                        Đang phân tích dữ liệu từ nhật ký giải phóng...
+                    </p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-8">
-                    <div class="editorial-border p-6 bg-white">
-                        <h4 class="font-playfair text-2xl mb-4 text-center">Điểm Chất Lượng Dự Kiến</h4>
-                        <div class="text-center text-7xl font-playfair font-black text-cerulean my-6">A-</div>
-                        <ul class="text-sm space-y-2">
-                            <li class="flex justify-between"><span class="text-jasper">Cảnh báo nhiệt độ:</span> <span>An toàn (Không ngâm bồn)</span></li>
-                            <li class="flex justify-between text-cerulean"><span>Dinh dưỡng 70 ngày:</span> <span>Kẽm & C đạt 90%</span></li>
-                            <li class="flex justify-between"><span>Tích lũy (Abstinence):</span> <span>3 ngày (Tối ưu)</span></li>
+                    <div class="editorial-border p-6 bg-white flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-playfair text-2xl mb-4 text-center">Chất Lượng Tinh Dịch Dự Kiến</h4>
+                            <div id="cycle-quality-grade" class="text-center text-7xl font-playfair font-black text-cerulean my-6">-</div>
+                        </div>
+                        <ul class="text-sm space-y-2 border-t border-line pt-4">
+                            <li class="flex justify-between"><span class="text-jasper">Cảnh báo nhiệt độ:</span> <span>An toàn</span></li>
+                            <li class="flex justify-between text-cerulean"><span>Dinh dưỡng:</span> <span>Kẽm & C đạt 90%</span></li>
+                            <li class="flex justify-between"><span class="font-bold">Thời gian tích lũy:</span> <span id="cycle-abstinence-text" class="font-bold">...</span></li>
                         </ul>
                     </div>
                     <div>
@@ -739,10 +780,10 @@
                         </button>
                     </div>
 
-                    <div class="editorial-border bg-white overflow-x-auto">
+                    <div class="editorial-border bg-white overflow-auto max-h-[400px]">
                         <table class="w-full text-left text-xs">
                             <thead>
-                                <tr class="bg-paper editorial-border-b text-ink-light uppercase tracking-wider font-bold">
+                                <tr class="bg-paper editorial-border-b text-ink-light uppercase tracking-wider font-bold sticky top-0 z-10 shadow-sm">
                                     <th class="p-3">Thời Gian</th>
                                     <th class="p-3">Thể Tích</th>
                                     <th class="p-3">Mật Độ</th>
@@ -770,9 +811,9 @@
                     <h3 class="font-playfair text-2xl text-cerulean">Bản Ghi Gần Đây</h3>
                     <span id="release-sync-badge" class="text-xs text-cerulean italic">Lưu trữ thời gian thực</span>
                 </div>
-                <div class="editorial-border bg-white overflow-hidden mb-10 overflow-x-auto">
+                <div class="editorial-border bg-white mb-10 overflow-auto max-h-[400px]">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-paper border-b border-line">
+                        <thead class="bg-paper border-b border-line sticky top-0 z-10 shadow-sm">
                             <tr class="text-ink-light uppercase">
                                 <th class="p-4">Ngày</th>
                                 <th class="p-4">Hình thức</th>
@@ -811,7 +852,7 @@
                     <p class="text-lg italic text-ink-light max-w-2xl mx-auto">Hồ sơ đối tác nam, thông tin liên lạc, lịch xét nghiệm STDs/PrEP và thư viện hình ảnh/video kỷ niệm riêng tư. Dữ liệu được mã hóa phân vùng an toàn.</p>
                 </header>
 
-                <div id="partner-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div id="partner-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-10 max-h-[650px] overflow-y-auto pr-3 pb-2">
                     <!-- Sẽ được tự động render thông qua renderPartners(partners) -->
                     <div class="editorial-border bg-white p-8 relative shadow-sm">
                         <div class="flex items-start space-x-4">
@@ -958,33 +999,54 @@
             <section id="module7" class="module-content hidden">
                 <header class="mb-10">
                     <h2 class="font-playfair text-5xl font-bold mb-4">Phân Tích Tương Quan AI</h2>
-                    <p class="text-lg italic text-ink-light drop-cap">Trí tuệ nhân tạo so sánh chéo các chỉ số để tìm ra "công thức" sức khỏe tối ưu riêng cho cơ thể bạn.</p>
+                    <p class="text-lg italic text-ink-light drop-cap">Trí tuệ nhân tạo so sánh chéo các chỉ số thực tế bạn đã nhập để tìm ra "công thức" sức khỏe tối ưu.</p>
                 </header>
 
                 <div class="editorial-border bg-white p-8 mb-10">
-                    <h3 class="font-playfair text-2xl mb-6 text-center">Tương quan: Chất lượng giấc ngủ & Độ cứng (EQ)</h3>
+                    <h3 id="ai-analysis-title" class="font-playfair text-2xl mb-6 text-center">Tương quan: Thời lượng & Độ cứng (EQ)</h3>
                     <div class="relative h-64 w-full">
                         <canvas id="correlationChart"></canvas>
                     </div>
-                    <p class="mt-6 text-sm text-center italic max-w-2xl mx-auto"><strong>Phân tích AI:</strong> Có sự tương quan rõ rệt (85%). Những đêm ngủ sâu dưới 1h30m (thường do uống rượu), điểm chất lượng cương cứng (EQ) ngày hôm sau giảm trung bình 1.5 điểm.</p>
+                    <p id="ai-analysis-text" class="mt-6 text-sm text-center italic max-w-2xl mx-auto"><strong>Phân tích Hệ thống:</strong> Đang phân tích dữ liệu...</p>
                 </div>
 
-                <h3 class="font-playfair text-2xl mb-4 border-b border-line pb-2">Thành Tựu Kỷ Luật</h3>
+                <h3 class="font-playfair text-2xl mb-4 border-b border-line pb-2">Thành Tựu Kỷ Luật Hiện Tại</h3>
                 <div class="grid grid-cols-3 gap-6">
                     <div class="p-6 text-center bg-paper border border-line">
-                        <div class="text-4xl text-cerulean mb-2">🏆</div>
-                        <h4 class="font-bold text-sm uppercase tracking-wide">Chiến Binh Kegel</h4>
-                        <p class="text-xs mt-1 text-ink-light">Duy trì 30 ngày liên tục.</p>
+                        <div class="flex justify-center mb-3 text-cerulean">
+                            <!-- Icon Đồng hồ (Sức bền) -->
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <h4 class="font-bold text-sm uppercase tracking-wide">Sức Bền Trung Bình</h4>
+                        <div id="ach-dur-val" class="text-2xl font-bold text-cerulean font-playfair mt-1">-</div>
+                        <p id="ach-dur-desc" class="text-xs mt-1 text-ink-light">Chưa có dữ liệu thời lượng.</p>
                     </div>
+                    
                     <div class="p-6 text-center bg-paper border border-line">
-                        <div class="text-4xl text-jasper mb-2">🔥</div>
+                        <div class="flex justify-center mb-3 text-jasper">
+                            <!-- Icon Ngọn lửa (Dopamine Reset) -->
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+                            </svg>
+                        </div>
                         <h4 class="font-bold text-sm uppercase tracking-wide">Dopamine Reset</h4>
-                        <p class="text-xs mt-1 text-ink-light">Chuỗi 12 ngày không thủ dâm.</p>
+                        <div id="ach-dopamine-val" class="text-2xl font-bold text-jasper font-playfair mt-1">-</div>
+                        <p id="ach-dopamine-desc" class="text-xs mt-1 text-ink-light">Ngày tích lũy từ phiên cuối.</p>
                     </div>
-                    <div class="p-6 text-center bg-paper border border-line opacity-50 grayscale">
-                        <div class="text-4xl mb-2">🏔️</div>
+                    
+                    <div id="ach-testo-box" class="p-6 text-center bg-paper border border-line opacity-50 grayscale transition-all duration-500">
+                        <div class="flex justify-center mb-3 text-ink">
+                            <!-- Icon Đỉnh núi (Đỉnh cao nội tiết) -->
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M8 3l4 8 5-5 5 15H2L8 3z"></path>
+                            </svg>
+                        </div>
                         <h4 class="font-bold text-sm uppercase tracking-wide">Đỉnh Cao Nội Tiết</h4>
-                        <p class="text-xs mt-1 text-ink-light">Testo > 800 ng/dL (Chưa đạt).</p>
+                        <div id="ach-testo-val" class="text-xl font-bold font-playfair mt-1">Chưa Đạt</div>
+                        <p id="ach-testo-desc" class="text-xs mt-1 text-ink-light">Mục tiêu Testo > 800 ng/dL.</p>
                     </div>
                 </div>
             </section>
@@ -996,6 +1058,16 @@
                 </header>
 
                 <div class="space-y-8 max-w-2xl">
+                    <div class="flex flex-col p-4 border border-line bg-white mb-4">
+                        <div class="mb-3">
+                            <h4 class="font-bold text-lg text-cerulean">Khóa Google Drive API (Web Tương Tác)</h4>
+                            <p class="text-sm text-ink-light mt-1">Nhập API Key của bạn để tính năng tự động bóc tách thư mục Google Drive hoạt động ổn định nhất. Key được lưu an toàn tại trình duyệt của bạn.</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="password" id="input-gdrive-api-key" placeholder="Nhập API Key (Bắt đầu bằng AIza...)" class="flex-1 py-2 px-3 border border-line focus:outline-none focus:border-cerulean text-sm font-mono">
+                            <button onclick="window.saveGDriveApiKey()" class="bg-cerulean text-white px-6 py-2 text-xs uppercase font-bold tracking-wider hover:bg-cerulean-dark cursor-pointer shadow-sm">Lưu Key</button>
+                        </div>
+                    </div>
                     <div class="flex items-center justify-between p-4 border border-line bg-white">
                         <div>
                             <h4 class="font-bold text-lg">Khóa Sinh Trắc Học (FaceID/TouchID)</h4>
@@ -1731,49 +1803,14 @@
                     <div class="flex justify-between items-center border-b border-line pb-2">
                         <div>
                             <h4 class="font-playfair font-bold text-ink text-base">Bộ Sưu Tập Hình Ảnh & Video</h4>
-                            <p class="text-xs text-ink-light italic">Lưu trữ ảnh kỷ niệm, video riêng tư của đối tác.</p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <input type="file" id="input-partner-gallery-file" accept="image/*,video/*" multiple onchange="window.handlePartnerGalleryUpload(event)" class="hidden">
-                            <button type="button" onclick="document.getElementById('input-partner-gallery-file').click()" class="px-3 py-1.5 bg-cerulean text-white text-xs font-bold uppercase tracking-wider hover:bg-cerulean-dark transition-colors cursor-pointer shadow-xs flex items-center space-x-1">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                <span>Tải Lên Tệp</span>
-                            </button>
+                            <p class="text-xs text-ink-light italic">Lưu trữ ảnh/video bằng liên kết trực tiếp trên mạng.</p>
                         </div>
                     </div>
 
                     <!-- Input dán link nhanh -->
-                    <div class="space-y-2">
-                        <div class="flex space-x-2">
-                            <div class="flex-1 relative">
-                                <input type="url" id="input-partner-media-url" oninput="window.detectGoogleLinkType(this.value)" placeholder="Dán link ảnh / video / thư mục Google Drive, Google Photos, Unsplash, Imgur..." class="w-full py-1.5 px-3 border border-line bg-white focus:outline-none focus:border-cerulean text-xs pr-8">
-                                <div id="gdrive-link-icon" class="absolute right-2 top-1/2 -translate-y-1/2 hidden">
-                                    <svg class="w-4 h-4 text-[#1a73e8]" viewBox="0 0 24 24" fill="currentColor"><path d="M7.71 3.5L1.15 15l3.43 5.94h6.85L4.87 9.44l2.84-5.94zm1.14 0l6.56 11.5H8.84L2.29 15l3.42-5.94L8.85 3.5zm7.44 0L22.85 15l-3.43 5.94L12.86 9.44l3.43-5.94z"/></svg>
-                                </div>
-                            </div>
-                            <select id="input-partner-media-type" class="border border-line py-1.5 px-2 bg-white text-xs editorial-select">
-                                <option value="image">Ảnh</option>
-                                <option value="video">Video</option>
-                            </select>
-                            <button type="button" onclick="window.addPartnerMediaFromUrl()" id="btn-add-partner-media-url" class="px-4 py-1.5 border border-line hover:border-cerulean hover:text-cerulean text-xs font-bold transition-colors cursor-pointer bg-stone-50 whitespace-nowrap">Thêm Link</button>
-                        </div>
-                        <!-- Phát hiện loại link Google -->
-                        <div id="gdrive-link-detection" class="hidden">
-                            <!-- Populated dynamically -->
-                        </div>
-                        <!-- Thanh tiến trình khi đang import thư mục -->
-                        <div id="gdrive-import-progress-wrap" class="hidden space-y-1">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] uppercase tracking-wider font-bold text-ink-light flex items-center gap-1.5">
-                                    <span class="gdrive-spinner"></span>
-                                    <span id="gdrive-import-status">Đang tải danh sách ảnh...</span>
-                                </span>
-                                <span id="gdrive-import-count" class="text-[10px] font-mono text-ink-light">0/0</span>
-                            </div>
-                            <div class="gdrive-import-progress">
-                                <div class="bar" id="gdrive-import-bar" style="width:0%"></div>
-                            </div>
-                        </div>
+                    <div class="flex space-x-2">
+                        <input type="url" id="input-partner-media-url" placeholder="Dán link trực tiếp (hệ thống tự nhận diện mp4, jpg...)" class="flex-1 py-1.5 px-3 border border-line bg-white focus:outline-none focus:border-cerulean text-xs">
+                        <button type="button" onclick="window.addPartnerMediaFromUrl()" class="px-4 py-1.5 border border-line hover:border-cerulean hover:text-cerulean text-xs font-bold transition-colors cursor-pointer bg-stone-50 whitespace-nowrap">Thêm Link</button>
                     </div>
 
                     <!-- Danh sách thumbnails -->
@@ -1789,7 +1826,7 @@
                 </div>
 
                 <!-- Footer buttons -->
-                <div class="flex justify-end space-x-3 pt-4 border-t border-line mt-6">
+                <div class="sticky -bottom-6 md:-bottom-8 -mx-6 md:-mx-8 px-6 md:px-8 pt-4 pb-6 md:pb-8 bg-paper z-50 border-t border-line mt-6 flex justify-end space-x-3 shadow-[0_-8px_15px_-5px_rgba(0,0,0,0.03)]">
                     <button type="button" onclick="window.closePartnerModal()" class="px-5 py-2 border border-line hover:bg-stone-200 transition-colors uppercase tracking-wider text-xs cursor-pointer font-medium">Hủy</button>
                     <button type="submit" id="btn-submit-partner" class="px-6 py-2 bg-cerulean text-white hover:bg-cerulean-dark transition-colors uppercase tracking-wider text-xs font-bold cursor-pointer shadow-sm">Lưu Hồ Sơ</button>
                 </div>
@@ -1797,23 +1834,138 @@
         </div>
     </div>
 
+    <!-- Modal 4b: Xem Chi Tiết Bạn Đồng Hành (Dossier) -->
+    <div id="modal-partner-detail" onclick="if(event.target === this) window.closePartnerDetail()" class="modal-overlay hidden fixed inset-0 bg-ink/80 backdrop-blur-sm z-[190] flex items-center justify-center p-4 md:p-6">
+        <div class="modal-dialog bg-paper editorial-border max-w-5xl w-full shadow-2xl relative max-h-[92vh] flex flex-col overflow-hidden">
+            <!-- Header Gắn Chặt -->
+            <div class="flex justify-between items-center p-5 border-b border-line bg-stone-50 shrink-0">
+                <div class="flex items-center space-x-3">
+                    <span class="w-2.5 h-2.5 rounded-full bg-cerulean"></span>
+                    <span class="text-[10px] uppercase font-mono tracking-widest text-cerulean font-bold">Hồ Sơ Chi Tiết / Dossier</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button type="button" id="btn-edit-from-detail" class="px-4 py-1.5 border border-cerulean text-cerulean hover:bg-cerulean hover:text-white transition-colors text-xs font-bold uppercase tracking-wider cursor-pointer">Chỉnh Sửa</button>
+                    <button type="button" onclick="window.closePartnerDetail()" class="text-ink-light hover:text-ink text-3xl font-light cursor-pointer leading-none">&times;</button>
+                </div>
+            </div>
+
+            <!-- Nội dung cuộn -->
+            <div class="flex-1 overflow-y-auto p-6 md:p-10">
+                <div class="flex flex-col md:flex-row gap-10">
+                    <!-- Cột Trái: Avatar & Thông tin cơ bản -->
+                    <div class="md:w-1/3 shrink-0">
+                        <div class="sticky top-0 space-y-6">
+                            <div class="text-center">
+                                <img id="detail-partner-avatar" src="" class="w-40 h-40 mx-auto rounded-full object-cover border-4 border-white shadow-xl mb-4" alt="Avatar">
+                                <h2 id="detail-partner-name" class="font-playfair text-4xl font-bold text-cerulean mb-1">Tên</h2>
+                                <span id="detail-partner-relation" class="inline-block bg-cerulean text-white text-[10px] uppercase tracking-widest px-3 py-1 font-bold">Mối quan hệ</span>
+                            </div>
+                            
+                            <div class="border-t border-line pt-4 space-y-3 text-sm">
+                                <div class="flex justify-between editorial-border-b pb-2">
+                                    <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Ngày sinh:</span>
+                                    <span id="detail-partner-dob" class="font-medium text-ink">-</span>
+                                </div>
+                                <div class="flex justify-between editorial-border-b pb-2">
+                                    <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Tuổi tác:</span>
+                                    <span id="detail-partner-age" class="font-mono text-ink">-</span>
+                                </div>
+                                <div class="flex justify-between editorial-border-b pb-2">
+                                    <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Điện thoại:</span>
+                                    <span id="detail-partner-phone" class="font-mono text-ink">-</span>
+                                </div>
+                                <div class="flex flex-col editorial-border-b pb-2 space-y-1 mt-2">
+                                    <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Thường trú:</span>
+                                    <span id="detail-partner-perm" class="text-ink text-right">-</span>
+                                </div>
+                                <div class="flex flex-col editorial-border-b pb-2 space-y-1">
+                                    <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Tạm trú:</span>
+                                    <span id="detail-partner-temp" class="text-ink text-right">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cột Phải: Sức khỏe, Ghi chú & Thư viện -->
+                    <div class="md:w-2/3 space-y-8">
+                        <!-- Box Sức Khỏe -->
+                        <div class="bg-white editorial-border p-6 shadow-sm">
+                            <h3 class="font-playfair text-2xl text-jasper border-b border-line pb-2 mb-4">I. Y Tế Dự Phòng & Xu Hướng</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold text-ink-light block mb-1">PrEP / PEP</span>
+                                    <div id="detail-partner-prep" class="text-sm font-bold text-emerald-700">-</div>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold text-ink-light block mb-1">Xét nghiệm STDs</span>
+                                    <div id="detail-partner-stds" class="text-sm font-medium text-ink">-</div>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold text-ink-light block mb-1">Vai trò (Role)</span>
+                                    <div id="detail-partner-role" class="text-sm italic font-bold text-cerulean">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Box Ghi chú -->
+                        <div class="bg-stone-50 editorial-border border-l-4 border-l-cerulean p-6 shadow-sm">
+                            <h3 class="font-playfair text-xl text-ink font-bold mb-2">II. Ghi Chú Kỷ Niệm & Sở Thích</h3>
+                            <p id="detail-partner-notes" class="text-sm text-ink-light italic leading-relaxed whitespace-pre-wrap">Không có ghi chú.</p>
+                        </div>
+
+                        <!-- Box Thư viện -->
+                        <div>
+                            <div class="flex justify-between items-end border-b border-line pb-2 mb-4 sticky top-0 bg-paper z-10 pt-1">
+                                <h3 class="font-playfair text-2xl text-ink font-bold">III. Thư Viện Phương Tiện</h3>
+                                <span id="detail-partner-gallery-count" class="text-xs text-ink-light font-mono font-bold bg-stone-200 px-2 py-0.5">0 mục</span>
+                            </div>
+                            <div id="detail-partner-gallery" class="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[320px] overflow-y-auto pr-2">
+                                <!-- Rendered via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Xem Riêng Media Của Bạn Đồng Hành -->
-    <div id="modal-partner-media-viewer" onclick="if(event.target === this) window.closePartnerMediaModal()" class="modal-overlay hidden fixed inset-0 bg-ink/80 backdrop-blur-md z-[260] flex items-center justify-center p-4">
-        <div class="modal-dialog bg-paper editorial-border max-w-3xl w-full p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-line pb-3 mb-4">
+    <div id="modal-partner-media-viewer" onclick="if(event.target === this) window.closePartnerMediaModal()" class="modal-overlay hidden fixed inset-0 bg-ink/90 backdrop-blur-md z-[260] flex items-center justify-center p-4 md:p-6">
+        <div class="modal-dialog bg-paper editorial-border max-w-5xl w-full p-6 shadow-2xl relative max-h-[92vh] flex flex-col">
+            <!-- Header -->
+            <div class="flex justify-between items-center border-b border-line pb-3 mb-4 shrink-0">
                 <div>
                     <span id="partner-media-viewer-badge" class="text-[10px] uppercase font-mono tracking-widest text-cerulean font-bold">KỶ NIỆM BẠN ĐỒNG HÀNH</span>
-                    <h3 id="partner-media-viewer-title" class="font-playfair text-2xl font-bold text-ink">Xem Chi Tiết</h3>
+                    <h3 id="partner-media-viewer-title" class="font-playfair text-2xl font-bold text-ink flex items-center gap-3">
+                        Xem Chi Tiết 
+                        <span id="partner-media-viewer-counter" class="text-sm font-mono text-ink-light font-normal bg-stone-200 px-2.5 py-0.5 rounded-sm border border-line">1 / 1</span>
+                    </h3>
                 </div>
-                <button type="button" onclick="window.closePartnerMediaModal()" class="text-ink-light hover:text-ink text-2xl font-light cursor-pointer leading-none p-1">&times;</button>
+                <button type="button" onclick="window.closePartnerMediaModal()" class="text-ink-light hover:text-ink text-3xl font-light cursor-pointer leading-none p-1">&times;</button>
             </div>
-            <div class="editorial-border bg-stone-950 p-2 text-center mb-4 min-h-[250px] flex items-center justify-center">
-                <img id="partner-media-viewer-img" class="max-h-[60vh] max-w-full mx-auto object-contain hidden" alt="Media preview">
-                <video id="partner-media-viewer-video" controls autoplay playsinline class="max-h-[60vh] max-w-full mx-auto bg-black hidden"></video>
+            
+            <!-- Trình chiếu Media có Mũi Tên -->
+            <div class="relative editorial-border bg-stone-950 p-2 text-center mb-4 flex-1 flex items-center justify-center min-h-[350px] overflow-hidden group">
+                
+                <!-- Nút điều hướng Trái -->
+                <button id="btn-media-prev" onclick="window.navigateMedia(-1)" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-black/40 hover:bg-cerulean text-white border border-white/20 rounded-full flex items-center justify-center cursor-pointer transition-all z-10 opacity-0 group-hover:opacity-100 backdrop-blur-sm shadow-lg">
+                    <svg class="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                
+                <!-- Nút điều hướng Phải -->
+                <button id="btn-media-next" onclick="window.navigateMedia(1)" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 bg-black/40 hover:bg-cerulean text-white border border-white/20 rounded-full flex items-center justify-center cursor-pointer transition-all z-10 opacity-0 group-hover:opacity-100 backdrop-blur-sm shadow-lg">
+                    <svg class="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                </button>
+
+                <!-- Media -->
+                <img id="partner-media-viewer-img" class="max-h-[65vh] max-w-full mx-auto object-contain hidden" alt="Media preview">
+                <video id="partner-media-viewer-video" controls autoplay playsinline class="max-h-[65vh] max-w-full mx-auto bg-black hidden"></video>
             </div>
-            <p id="partner-media-viewer-caption" class="text-xs italic text-ink-light text-center font-serif mb-4"></p>
-            <div class="flex justify-end">
-                <button type="button" onclick="window.closePartnerMediaModal()" class="px-5 py-2 bg-cerulean text-white text-xs uppercase font-bold tracking-wider hover:bg-cerulean-dark transition-colors">Đóng</button>
+            
+            <p id="partner-media-viewer-caption" class="text-sm italic text-ink text-center font-serif mb-4 shrink-0 min-h-[24px]"></p>
+            
+            <div class="flex justify-end shrink-0">
+                <button type="button" onclick="window.closePartnerMediaModal()" class="px-6 py-2 bg-cerulean text-white text-xs uppercase font-bold tracking-wider hover:bg-cerulean-dark transition-colors cursor-pointer shadow-sm">Đóng Lại</button>
             </div>
         </div>
     </div>
@@ -2301,12 +2453,22 @@
         // Đóng modal bằng phím Escape với hiệu ứng mượt mà
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                ['modal-aura-datepicker', 'modal-profile', 'modal-semen', 'modal-release', 'modal-partner', 'modal-partner-media-viewer', 'modal-supplement', 'modal-workout', 'modal-view-media'].forEach(id => {
+                ['modal-aura-datepicker', 'modal-profile', 'modal-semen', 'modal-release', 'modal-partner', 'modal-partner-detail', 'modal-partner-media-viewer', 'modal-supplement', 'modal-workout', 'modal-view-media'].forEach(id => {
                     const el = document.getElementById(id);
                     if (el && !el.classList.contains('hidden') && el.classList.contains('modal-active')) {
                         closeModalAnimated(id);
                     }
                 });
+            }
+            
+            // Hỗ trợ chuyển ảnh bằng phím mũi tên Trái/Phải trên bàn phím
+            const mediaViewer = document.getElementById('modal-partner-media-viewer');
+            if (mediaViewer && !mediaViewer.classList.contains('hidden') && mediaViewer.classList.contains('modal-active')) {
+                if (e.key === 'ArrowLeft') {
+                    window.navigateMedia(-1);
+                } else if (e.key === 'ArrowRight') {
+                    window.navigateMedia(1);
+                }
             }
         });
     </script>
@@ -2473,6 +2635,7 @@
             if (!selectEl) return;
             if (!val) {
                 if (selectEl.options.length > 0) selectEl.selectedIndex = 0;
+                if (selectEl._updateCustomSelect) selectEl._updateCustomSelect();
                 return;
             }
             let found = false;
@@ -2490,6 +2653,7 @@
                 selectEl.add(newOpt);
                 selectEl.value = val;
             }
+            if (selectEl._updateCustomSelect) selectEl._updateCustomSelect();
         }
         window.setSelectOrAddOption = setSelectOrAddOption;
 
@@ -3249,21 +3413,65 @@
             updateReadinessScore();
         }
 
-        function updateReadinessScore() {
+function updateReadinessScore() {
             const scoreEl = document.getElementById('sidebar-readiness-score');
+            const statusEl = document.getElementById('sidebar-readiness-status');
             if (!scoreEl) return;
-            const profile = currentProfileData || DEFAULT_PROFILE;
-            const latestTest = currentEndocrineTests.length > 0 ? currentEndocrineTests[0] : DEFAULT_ENDOCRINE_TESTS[0];
 
-            let score = 84;
-            if ((latestTest.testoTotal || 680) >= 650) score += 5;
-            if ((profile.rhr || 58) <= 60) score += 3;
-            if ((profile.bodyFat || 14.5) <= 15) score += 3;
-            if (!profile.smoking) score += 2;
-            if (!profile.alcohol) score += 2;
-            scoreEl.innerHTML = `${Math.min(99, score)}<span class="text-2xl text-line">%</span>`;
+            const profile = currentProfileData || {};
+            const latestTest = currentEndocrineTests && currentEndocrineTests.length > 0 ? currentEndocrineTests[0] : {};
+            
+            let score = 50; // Điểm nền tảng cơ bản
+
+            // 1. Phân tích Nội tiết - Testo (Tối đa 15 điểm)
+            const testo = latestTest.testoTotal || 0;
+            if (testo >= 800) score += 15;
+            else if (testo >= 600) score += 10;
+            else if (testo >= 400) score += 5;
+
+            // 2. Phân tích Thể chất & Lối sống (Tối đa 15 điểm)
+            if (profile.bodyFat && profile.bodyFat <= 16) score += 5;
+            if (profile.rhr && profile.rhr <= 65) score += 5;
+            if (profile.smoking === false && profile.alcohol === false) score += 5;
+
+            // 3. Phân tích Tích lũy (Nhật ký giải phóng - Tối đa 20 điểm)
+            let abstinenceDays = 3; // Mặc định lý tưởng nếu chưa nhập gì
+            if (currentReleaseLogs && currentReleaseLogs.length > 0) {
+                const lastLog = currentReleaseLogs[0];
+                // Tính số ngày từ phiên giải phóng gần nhất
+                const lastDate = lastLog.createdAt && lastLog.createdAt.toDate ? lastLog.createdAt.toDate() : new Date(lastLog.datetime || Date.now());
+                const diffTime = Math.abs(new Date() - lastDate);
+                abstinenceDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            }
+            
+            if (abstinenceDays >= 2 && abstinenceDays <= 4) score += 20; // Khung thời gian tối ưu nhất cho sinh tinh
+            else if (abstinenceDays > 4 && abstinenceDays <= 7) score += 15;
+            else if (abstinenceDays > 7) score += 10; // Tích lũy quá lâu sẽ làm giảm nhẹ độ linh hoạt
+            else if (abstinenceDays === 1) score += 5;
+            else score += 0; // Vừa giải phóng xong trong vòng 24h
+
+            // Giới hạn hiển thị tối đa là 99%
+            score = Math.min(99, score);
+
+            scoreEl.innerHTML = `${score}<span class="text-2xl text-line">%</span>`;
+
+            // Cập nhật câu nhận xét màu sắc theo số điểm
+            if (statusEl) {
+                if (score >= 90) {
+                    statusEl.innerText = "Tối ưu xuất sắc cho việc sinh sản.";
+                    statusEl.className = "text-xs text-cerulean font-bold mt-2";
+                } else if (score >= 75) {
+                    statusEl.innerText = "Trạng thái sẵn sàng tốt.";
+                    statusEl.className = "text-xs text-emerald-600 font-bold mt-2";
+                } else if (score >= 60) {
+                    statusEl.innerText = "Thể trạng trung bình, cần tích lũy.";
+                    statusEl.className = "text-xs text-amber-600 italic mt-2";
+                } else {
+                    statusEl.innerText = "Khuyến cáo nghỉ ngơi phục hồi.";
+                    statusEl.className = "text-xs text-jasper italic mt-2";
+                }
+            }
         }
-
         window.openProfileModal = function(tab = 'physical') {
             const data = currentProfileData || DEFAULT_PROFILE;
             // Điền form chỉ số nền tảng
@@ -3578,6 +3786,87 @@
             }
         };
 
+        // Thêm hàm helper global để mở media từ form Chi tiết
+        window.openMediaFromDetail = function(idx) {
+            window.activeMediaGallery = window.currentDetailGallery;
+            window.openPartnerMediaModal(idx);
+        };
+
+        // Hàm mở Modal Xem Chi Tiết
+        window.openPartnerDetail = function(id) {
+            const p = currentPartners.find(x => x.id === id);
+            if (!p) return;
+
+            document.getElementById('detail-partner-avatar').src = p.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80';
+            document.getElementById('detail-partner-name').innerText = p.name || 'Bạn đồng hành';
+            document.getElementById('detail-partner-relation').innerText = p.relation || 'Bạn bè';
+            
+            document.getElementById('detail-partner-dob').innerText = p.dob ? p.dob.split('-').reverse().join('/') : '-';
+            const age = calculateAge(p.dob);
+            document.getElementById('detail-partner-age').innerText = (age !== null) ? `${age} tuổi` : '-';
+            document.getElementById('detail-partner-phone').innerText = p.phone || '-';
+            
+            document.getElementById('detail-partner-perm').innerText = p.permanentAddr || '-';
+            document.getElementById('detail-partner-temp').innerText = p.temporaryAddr || '-';
+            
+            const prepEl = document.getElementById('detail-partner-prep');
+            prepEl.innerText = p.prepStatus || '-';
+            if (p.prepStatus && p.prepStatus.includes('Daily')) {
+                prepEl.className = 'text-sm font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 inline-block border border-emerald-200';
+            } else {
+                prepEl.className = 'text-sm font-medium text-ink';
+            }
+
+            document.getElementById('detail-partner-stds').innerText = p.stds || '-';
+            document.getElementById('detail-partner-role').innerText = p.role || '-';
+            
+            const notesEl = document.getElementById('detail-partner-notes');
+            notesEl.innerText = p.notes || 'Chưa có thông tin ghi chú.';
+            notesEl.className = p.notes ? 'text-sm text-ink leading-relaxed whitespace-pre-wrap' : 'text-sm text-ink-light italic';
+
+            // Gắn sự kiện cho nút "Chỉnh Sửa"
+            const btnEdit = document.getElementById('btn-edit-from-detail');
+            btnEdit.onclick = () => {
+                window.closePartnerDetail();
+                setTimeout(() => window.editPartner(id), 250); // Mở form sửa sau khi đóng form chi tiết
+            };
+
+            // Render Gallery
+            const galleryContainer = document.getElementById('detail-partner-gallery');
+            const galleryCount = document.getElementById('detail-partner-gallery-count');
+            const gallery = Array.isArray(p.gallery) ? p.gallery : [];
+            
+            galleryCount.innerText = `${gallery.length} mục`;
+            
+            window.currentDetailGallery = gallery;
+
+            if (gallery.length === 0) {
+                galleryContainer.innerHTML = `<div class="col-span-full p-6 text-center text-xs italic text-ink-light border border-line bg-paper">Thư viện trống.</div>`;
+            } else {
+                galleryContainer.innerHTML = gallery.map((item, idx) => {
+                    const isVid = item.type === 'video';
+                    return `
+                        <div onclick="window.openMediaFromDetail(${idx})" class="relative aspect-square border border-line bg-stone-900 overflow-hidden cursor-pointer group shadow-sm hover:shadow-md transition-shadow">
+                            ${isVid ? `
+                                <div class="w-full h-full flex flex-col items-center justify-center text-white text-[10px] uppercase tracking-widest font-bold font-mono">
+                                    <svg class="w-8 h-8 mb-2 text-cerulean opacity-80" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                                    <span>Play Video</span>
+                                </div>
+                            ` : `
+                                <img src="${item.url}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Media" onerror="this.onerror=null;this.outerHTML='<div class=\\'w-full h-full flex flex-col items-center justify-center bg-stone-200 text-ink-light text-center p-2\\'><svg class=\\'w-6 h-6 mb-1 opacity-40\\' fill=\\'none\\' stroke=\\'currentColor\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\\'/></svg></div>'">
+                            `}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            window.openModalAnimated('modal-partner-detail');
+        };
+
+        window.closePartnerDetail = function() {
+            window.closeModalAnimated('modal-partner-detail');
+        };
+
         // ==================== HỆ THỐNG LƯU TRỮ BẢN GHI HÌNH CỤC BỘ (INDEXEDDB) ====================
         const MEDIA_DB_NAME = "AuraMediaDB";
         const MEDIA_DB_VERSION = 1;
@@ -3696,6 +3985,11 @@
             const scores = (logs || []).filter(l => l.hardness && l.hardness > 0).map(l => l.hardness);
             latestEQScores = scores.length > 0 ? scores : [0, 0, 0, 0, 0, 0, 0];
             if (window.renderChart) window.renderChart(latestEQScores);
+            // Cập nhật lại chỉ số sẵn sàng trên Sidebar
+            updateReadinessScore();
+
+            // Cập nhật lại module 2: Chu kỳ sinh tinh
+            updateCycleTracker();
 
             if (!tbody) return;
 
@@ -4501,6 +4795,12 @@
         }
         window.handlePartnerAvatarUpload = handlePartnerAvatarUpload;
 
+        // Thêm hàm helper global để mở media từ form Edit
+        window.openMediaFromEdit = function(idx) {
+            window.activeMediaGallery = currentPartnerGallery;
+            window.openPartnerMediaModal(idx);
+        };
+
         function renderPartnerModalGallery() {
             const container = document.getElementById('partner-modal-gallery-container');
             if (!container) return;
@@ -4508,7 +4808,7 @@
             if (!currentPartnerGallery || currentPartnerGallery.length === 0) {
                 container.innerHTML = `
                     <div class="col-span-full p-4 text-center text-xs italic text-ink-light bg-stone-50 border border-line/60">
-                        Chưa có hình ảnh/video nào trong bộ sưu tập. Tải lên tệp hoặc dán liên kết phía trên.
+                        Chưa có hình ảnh/video nào trong bộ sưu tập. Hãy dán liên kết phía trên.
                     </div>
                 `;
                 return;
@@ -4516,24 +4816,18 @@
 
             container.innerHTML = currentPartnerGallery.map((item, idx) => {
                 const isVideo = item.type === 'video';
-                const sourceBadge = item.source === 'google_drive'
-                    ? `<span class="absolute bottom-1 left-1 z-10 px-1 py-0.5 bg-black/60 text-white text-[8px] font-mono uppercase tracking-wider rounded-sm flex items-center gap-0.5"><svg class="w-2 h-2" viewBox="0 0 24 24" fill="currentColor"><path d="M7.71 3.5L1.15 15l3.43 5.94h6.85L4.87 9.44l2.84-5.94zm1.14 0l6.56 11.5H8.84L2.29 15l3.42-5.94L8.85 3.5zm7.44 0L22.85 15l-3.43 5.94L12.86 9.44l3.43-5.94z"/></svg>Drive</span>`
-                    : (item.source === 'google_photos'
-                        ? `<span class="absolute bottom-1 left-1 z-10 px-1 py-0.5 bg-black/60 text-white text-[8px] font-mono uppercase tracking-wider rounded-sm">Photos</span>`
-                        : '');
                 return `
                     <div class="relative group border border-line bg-stone-100 overflow-hidden rounded-xs aspect-square flex items-center justify-center">
                         ${isVideo ? `
-                            <div onclick="window.openPartnerMediaModal('${encodeURIComponent(item.url)}', 'video', '${encodeURIComponent(item.caption || 'Video kỷ niệm')}')" class="w-full h-full flex flex-col items-center justify-center bg-stone-900 text-white cursor-pointer relative">
+                            <div onclick="window.openMediaFromEdit(${idx})" class="w-full h-full flex flex-col items-center justify-center bg-stone-900 text-white cursor-pointer relative">
                                 <span class="w-9 h-9 rounded-full bg-cerulean/80 flex items-center justify-center text-white mb-1 shadow-sm">
                                     <svg class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
                                 </span>
                                 <span class="text-[10px] uppercase font-mono tracking-wider font-bold">Video</span>
                             </div>
                         ` : `
-                            <img src="${item.url}" onclick="window.openPartnerMediaModal('${encodeURIComponent(item.url)}', 'image', '${encodeURIComponent(item.caption || 'Ảnh kỷ niệm')}')" class="w-full h-full object-cover cursor-pointer transition-transform group-hover:scale-105" alt="Partner media" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\\'w-full h-full flex flex-col items-center justify-center bg-stone-200 text-ink-light text-center p-2\\'><svg class=\\'w-6 h-6 mb-1 opacity-40\\' fill=\\'none\\' stroke=\\'currentColor\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\\'/></svg><span class=\\'text-[9px] italic\\'>Không tải được</span></div>'">
+                            <img src="${item.url}" onclick="window.openMediaFromEdit(${idx})" class="w-full h-full object-cover cursor-pointer transition-transform group-hover:scale-105" alt="Partner media" onerror="this.onerror=null;this.outerHTML='<div class=\\'w-full h-full flex flex-col items-center justify-center bg-stone-200 text-ink-light text-center p-2\\'><svg class=\\'w-6 h-6 mb-1 opacity-40\\' fill=\\'none\\' stroke=\\'currentColor\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\\'/></svg><span class=\\'text-[9px] italic\\'>Lỗi ảnh</span></div>'">
                         `}
-                        ${sourceBadge}
                         <button type="button" onclick="window.removePartnerMedia(${idx})" title="Xóa mục này" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/70 hover:bg-jasper text-white text-xs flex items-center justify-center cursor-pointer transition-colors z-10">
                             &times;
                         </button>
@@ -4636,13 +4930,16 @@
                 } else if (info.source === 'drive' && info.type === 'folder') {
                     detectionEl.innerHTML = `
                         <div class="flex items-center gap-2 flex-wrap">
-                            <span class="gdrive-link-badge badge-folder">
-                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
-                                Google Drive — Thư mục
+                            <span class="gdrive-link-badge badge-folder" style="background: #fef3c7; color: #b45309; border-color: #fde68a;">
+                                ⚠️ Tính năng bị Google khóa
                             </span>
-                            <span class="text-[10px] text-ink-light italic">Nhấn nút bên cạnh sẽ quét & nhập toàn bộ ảnh trong thư mục này.</span>
+                            <span class="text-[10px] text-jasper font-medium italic">Google không cho phép quét thư mục Drive tự động nữa. Vui lòng tạo <b>Album Google Photos</b> và dán link vào đây để quét.</span>
                         </div>`;
-                    if (btnEl) btnEl.textContent = '📂 Nhập Thư Mục';
+                    if (btnEl) {
+                        btnEl.textContent = 'Không khả dụng';
+                        btnEl.disabled = true;
+                        btnEl.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
                 } else if (info.source === 'photos' && info.type === 'album') {
                     detectionEl.innerHTML = `
                         <div class="flex items-center gap-2 flex-wrap">
@@ -4650,9 +4947,9 @@
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
                                 Google Photos — Album chia sẻ
                             </span>
-                            <span class="text-[10px] text-ink-light italic">Mở album → chọn ảnh → Chuột phải "Sao chép địa chỉ hình ảnh" → Dán từng ảnh vào đây.</span>
+                            <span class="text-[10px] text-ink-light italic">Nhấn nút bên cạnh để bóc tách tự động toàn bộ ảnh trong album này.</span>
                         </div>`;
-                    if (btnEl) btnEl.textContent = 'Thêm Link';
+                    if (btnEl) btnEl.textContent = '🖼️ Nhập Album';
                 } else if (info.source === 'photos' && info.type === 'file') {
                     detectionEl.innerHTML = `
                         <div class="flex items-center gap-2 flex-wrap">
@@ -4804,86 +5101,128 @@
             }
         }
 
+        async function importGooglePhotosAlbumToGallery(albumUrl) {
+            const progressWrap = document.getElementById('gdrive-import-progress-wrap');
+            const statusEl = document.getElementById('gdrive-import-status');
+            const countEl = document.getElementById('gdrive-import-count');
+            const barEl = document.getElementById('gdrive-import-bar');
+            const btnEl = document.getElementById('btn-add-partner-media-url');
+
+            if (progressWrap) progressWrap.classList.remove('hidden');
+            if (statusEl) statusEl.textContent = 'Đang kết nối để quét Google Photos...';
+            if (countEl) countEl.textContent = '...';
+            if (barEl) barEl.style.width = '30%';
+            if (btnEl) { btnEl.disabled = true; btnEl.classList.add('opacity-50', 'pointer-events-none'); }
+
+            try {
+                // Danh sách các Proxy dự phòng để vượt lỗi CORS/AdBlock
+                const proxies = [
+                    'https://corsproxy.io/?' + encodeURIComponent(albumUrl),
+                    'https://api.allorigins.win/raw?url=' + encodeURIComponent(albumUrl)
+                ];
+
+                let htmlContent = null;
+                
+                // Thử lần lượt các Proxy, cái nào thành công thì lấy data
+                for (const proxy of proxies) {
+                    try {
+                        const response = await fetch(proxy);
+                        if (response.ok) {
+                            htmlContent = await response.text();
+                            break; // Thành công thì thoát vòng lặp
+                        }
+                    } catch (e) {
+                        console.warn('Proxy dự phòng thất bại:', proxy);
+                    }
+                }
+
+                if (!htmlContent) {
+                    throw new Error('Proxy bị chặn. Vui lòng TẮT Trình chặn quảng cáo (Adblock / Brave Shields) cho trang web này và thử lại.');
+                }
+                
+                // Lọc lấy các link ảnh gốc lh3.googleusercontent.com
+                const regex = /(https:\/\/lh3\.googleusercontent\.com\/[a-zA-Z0-9\-_]{30,})/g;
+                let matches = htmlContent.match(regex);
+
+                if (!matches || matches.length === 0) {
+                    throw new Error('Không tìm thấy ảnh. Hãy kiểm tra lại link đã Bật chia sẻ công khai chưa.');
+                }
+
+                // Loại bỏ link trùng lặp
+                matches = [...new Set(matches)];
+
+                if (statusEl) statusEl.textContent = 'Đang đẩy ảnh vào bộ sưu tập...';
+                if (countEl) countEl.textContent = `0/${matches.length}`;
+                
+                for (let i = 0; i < matches.length; i++) {
+                    // Thêm tham số =w1200-h1200-no để Google Photos trả về ảnh chất lượng cao
+                    const imgUrl = matches[i] + '=w1200-h1200-no'; 
+                    currentPartnerGallery.push({
+                        url: imgUrl,
+                        type: 'image',
+                        caption: 'Ảnh Google Photos',
+                        source: 'google_photos',
+                        originalUrl: albumUrl
+                    });
+
+                    const progress = Math.round(((i + 1) / matches.length) * 100);
+                    if (barEl) barEl.style.width = `${progress}%`;
+                    if (countEl) countEl.textContent = `${i + 1}/${matches.length}`;
+                    
+                    if (i % 5 === 0) {
+                        renderPartnerModalGallery();
+                        await new Promise(r => setTimeout(r, 20));
+                    }
+                }
+
+                renderPartnerModalGallery();
+                if (statusEl) statusEl.textContent = 'Hoàn tất!';
+                showToast(`Đã bóc tách thành công ${matches.length} ảnh từ Google Photos!`, "success");
+
+                setTimeout(() => {
+                    if (progressWrap) progressWrap.classList.add('hidden');
+                    if (barEl) barEl.style.width = '0%';
+                }, 2000);
+
+                const urlInput = document.getElementById('input-partner-media-url');
+                if (urlInput) urlInput.value = '';
+                detectGoogleLinkType('');
+
+            } catch (err) {
+                console.error('Google Photos error:', err);
+                showToast(err.message, "error");
+                if (progressWrap) progressWrap.classList.add('hidden');
+            } finally {
+                if (btnEl) { btnEl.disabled = false; btnEl.classList.remove('opacity-50', 'pointer-events-none'); }
+            }
+        }
+        window.importGooglePhotosAlbumToGallery = importGooglePhotosAlbumToGallery;
         /**
          * Hàm chính: Thêm media từ URL (đã nâng cấp hỗ trợ Google Drive/Photos).
          */
         function addPartnerMediaFromUrl() {
             const urlInput = document.getElementById('input-partner-media-url');
-            const typeInput = document.getElementById('input-partner-media-type');
             if (!urlInput) return;
             const url = urlInput.value.trim();
-            const type = typeInput ? typeInput.value : 'image';
 
             if (!url) {
                 showToast("Vui lòng nhập đường dẫn URL hình ảnh hoặc video", "error");
                 return;
             }
 
-            // Phân tích xem có phải link Google không
-            const googleInfo = parseGoogleUrl(url);
+            // Sử dụng Regex để tự động phát hiện các đuôi file video phổ biến
+            const videoExtensions = /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i;
+            const isVideo = videoExtensions.test(url);
+            const type = isVideo ? 'video' : 'image';
 
-            if (googleInfo) {
-                if (googleInfo.source === 'drive' && googleInfo.type === 'folder') {
-                    // Thư mục Google Drive → Import toàn bộ ảnh
-                    importDriveFolderToGallery(googleInfo.folderId);
-                    return;
-                }
-
-                if (googleInfo.source === 'drive' && googleInfo.type === 'file') {
-                    // File đơn Google Drive → Chuyển đổi thành embed URL
-                    const embedUrl = driveFileIdToEmbedUrl(googleInfo.fileId);
-                    currentPartnerGallery.push({
-                        url: embedUrl,
-                        type: type,
-                        caption: 'Ảnh từ Google Drive',
-                        source: 'google_drive',
-                        driveFileId: googleInfo.fileId,
-                        originalUrl: url
-                    });
-                    urlInput.value = "";
-                    detectGoogleLinkType('');
-                    renderPartnerModalGallery();
-                    showToast("Đã thêm ảnh từ Google Drive!", "success");
-                    return;
-                }
-
-                if (googleInfo.source === 'photos' && googleInfo.type === 'album') {
-                    // Google Photos album → Không hỗ trợ trực tiếp, hướng dẫn
-                    showToast("Album Google Photos không thể nhập tự động. Hãy mở album → chuột phải từng ảnh → \"Sao chép địa chỉ hình ảnh\" → dán lại vào đây.", "error");
-                    return;
-                }
-
-                // Google Photos file (lh3.googleusercontent.com) → Nhúng trực tiếp
-                if (googleInfo.source === 'photos' && googleInfo.type === 'file') {
-                    // Đảm bảo URL kết thúc bằng tham số kích cỡ
-                    let photoUrl = url;
-                    if (!photoUrl.includes('=w') && !photoUrl.includes('=s')) {
-                        photoUrl = photoUrl.replace(/=.*$/, '') + '=w1200';
-                    }
-                    currentPartnerGallery.push({
-                        url: photoUrl,
-                        type: 'image',
-                        caption: 'Ảnh từ Google Photos',
-                        source: 'google_photos',
-                        originalUrl: url
-                    });
-                    urlInput.value = "";
-                    detectGoogleLinkType('');
-                    renderPartnerModalGallery();
-                    showToast("Đã thêm ảnh từ Google Photos!", "success");
-                    return;
-                }
-            }
-
-            // URL thông thường (không phải Google) → Thêm trực tiếp như trước
+            // Thêm trực tiếp link vào gallery
             currentPartnerGallery.push({
-                url,
-                type,
-                caption: type === 'video' ? 'Video bạn đồng hành' : 'Hình ảnh bạn đồng hành'
+                url: url,
+                type: type,
+                caption: isVideo ? 'Video trên mạng' : 'Hình ảnh trên mạng'
             });
 
             urlInput.value = "";
-            detectGoogleLinkType('');
             renderPartnerModalGallery();
             showToast("Đã thêm phương tiện vào bộ sưu tập!", "success");
         }
@@ -4925,47 +5264,74 @@
         }
         window.removePartnerMedia = removePartnerMedia;
 
-        function openPartnerMediaModal(encodedUrl, type, encodedCaption) {
-            const url = decodeURIComponent(encodedUrl);
-            const caption = decodeURIComponent(encodedCaption || '');
-            const imgEl = document.getElementById('partner-media-viewer-img');
-            const videoEl = document.getElementById('partner-media-viewer-video');
-            const captionEl = document.getElementById('partner-media-viewer-caption');
+        // Biến toàn cục lưu danh sách Media đang xem
+        window.activeMediaGallery = [];
+        window.currentMediaIndex = 0;
 
-            if (captionEl) captionEl.innerText = caption;
-
-            if (type === 'video') {
-                if (imgEl) {
-                    imgEl.src = "";
-                    imgEl.classList.add('hidden');
-                }
-                if (videoEl) {
-                    videoEl.src = url;
-                    videoEl.classList.remove('hidden');
-                    videoEl.play().catch(() => {});
-                }
-            } else {
-                if (videoEl) {
-                    videoEl.pause();
-                    videoEl.src = "";
-                    videoEl.classList.add('hidden');
-                }
-                if (imgEl) {
-                    imgEl.src = url;
-                    imgEl.classList.remove('hidden');
-                }
-            }
-
+        function openPartnerMediaModal(index) {
+            if (!window.activeMediaGallery || window.activeMediaGallery.length === 0) return;
+            window.currentMediaIndex = index;
+            renderCurrentMedia();
             window.openModalAnimated('modal-partner-media-viewer');
         }
         window.openPartnerMediaModal = openPartnerMediaModal;
 
+        function renderCurrentMedia() {
+            const gallery = window.activeMediaGallery;
+            const index = window.currentMediaIndex;
+            const item = gallery[index];
+            if (!item) return;
+
+            const imgEl = document.getElementById('partner-media-viewer-img');
+            const videoEl = document.getElementById('partner-media-viewer-video');
+            const captionEl = document.getElementById('partner-media-viewer-caption');
+            const counterEl = document.getElementById('partner-media-viewer-counter');
+            const btnPrev = document.getElementById('btn-media-prev');
+            const btnNext = document.getElementById('btn-media-next');
+
+            if (captionEl) captionEl.innerText = item.caption || '';
+            if (counterEl) counterEl.innerText = `${index + 1} / ${gallery.length}`;
+
+            // Hiện/Ẩn nút mũi tên nếu chỉ có 1 ảnh
+            if (gallery.length > 1) {
+                btnPrev.style.display = 'flex';
+                btnNext.style.display = 'flex';
+            } else {
+                btnPrev.style.display = 'none';
+                btnNext.style.display = 'none';
+            }
+
+            if (item.type === 'video') {
+                if (imgEl) { imgEl.src = ""; imgEl.classList.add('hidden'); }
+                if (videoEl) {
+                    videoEl.src = item.url;
+                    videoEl.classList.remove('hidden');
+                    videoEl.play().catch(() => {});
+                }
+            } else {
+                if (videoEl) { videoEl.pause(); videoEl.src = ""; videoEl.classList.add('hidden'); }
+                if (imgEl) {
+                    imgEl.src = item.url;
+                    imgEl.classList.remove('hidden');
+                }
+            }
+        }
+
+        window.navigateMedia = function(direction) {
+            if (!window.activeMediaGallery || window.activeMediaGallery.length <= 1) return;
+            let newIndex = window.currentMediaIndex + direction;
+            
+            // Xoay vòng (Wrap around) khi tới ảnh cuối/ảnh đầu
+            if (newIndex < 0) newIndex = window.activeMediaGallery.length - 1;
+            if (newIndex >= window.activeMediaGallery.length) newIndex = 0;
+            
+            window.currentMediaIndex = newIndex;
+            renderCurrentMedia();
+        };
+
         function closePartnerMediaModal() {
             const videoEl = document.getElementById('partner-media-viewer-video');
-            if (videoEl) {
-                videoEl.pause();
-                videoEl.src = "";
-            }
+            if (videoEl) { videoEl.pause(); videoEl.src = ""; }
             window.closeModalAnimated('modal-partner-media-viewer');
         }
         window.closePartnerMediaModal = closePartnerMediaModal;
@@ -5074,10 +5440,13 @@
 
                         <!-- Footer thẻ đối tác -->
                         <div class="pt-4 mt-6 border-t border-line flex justify-between items-center text-xs">
-                            <span class="text-ink-light italic">Đồng bộ Cloud Firestore</span>
+                            <button onclick="window.openPartnerDetail('${p.id}')" class="bg-cerulean text-white px-4 py-1.5 font-bold uppercase tracking-wider hover:bg-cerulean-dark transition-colors shadow-sm flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                Xem Hồ Sơ
+                            </button>
                             <div class="space-x-3">
-                                <button onclick="window.editPartner('${p.id}')" class="text-cerulean hover:underline font-bold cursor-pointer">✎ Chỉnh sửa</button>
-                                <button onclick="window.deletePartner('${p.id}')" class="text-jasper hover:underline cursor-pointer">Xóa hồ sơ</button>
+                                <button onclick="window.editPartner('${p.id}')" class="text-stone-500 hover:text-cerulean font-bold cursor-pointer uppercase tracking-wider text-[10px]">Chỉnh Sửa</button>
+                                <button onclick="window.deletePartner('${p.id}')" class="text-stone-500 hover:text-jasper font-bold cursor-pointer uppercase tracking-wider text-[10px]">Xóa</button>
                             </div>
                         </div>
                     </div>
@@ -5169,36 +5538,59 @@
 
         window.savePartner = async function(e) {
             e.preventDefault();
-            const partner = {
-                name: document.getElementById('input-partner-name').value.trim(),
-                relation: document.getElementById('input-partner-relation').value,
-                avatar: document.getElementById('input-partner-avatar').value.trim() || document.getElementById('partner-avatar-preview').src,
-                dob: document.getElementById('input-partner-dob').value,
-                phone: document.getElementById('input-partner-phone').value.trim(),
-                permanentAddr: document.getElementById('input-partner-permanent-addr').value.trim(),
-                temporaryAddr: document.getElementById('input-partner-temporary-addr').value.trim(),
-                prepStatus: document.getElementById('input-partner-prep').value,
-                stds: document.getElementById('input-partner-stds').value.trim(),
-                role: document.getElementById('input-partner-role').value,
-                notes: document.getElementById('input-partner-notes').value.trim(),
-                gallery: currentPartnerGallery,
-                syncStatus: "Hoạt động",
-                updatedAt: serverTimestamp()
-            };
+            
+            // Chặn nút bấm để tránh click nhiều lần gây lỗi
+            const btnSubmit = document.getElementById('btn-submit-partner');
+            const originalText = btnSubmit ? btnSubmit.innerText : 'Lưu Hồ Sơ';
+            if (btnSubmit) {
+                btnSubmit.disabled = true;
+                btnSubmit.innerText = "Đang xử lý...";
+                btnSubmit.classList.add('opacity-70', 'cursor-not-allowed');
+            }
 
             try {
+                // Loại bỏ hoàn toàn các giá trị undefined rác (nếu có) để Firestore không báo lỗi ẩn
+                const cleanedGallery = JSON.parse(JSON.stringify(currentPartnerGallery || []));
+
+                const partner = {
+                    name: document.getElementById('input-partner-name').value.trim(),
+                    relation: document.getElementById('input-partner-relation').value,
+                    avatar: document.getElementById('input-partner-avatar').value.trim() || document.getElementById('partner-avatar-preview').src,
+                    dob: document.getElementById('input-partner-dob').value,
+                    phone: document.getElementById('input-partner-phone').value.trim(),
+                    permanentAddr: document.getElementById('input-partner-permanent-addr').value.trim(),
+                    temporaryAddr: document.getElementById('input-partner-temporary-addr').value.trim(),
+                    prepStatus: document.getElementById('input-partner-prep').value,
+                    stds: document.getElementById('input-partner-stds').value.trim(),
+                    role: document.getElementById('input-partner-role').value,
+                    notes: document.getElementById('input-partner-notes').value.trim(),
+                    gallery: cleanedGallery,
+                    syncStatus: "Hoạt động",
+                    updatedAt: serverTimestamp()
+                };
+
                 if (editingPartnerId) {
                     await setDoc(doc(db, "partners", editingPartnerId), partner, { merge: true });
                     showToast("Đã cập nhật hồ sơ bạn đồng hành thành công!", "success");
-                    editingPartnerId = null;
                 } else {
                     partner.createdAt = serverTimestamp();
                     await addDoc(collection(db, "partners"), partner);
                     showToast("Đã thêm hồ sơ bạn đồng hành vào Firestore!", "success");
                 }
+                
+                // Ép buộc đóng Modal sau khi lưu thành công
                 window.closePartnerModal();
+
             } catch (err) {
+                console.error("Lỗi khi lưu hồ sơ:", err);
                 handleFirestoreError(err, "Lưu hồ sơ đối tác");
+            } finally {
+                // Phục hồi lại trạng thái nút bấm
+                if (btnSubmit) {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerText = originalText;
+                    btnSubmit.classList.remove('opacity-70', 'cursor-not-allowed');
+                }
             }
         };
 
@@ -5555,28 +5947,42 @@
             }
         };
 
-        // ==================== MODULE 7: PHÂN TÍCH TƯƠNG QUAN (CHART.JS) ====================
-        window.renderChart = function(scores = null) {
+        // ==================== MODULE 7: PHÂN TÍCH TƯƠNG QUAN & THÀNH TỰU ====================
+        window.renderChart = function() {
             const canvas = document.getElementById('correlationChart');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
 
-            const eqData = (scores && scores.length >= 7) 
-                ? scores.slice(0, 7).reverse() 
-                : latestEQScores;
+            // 1. Lọc lấy tối đa 7 bản ghi giải phóng gần nhất có ghi nhận độ cứng
+            const validLogs = (currentReleaseLogs || []).filter(l => l.hardness > 0).slice(0, 7).reverse();
+            
+            const labels = validLogs.map(l => {
+                if(l.dateFormatted) return l.dateFormatted.split(',')[0]; // Chỉ lấy ngày/tháng
+                return 'Gần đây';
+            });
+            const eqData = validLogs.map(l => l.hardness || 0);
+            const durationData = validLogs.map(l => l.duration || 0);
+
+            // Xử lý khi chưa có dữ liệu
+            if(labels.length === 0) {
+                labels.push('Chưa có');
+                eqData.push(0);
+                durationData.push(0);
+            }
 
             if (chartInstance) {
                 chartInstance.destroy();
             }
 
+            // 2. Vẽ biểu đồ dựa trên dữ liệu thật
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+                    labels: labels,
                     datasets: [
                         {
-                            label: 'Giờ ngủ sâu (Giờ)',
-                            data: [2, 1.8, 0.5, 2.1, 1.5, 2.5, 0.8],
+                            label: 'Thời lượng (Phút)',
+                            data: durationData,
                             borderColor: '#007BA7',
                             backgroundColor: 'rgba(0, 123, 167, 0.05)',
                             yAxisID: 'y',
@@ -5597,7 +6003,7 @@
                     maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
                     scales: {
-                        y: { type: 'linear', display: true, position: 'left', title: {display: true, text: 'Giờ ngủ'}, min: 0, max: 4 },
+                        y: { type: 'linear', display: true, position: 'left', title: {display: true, text: 'Thời lượng (Phút)'}, min: 0 },
                         y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: {display: true, text: 'Điểm EQ'}, min: 0, max: 10 }
                     },
                     plugins: {
@@ -5605,8 +6011,73 @@
                     }
                 }
             });
+
+            // 3. Phân tích nội dung AI Text tự động
+            const analysisEl = document.getElementById('ai-analysis-text');
+            if(analysisEl) {
+                if(validLogs.length >= 3) {
+                    const avgEq = (eqData.reduce((a,b)=>a+b,0)/eqData.length).toFixed(1);
+                    const avgDur = (durationData.reduce((a,b)=>a+b,0)/durationData.length).toFixed(1);
+                    analysisEl.innerHTML = `<strong>Phân tích từ dữ liệu:</strong> Dựa trên ${validLogs.length} phiên giải phóng gần nhất, điểm độ cứng trung bình của bạn đạt <strong class="text-cerulean">${avgEq}/10</strong> và thời lượng trung bình là <strong class="text-ink">${avgDur} phút</strong>. Hãy tiếp tục ghi chép để AI tìm ra mẫu hình lý tưởng của bạn.`;
+                } else {
+                    analysisEl.innerHTML = `<strong>Phân tích Hệ thống:</strong> Cần ít nhất 3 bản ghi giải phóng (Nhật ký) để hệ thống đưa ra đánh giá tương quan chính xác. Hiện tại có ${validLogs.length} bản ghi.`;
+                }
+            }
+
+            // 4. Tính toán Thành Tựu Kỷ Luật thời gian thực
+            updateAchievements();
         };
 
+        function updateAchievements() {
+            // A. Sức bền trung bình (Từ Release Logs)
+            const achDurVal = document.getElementById('ach-dur-val');
+            const achDurDesc = document.getElementById('ach-dur-desc');
+            if(achDurVal && currentReleaseLogs) {
+                const logsWithDur = currentReleaseLogs.filter(l => l.duration > 0);
+                if(logsWithDur.length > 0) {
+                    const avg = (logsWithDur.reduce((sum, l) => sum + l.duration, 0) / logsWithDur.length).toFixed(1);
+                    achDurVal.innerText = `${avg} p`;
+                    achDurDesc.innerText = "Thời lượng duy trì trung bình.";
+                } else {
+                    achDurVal.innerText = "-";
+                    achDurDesc.innerText = "Chưa có dữ liệu thời lượng.";
+                }
+            }
+
+            // B. Dopamine Reset (Đếm số ngày từ phiên giải phóng cuối cùng)
+            const achDopamineVal = document.getElementById('ach-dopamine-val');
+            if (achDopamineVal && currentReleaseLogs && currentReleaseLogs.length > 0) {
+                const lastLog = currentReleaseLogs[0];
+                // Xử lý lấy ngày từ Firestore Timestamp hoặc String
+                const lastDate = lastLog.createdAt && lastLog.createdAt.toDate ? lastLog.createdAt.toDate() : new Date(lastLog.datetime || Date.now());
+                
+                const diffTime = Math.abs(new Date() - lastDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                achDopamineVal.innerText = `${diffDays} ngày`;
+            } else if (achDopamineVal) {
+                achDopamineVal.innerText = "0 ngày";
+            }
+
+            // C. Đỉnh Cao Nội Tiết (Dựa vào xét nghiệm Testo Total)
+            const achTestoBox = document.getElementById('ach-testo-box');
+            const achTestoVal = document.getElementById('ach-testo-val');
+            const achTestoDesc = document.getElementById('ach-testo-desc');
+            if (achTestoBox && currentEndocrineTests && currentEndocrineTests.length > 0) {
+                const maxTesto = currentEndocrineTests.reduce((max, t) => Math.max(max, t.testoTotal || 0), 0);
+                
+                if (maxTesto >= 800) {
+                    achTestoBox.classList.remove('opacity-50', 'grayscale');
+                    achTestoVal.innerText = "Đạt Thành Tựu";
+                    achTestoVal.className = "text-xl font-bold font-playfair mt-1 text-emerald-600";
+                    achTestoDesc.innerText = `Testo kỷ lục: ${maxTesto} ng/dL.`;
+                } else {
+                    achTestoBox.classList.add('opacity-50', 'grayscale');
+                    achTestoVal.innerText = "Chưa Đạt";
+                    achTestoVal.className = "text-xl font-bold font-playfair mt-1";
+                    achTestoDesc.innerText = `Kỷ lục hiện tại: ${maxTesto} ng/dL (Cần 800+).`;
+                }
+            }
+        }
         // ==================== MODULE 8: QUẢN LÝ DỮ LIỆU & RESET ====================
         window.toggleCloudSync = function() {
             isCloudSyncEnabled = !isCloudSyncEnabled;
@@ -5824,6 +6295,30 @@
             await window.seedInitialData();
         };
 
+        // Khởi tạo API key từ bộ nhớ trình duyệt để không code cứng
+        window._gdriveApiKey = localStorage.getItem('aura_gdrive_api_key') || 'AIzaSyC-BfkoWmpKkXvUwLgIo7dL4zCwcbOcAak';
+        
+        window.saveGDriveApiKey = function() {
+            const key = document.getElementById('input-gdrive-api-key').value.trim();
+            if(key) {
+                localStorage.setItem('aura_gdrive_api_key', key);
+                window._gdriveApiKey = key;
+                showToast("Đã lưu Google Drive API Key vào trình duyệt!", "success");
+            } else {
+                localStorage.removeItem('aura_gdrive_api_key');
+                window._gdriveApiKey = 'AIzaSyC-BfkoWmpKkXvUwLgIo7dL4zCwcbOcAak';
+                showToast("Đã xóa API Key, khôi phục về mặc định.", "info");
+            }
+        };
+
+        // Nạp sẵn key vào ô nhập khi tải trang
+        document.addEventListener('DOMContentLoaded', () => {
+            const keyInput = document.getElementById('input-gdrive-api-key');
+            if(keyInput && localStorage.getItem('aura_gdrive_api_key')) {
+                keyInput.value = localStorage.getItem('aura_gdrive_api_key');
+            }
+        });
+
         // ==================== KHỞI CHẠY LẮNG NGHE THỜI GIAN THỰC (REALTIME SYNC) ====================
         function initRealtimeListeners() {
             updateFirestoreBadge(true, "Đã kết nối");
@@ -5901,6 +6396,173 @@
             console.log("Aura Firestore Realtime Sync Initialized Successfully!");
         } catch (e) {
             handleFirestoreError(e, "Khởi động Firestore");
+        }
+        // ==================== AURA CUSTOM SELECT INIT ====================
+        function initAuraCustomSelects() {
+            document.querySelectorAll('select.editorial-select').forEach(select => {
+                if (select.nextElementSibling && select.nextElementSibling.classList.contains('aura-select-wrapper')) return;
+                
+                // Ẩn select gốc (Nhưng giữ nguyên để gửi data)
+                select.style.display = 'none';
+                
+                // Khởi tạo khung chứa
+                const wrapper = document.createElement('div');
+                wrapper.className = 'aura-select-wrapper';
+                select.parentNode.insertBefore(wrapper, select.nextSibling);
+                
+                // Giao diện hiển thị
+                const display = document.createElement('div');
+                const classesToKeep = Array.from(select.classList).filter(c => c !== 'editorial-select' && c !== 'editorial-select-sm');
+                display.className = 'aura-select-display ' + classesToKeep.join(' ');
+                
+                // Resize cho bảng thiết lập nhanh (Date picker)
+                if(select.classList.contains('editorial-select-sm')) {
+                    display.style.padding = '0.35rem 1.75rem 0.35rem 0.65rem';
+                    display.style.fontSize = '0.75rem';
+                    display.style.minHeight = 'auto';
+                }
+                
+                const dropdown = document.createElement('div');
+                dropdown.className = 'aura-select-dropdown'; // Sẽ tự nhận thanh cuộn CSS ở trên
+                
+                wrapper.appendChild(display);
+                wrapper.appendChild(dropdown);
+                
+                // Logic vẽ các lựa chọn
+                const renderOptions = () => {
+                    dropdown.innerHTML = '';
+                    let selectedText = '';
+                    Array.from(select.options).forEach((opt, idx) => {
+                        if (opt.selected) selectedText = opt.text;
+                        const item = document.createElement('div');
+                        item.className = 'aura-select-option' + (opt.selected ? ' selected' : '');
+                        item.innerText = opt.text;
+                        
+                        item.onclick = (e) => {
+                            e.stopPropagation();
+                            select.selectedIndex = idx;
+                            select.dispatchEvent(new Event('change', { bubbles: true })); // Kích hoạt sự kiện của hệ thống cũ
+                            display.innerText = opt.text;
+                            dropdown.classList.remove('open');
+                            display.classList.remove('open');
+                            renderOptions();
+                        };
+                        dropdown.appendChild(item);
+                    });
+                    display.innerText = selectedText || (select.options[0] ? select.options[0].text : 'Chọn...');
+                };
+                
+                renderOptions();
+                select._updateCustomSelect = renderOptions; // Lưu hàm để update từ ngoài vào
+                
+                // Bật / tắt danh sách
+                // Bật / tắt danh sách
+                display.onclick = (e) => {
+                    e.stopPropagation();
+                    const isOpen = dropdown.classList.contains('open');
+                    
+                    // Đóng tất cả dropdown khác đang mở
+                    document.querySelectorAll('.aura-select-dropdown').forEach(d => d.classList.remove('open'));
+                    document.querySelectorAll('.aura-select-display').forEach(d => d.classList.remove('open'));
+                    
+                    if (!isOpen) {
+                        renderOptions(); 
+                        
+                        // Tự động kiểm tra không gian bên dưới, nếu hẹp quá thì lật menu xổ ngược lên trên
+                        const rect = display.getBoundingClientRect();
+                        const spaceBelow = window.innerHeight - rect.bottom;
+                        
+                        if (spaceBelow < 250) { 
+                            dropdown.classList.add('drop-up');
+                        } else {
+                            dropdown.classList.remove('drop-up');
+                        }
+                        
+                        dropdown.classList.add('open');
+                        display.classList.add('open');
+                        
+                        // Tự động cuộn tới mục đang được chọn
+                        setTimeout(() => {
+                            const selectedItem = dropdown.querySelector('.selected');
+                            if (selectedItem) {
+                                dropdown.scrollTop = selectedItem.offsetTop - 40;
+                            }
+                        }, 10);
+                    }
+                };
+            });
+            
+            // Bấm ra ngoài thì tắt dropdown
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.aura-select-dropdown').forEach(d => d.classList.remove('open'));
+                document.querySelectorAll('.aura-select-display').forEach(d => d.classList.remove('open'));
+            });
+        }
+
+        // Tự động chạy khi nạp xong trang
+        window.addEventListener('DOMContentLoaded', () => {
+            initAuraCustomSelects();
+            // ================= CẬP NHẬT NGÀY GIỜ THỜI GIAN THỰC =================
+            function updateSidebarDateTime() {
+                const timeEl = document.getElementById('sidebar-current-datetime');
+                if (!timeEl) return;
+                
+                const now = new Date();
+                const dd = String(now.getDate()).padStart(2, '0');
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yyyy = now.getFullYear();
+                const hh = String(now.getHours()).padStart(2, '0');
+                const min = String(now.getMinutes()).padStart(2, '0');
+                
+                timeEl.innerText = `Ngày ${dd} tháng ${mm}, ${yyyy} • ${hh}:${min}`;
+            }
+            
+            // Gọi ngay lập tức khi tải trang
+            updateSidebarDateTime();
+            // Cập nhật lại mỗi 60 giây (60000 ms) để giờ phút luôn đúng
+            setInterval(updateSidebarDateTime, 60000);
+        });
+        // ==================== ĐỒNG BỘ MODULE 2 CHU KỲ SINH TINH ====================
+        function updateCycleTracker() {
+            const dayText = document.getElementById('cycle-current-day-text');
+            const progressBar = document.getElementById('cycle-progress-bar');
+            const statusMsg = document.getElementById('cycle-status-message');
+            const qualityGrade = document.getElementById('cycle-quality-grade');
+            const absText = document.getElementById('cycle-abstinence-text');
+
+            if (!currentReleaseLogs || currentReleaseLogs.length === 0) {
+                if(statusMsg) statusMsg.innerText = "Chưa có bản ghi giải phóng nào. Hãy ghi chép ở Module 3 để hệ thống tính toán chu kỳ.";
+                return;
+            }
+
+            // Lấy ngày giải phóng cuối cùng từ Firestore
+            const lastLog = currentReleaseLogs[0];
+            const lastDate = lastLog.createdAt && lastLog.createdAt.toDate ? lastLog.createdAt.toDate() : new Date(lastLog.datetime || Date.now());
+            
+            // Tính số ngày và khoảng thời gian chính xác
+            const diffTime = Math.abs(new Date() - lastDate);
+            const diffDaysExact = diffTime / (1000 * 60 * 60 * 24);
+            const diffDays = Math.floor(diffDaysExact);
+
+            if(absText) absText.innerText = `${diffDays} ngày`;
+            if(dayText) dayText.innerText = `Tích lũy: ${diffDays} ngày`;
+
+            // Tính % nạp đầy kho dự trữ mào tinh (3 ngày = 100%)
+            let storagePercent = Math.min(100, (diffDaysExact / 3) * 100);
+            if (progressBar) progressBar.style.width = `${storagePercent}%`;
+
+            // Cập nhật câu phân tích lâm sàng
+            if (diffDays < 3) {
+                const daysNeeded = 3 - diffDays;
+                if(statusMsg) statusMsg.innerHTML = `Bạn vừa giải phóng <strong>${diffDays} ngày trước</strong>. Kho chứa (mào tinh) đang rỗng, cần nghỉ ngơi <strong>khoảng ${daysNeeded} ngày nữa</strong> để nạp lại đầy lượng tinh dịch.<br><br><span class="text-xs text-ink-light">*Ghi chú y khoa: Quá trình tinh hoàn sinh ra một lứa tinh trùng mới từ tế bào gốc luôn mất <strong>74 ngày</strong>. Nhưng do chúng được sinh ra liên tục (gối đầu nhau), bạn chỉ cần nghỉ ngơi đủ 3 ngày là lứa chín tiếp theo sẽ lấp đầy kho chứa.</span>`;
+                if(qualityGrade) { qualityGrade.innerText = "C"; qualityGrade.className = "text-center text-7xl font-playfair font-black text-jasper my-6"; }
+            } else if (diffDays >= 3 && diffDays <= 7) {
+                if(statusMsg) statusMsg.innerHTML = `Bạn đã tích lũy <strong>${diffDays} ngày</strong>. Mào tinh đã được nạp đầy!<br>Đây là <strong>khung thời gian vàng</strong>, mật độ và sức bật (độ di động) của tinh trùng đang ở mức hoàn hảo nhất để sinh sản.<br><br><span class="text-xs text-ink-light">*Lứa tinh trùng đang chờ xuất trận này đã mất liên tục <strong>74 ngày</strong> để tiến hóa và trưởng thành hoàn toàn từ trong tinh hoàn.</span>`;
+                if(qualityGrade) { qualityGrade.innerText = "A+"; qualityGrade.className = "text-center text-7xl font-playfair font-black text-cerulean my-6 text-shadow"; }
+            } else {
+                if(statusMsg) statusMsg.innerHTML = `Bạn đã tích lũy <strong>${diffDays} ngày</strong>. Mức tích lũy đang hơi lâu (>7 ngày).<br>Mật độ có thể rất đặc nhưng <strong>độ di động và hình thái đang suy giảm</strong> do các tinh trùng cũ bắt đầu chết đi/lão hóa. Nên tiến hành giải phóng để nhường chỗ cho lứa mới.<br><br><span class="text-xs text-ink-light">*Chu kỳ sinh tinh <strong>74 ngày</strong> vẫn đang diễn ra ngày đêm để liên tục bơm lứa mới vào mào tinh, chờ bạn xả lứa cũ đi.</span>`;
+                if(qualityGrade) { qualityGrade.innerText = "B-"; qualityGrade.className = "text-center text-7xl font-playfair font-black text-amber-500 my-6"; }
+            }
         }
     </script>
 </body>
