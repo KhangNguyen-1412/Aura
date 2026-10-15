@@ -1,0 +1,2527 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Hồ Sơ Cá Nhân & Thể Chất — Aura</title>
+    <meta name="description" content="Hồ sơ y tế cá nhân, chỉ số sinh trắc học và kho lưu trữ media riêng tư đa tầng của người dùng.">
+    <meta name="keywords" content="hồ sơ cá nhân, chỉ số thể chất, sinh trắc học, kho media, ảnh nóng, ảnh đời thường, aura">
+    <meta name="author" content="Aura Health System">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="http://localhost:3000/ca-nhan">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+
+    <!-- Open Graph / Facebook / Zalo -->
+    <meta property="og:type" content="profile">
+    <meta property="og:locale" content="vi_VN">
+    <meta property="og:site_name" content="Aura — Sổ Bạ Sức Khỏe Tối Ưu">
+    <meta property="og:title" content="Hồ Sơ Cá Nhân & Thể Chất — Aura">
+    <meta property="og:description" content="Hồ sơ y tế cá nhân, chỉ số sinh trắc học và kho lưu trữ media riêng tư đa tầng của người dùng.">
+    <meta property="og:url" content="http://localhost:3000/ca-nhan">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Hồ Sơ Cá Nhân & Thể Chất — Aura">
+    <meta name="twitter:description" content="Hồ sơ y tế cá nhân, chỉ số sinh trắc học và kho lưu trữ media riêng tư đa tầng của người dùng.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80">
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      "name": "Hồ Sơ Cá Nhân & Thể Chất",
+      "description": "Hồ sơ y tế cá nhân, chỉ số sinh trắc học và kho lưu trữ media riêng tư đa tầng của người dùng.",
+      "inLanguage": "vi"
+    }
+    </script>
+
+    
+    <!-- Google Fonts: Editorial Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Aura Config) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cerulean: '#007BA7',
+                        'cerulean-dark': '#005b7a',
+                        jasper: '#D73B3E',
+                        'jasper-dark': '#a82c2e',
+                        paper: '#F9F6F0',
+                        ink: '#1A1A1A',
+                        'ink-light': '#4A4A4A',
+                        line: '#D1CCC5'
+                    },
+                    fontFamily: {
+                        playfair: ['"Playfair Display"', 'serif'],
+                        newsreader: ['"Newsreader"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --cerulean: #007BA7;
+            --cerulean-dark: #005b7a;
+            --jasper: #D73B3E;
+            --jasper-dark: #a82c2e;
+            --paper: #F9F6F0;
+            --ink: #1A1A1A;
+            --ink-light: #4A4A4A;
+            --line: #D1CCC5;
+        }
+
+        body {
+            background-color: #F9F6F0;
+            color: #1A1A1A;
+            font-family: 'Newsreader', Georgia, serif;
+        }
+
+        h1, h2, h3, h4, .font-playfair {
+            font-family: 'Playfair Display', Georgia, serif !important;
+        }
+
+        .editorial-border { border: 1px solid #D1CCC5; }
+        .editorial-border-b { border-bottom: 1px solid #D1CCC5; }
+        .editorial-border-r { border-right: 1px solid #D1CCC5; }
+
+        .stat-card {
+            background: #FFFFFF;
+            border: 1px solid #D1CCC5;
+            transition: all 0.2s ease;
+        }
+        .stat-card:hover {
+            border-color: #007BA7;
+            box-shadow: 0 8px 24px -6px rgba(0, 123, 167, 0.12);
+        }
+
+        /* Hiệu ứng che mờ kho media nóng bảo mật */
+        .hot-media-blurred img, 
+        .hot-media-blurred video {
+            filter: blur(16px) brightness(0.9);
+            transform: scale(1.08);
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+        .hot-media-blurred .media-card:hover img,
+        .hot-media-blurred .media-card:hover video {
+            filter: blur(0px) brightness(1);
+            transform: scale(1);
+        }
+
+        /* Custom scrollbar cho các kho media */
+        .custom-gallery-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-gallery-scrollbar::-webkit-scrollbar-track {
+            background: #F9F6F0;
+            border-radius: 9999px;
+        }
+        .custom-gallery-scrollbar::-webkit-scrollbar-thumb {
+            background: #D1CCC5;
+            border-radius: 9999px;
+        }
+        .custom-gallery-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #007BA7;
+        }
+
+        /* Hiệu ứng bảo mật cho ảnh cậu nhỏ */
+        .penis-photo-blurred {
+            filter: blur(14px) brightness(0.9);
+            transform: scale(1.06);
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+        .penis-photo-clear {
+            filter: blur(0px) brightness(1) !important;
+            transform: scale(1) !important;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease-out;
+        }
+        .modal-active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        .modal-dialog {
+            transform: scale(0.95) translateY(12px);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-active .modal-dialog {
+            transform: scale(1) translateY(0);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-[#007BA7] selection:text-white bg-[#F9F6F0] antialiased">
+
+    <!-- GLOBAL EDITORIAL HEADER -->
+    <div id="aura-global-header"></div>
+
+    <!-- MAIN EDITORIAL CONTENT: LANDSCAPE WIDESCREEN FOR LAPTOP -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- Top Navigation / Dossier Title Banner -->
+        <header class="border-b-2 border-stone-800 pb-5 mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#007BA7]/10 text-[#007BA7] border border-[#007BA7]/30 text-[10px] font-mono font-bold tracking-widest uppercase rounded-full mb-2">
+                    <span class="w-2 h-2 rounded-full bg-[#007BA7] animate-pulse"></span>
+                    AURA PRIVATE DOSSIER • HỒ SƠ Y TẾ & KHO MEDIA CÁ NHÂN
+                </div>
+                <h1 class="font-playfair text-3xl md:text-5xl font-black text-[#1A1A1A]">Hồ Sơ Y Tế & Thể Chất</h1>
+                <p class="text-sm md:text-base italic text-[#4A4A4A] mt-1 max-w-3xl">
+                    Bản phân tích nhân trắc học, chỉ số cơ thể sinh trắc và kho lưu trữ ảnh/clip riêng tư được bảo mật độc lập trên Google Cloud Firestore.
+                </p>
+            </div>
+
+            <!-- Action Buttons: Toggle between View & Edit mode -->
+            <div id="header-view-actions" class="flex items-center space-x-3 shrink-0">
+                <button type="button" onclick="window.toggleEditMode(true)" 
+                        class="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md flex items-center gap-2"
+                        style="background-color: #007BA7 !important; color: #FFFFFF !important; box-shadow: 0 4px 14px rgba(0, 123, 167, 0.35) !important;">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                    <span>Chỉnh Sửa Hồ Sơ</span>
+                </button>
+                <a href="dashboard.html" 
+                   class="px-5 py-2.5 rounded-full border border-[#D1CCC5] bg-white hover:border-[#007BA7] hover:text-[#007BA7] text-xs font-bold uppercase tracking-wider transition-all shadow-2xs">
+                    <span>Bảng Điều Khiển</span> <span>→</span>
+                </a>
+            </div>
+
+            <!-- Actions when in EDIT MODE -->
+            <div id="header-edit-actions" class="hidden flex items-center space-x-3 shrink-0">
+                <button type="button" onclick="window.toggleEditMode(false)" 
+                        class="px-5 py-2.5 rounded-full border border-[#D1CCC5] bg-white hover:bg-stone-50 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer">
+                    ✕ Hủy Bỏ
+                </button>
+                <button type="button" onclick="window.saveInlineProfile()" id="btn-save-inline" 
+                        class="px-7 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md flex items-center gap-2"
+                        style="background-color: #007BA7 !important; color: #FFFFFF !important; box-shadow: 0 4px 14px rgba(0, 123, 167, 0.35) !important;">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <span>Lưu Thay Đổi</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- BANNER BÁO CHẾ ĐỘ CHỈNH SỬA (CHỈ HIỆN KHI BẤM SỬA) -->
+        <div id="editing-mode-banner" class="hidden mb-6 p-4 rounded-2xl bg-[#007BA7]/10 border-2 border-[#007BA7] text-[#007BA7] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">✏️</span>
+                <div>
+                    <span class="font-bold text-xs uppercase tracking-wider block font-mono text-[#007BA7]">BẠN ĐANG TRONG CHẾ ĐỘ CHỈNH SỬA TRỰC TIẾP</span>
+                    <span class="text-xs text-[#1A1A1A]">Bạn có thể chỉnh sửa các thông tin, chỉ số sinh trắc và tải thêm/xóa ảnh, clip ở 2 kho media bên dưới. Khi xong bấm <b>"Lưu Thay Đổi"</b>.</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="window.toggleEditMode(false)" class="px-4 py-2 rounded-full border border-[#D1CCC5] bg-white text-xs font-bold uppercase text-[#1A1A1A] cursor-pointer hover:bg-stone-50">
+                    ✕ Hủy
+                </button>
+                <button type="button" onclick="window.saveInlineProfile()" class="px-5 py-2 rounded-full text-xs font-bold uppercase text-white shadow-sm cursor-pointer hover:scale-105 transition-all" style="background-color: #007BA7 !important; color: #FFFFFF !important;">
+                    💾 Lưu Ngay
+                </button>
+            </div>
+        </div>
+
+        <!-- BANNER THÔNG BÁO CHẾ ĐỘ KHÁCH / NỘI BỘ (NẾU CHƯA ĐĂNG NHẬP GOOGLE) -->
+        <div id="guest-notice-banner" class="hidden mb-6 p-4 rounded-2xl bg-amber-50/90 border-2 border-amber-300 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">⚡</span>
+                <div>
+                    <span class="font-bold text-xs uppercase tracking-wider text-amber-900 block font-mono">CHẾ ĐỘ TRẢI NGHIỆM CÁ NHÂN (LƯU TRÊN MÁY CHỦ NỘI BỘ)</span>
+                    <span class="text-xs text-amber-800">Bạn có thể tự do tải lên ảnh/clip nóng và ảnh đời thường ngay lập tức. Đăng nhập Google để đồng bộ vĩnh viễn lên Cloud Firestore.</span>
+                </div>
+            </div>
+            <button type="button" onclick="window.triggerGoogleLogin()" class="px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm hover:scale-105 transition-all cursor-pointer shrink-0" style="background-color: #007BA7 !important; color: #FFFFFF !important;">
+                Đăng Nhập Google Để Đồng Bộ
+            </button>
+        </div>
+
+        <!-- QUICK JUMP NAVIGATION BAR CHO LAPTOP & MÀN HÌNH RỘNG -->
+        <div class="bg-white p-3 rounded-2xl border border-[#D1CCC5] mb-8 shadow-xs flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+                <a href="#section-profile" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#F9F6F0] hover:bg-[#007BA7]/10 text-[#1A1A1A] hover:text-[#007BA7] transition-all flex items-center gap-2 border border-[#D1CCC5]/60">
+                    <span>📊</span> <span>I. Chỉ Số Thể Chất &amp; Y Tế</span>
+                </a>
+                <a href="#section-hot-media" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white transition-all flex items-center gap-2 shadow-xs hover:scale-105" style="background-color: #D73B3E !important; color: #FFFFFF !important;">
+                    <span>🔞</span> <span>II. Kho Ảnh &amp; Clip Nóng (18+)</span>
+                    <span id="quick-badge-hot-count" class="px-2 py-0.5 rounded-full bg-black/20 text-[10px] font-mono font-bold">0</span>
+                </a>
+                <a href="#section-daily-media" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white transition-all flex items-center gap-2 shadow-xs hover:scale-105" style="background-color: #007BA7 !important; color: #FFFFFF !important;">
+                    <span>📸</span> <span>III. Ảnh &amp; Clip Thường Ngày / Gym</span>
+                    <span id="quick-badge-daily-count" class="px-2 py-0.5 rounded-full bg-black/20 text-[10px] font-mono font-bold">0</span>
+                </a>
+            </div>
+            <div class="flex items-center gap-2 text-xs italic text-[#4A4A4A]">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Hệ thống mã hóa cục bộ & Cloud Firestore</span>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- KHỐI 1: CHẾ ĐỘ XEM HỒ SƠ (VIEW MODE) -->
+        <!-- ========================================================================= -->
+        <div id="profile-view-wrap">
+            <div id="section-profile" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-10">
+
+                <!-- CỘT TRÁI (lg:col-span-4): EXECUTIVE IDENTITY & LIFESTYLE -->
+                <div class="lg:col-span-4 space-y-6">
+                    <!-- Identity Card with Cover Photo -->
+                    <div class="stat-card rounded-2xl border border-[#D1CCC5] shadow-xs relative overflow-hidden bg-white">
+                        <!-- Cover Photo/Video Banner -->
+                        <div class="relative w-full h-36 sm:h-44 bg-gradient-to-r from-stone-200 via-stone-100 to-stone-300 overflow-hidden group cursor-pointer" onclick="window.toggleEditMode(true)" title="Bấm để chỉnh sửa ảnh hoặc video bìa">
+                            <img id="view-cover" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Cover Banner">
+                            <video id="view-cover-video" autoplay loop muted playsinline class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 hidden"></video>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"></div>
+                            <button type="button" onclick="event.stopPropagation(); window.toggleEditMode(true);" class="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/85 backdrop-blur-xs text-white text-[11px] font-bold flex items-center gap-1.5 shadow-md transition-all cursor-pointer">
+                                <span>📷/🎬</span> <span>Đổi Trang Bìa</span>
+                            </button>
+                        </div>
+                        
+                        <div class="px-6 pb-6 pt-0">
+                            <div class="flex flex-col items-center text-center pb-6 border-b border-[#D1CCC5]/60">
+                                <div class="-mt-14 relative w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-xl bg-stone-100 mb-3 group cursor-pointer z-10" onclick="window.toggleEditMode(true)" title="Bấm để chỉnh sửa hồ sơ">
+                                    <img id="view-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80" class="w-full h-full object-cover" alt="User Avatar">
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition-opacity">
+                                        Sửa Ảnh
+                                    </div>
+                                </div>
+                                <h2 id="view-name" class="font-playfair text-2xl font-bold text-[#1A1A1A]">Đang tải...</h2>
+                                <p id="view-nickname" class="text-xs italic text-[#007BA7] font-semibold">@nickname</p>
+                                <p id="view-email" class="text-xs text-[#4A4A4A] font-mono mt-1">email@example.com</p>
+                                
+                                <div class="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold">
+                                    <span>✓</span>
+                                    <span>Tài Khoản Google Đã Xác Thực</span>
+                                </div>
+                            </div>
+
+                        <!-- Details Table -->
+                        <div class="pt-5 space-y-3 text-sm">
+                            <div class="flex justify-between items-center border-b border-[#D1CCC5]/50 pb-2">
+                                <span class="text-[#4A4A4A]">Ngày sinh / Tuổi:</span>
+                                <span class="font-bold text-[#1A1A1A]"><span id="view-dob">--</span> (<span id="view-calc-age">--</span> tuổi)</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-[#D1CCC5]/50 pb-2">
+                                <span class="text-[#4A4A4A]">Số điện thoại:</span>
+                                <span id="view-phone" class="font-bold font-mono text-[#1A1A1A]">--</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-[#D1CCC5]/50 pb-2">
+                                <span class="text-[#4A4A4A]">Nơi sinh sống:</span>
+                                <span id="view-location" class="font-bold text-[#1A1A1A]">--</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-[#D1CCC5]/50 pb-2">
+                                <span class="text-[#4A4A4A]">Nghề nghiệp:</span>
+                                <span id="view-occupation" class="font-bold text-[#1A1A1A]">--</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[#4A4A4A]">Trạng thái dữ liệu:</span>
+                                <span class="font-bold text-[#007BA7] font-mono text-xs">Cloud Synced ⚡</span>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Lifestyle Risk Factors Box -->
+                    <div class="stat-card p-5 rounded-2xl border border-[#D1CCC5]">
+                        <h3 class="text-xs uppercase tracking-widest text-[#4A4A4A] font-bold mb-3 border-b border-[#D1CCC5] pb-1">Đánh Giá Nguy Cơ Lối Sống</h3>
+                        <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                            <div class="p-2.5 border border-[#D1CCC5] rounded-xl bg-[#F9F6F0]">
+                                <div class="text-[10px] uppercase text-[#4A4A4A]">Thuốc lá</div>
+                                <div class="font-bold text-emerald-800 mt-1">Không hút ✓</div>
+                            </div>
+                            <div class="p-2.5 border border-[#D1CCC5] rounded-xl bg-[#F9F6F0]">
+                                <div class="text-[10px] uppercase text-[#4A4A4A]">Rượu bia</div>
+                                <div class="font-bold text-emerald-800 mt-1">Điều độ ✓</div>
+                            </div>
+                            <div class="p-2.5 border border-[#D1CCC5] rounded-xl bg-[#F9F6F0]">
+                                <div class="text-[10px] uppercase text-[#4A4A4A]">Bệnh nền</div>
+                                <div class="font-bold text-emerald-800 mt-1">Không có ✓</div>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-[#4A4A4A] italic mt-3 leading-relaxed">
+                            *Chức năng sinh lý và cương dương gắn liền với cơ chế huyết động học mạch máu. Thể trạng ít mỡ và lối sống lành mạnh bảo tồn tính đàn hồi của thể hang.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CỘT PHẢI (lg:col-span-8): BIOMETRICS & SEXUAL HEALTH DOSSIER -->
+                <div class="lg:col-span-8 space-y-6">
+
+                    <!-- 1. CHỈ SỐ SINH TRẮC & THỂ CHẤT (BIOMETRICS) -->
+                    <div class="stat-card p-6 md:p-8 rounded-2xl border-2 border-[#007BA7]/80">
+                        <div class="flex items-center justify-between border-b border-[#D1CCC5] pb-3 mb-6">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-7 h-7 rounded-full bg-[#007BA7] text-white flex items-center justify-center font-playfair font-bold text-sm">I</span>
+                                <h2 class="font-playfair text-2xl font-bold text-[#007BA7]">Chỉ Số Thể Chất &amp; Nhân Trắc Học</h2>
+                            </div>
+                            <button onclick="window.toggleEditMode(true)" class="text-xs text-[#007BA7] hover:underline font-bold italic cursor-pointer">
+                                Chỉnh sửa chỉ số →
+                            </button>
+                        </div>
+
+                        <!-- 4 Large Stat Feature Boxes -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                            <!-- Stat 1: Height & Weight -->
+                            <div class="p-4 rounded-xl border border-[#D1CCC5] bg-[#F9F6F0] text-center">
+                                <span class="text-[11px] uppercase tracking-wider text-[#4A4A4A] font-bold block mb-1">Chiều Cao / Cân Nặng</span>
+                                <div class="text-2xl font-playfair font-black text-[#1A1A1A]">
+                                    <span id="view-height">--</span> <span class="text-xs font-normal text-[#4A4A4A]">cm</span>
+                                </div>
+                                <div class="text-lg font-playfair font-bold text-[#007BA7] mt-0.5">
+                                    <span id="view-weight">--</span> <span class="text-xs font-normal text-[#4A4A4A]">kg</span>
+                                </div>
+                            </div>
+
+                            <!-- Stat 2: BMI -->
+                            <div class="p-4 rounded-xl border border-[#D1CCC5] bg-[#F9F6F0] text-center">
+                                <span class="text-[11px] uppercase tracking-wider text-[#4A4A4A] font-bold block mb-1">BMI (Thể Trọng)</span>
+                                <div id="view-bmi" class="text-3xl font-playfair font-black text-[#007BA7]">--</div>
+                                <span id="view-bmi-badge" class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                    Bình thường
+                                </span>
+                            </div>
+
+                            <!-- Stat 3: Body Fat & Waist -->
+                            <div class="p-4 rounded-xl border border-[#D1CCC5] bg-[#F9F6F0] text-center">
+                                <span class="text-[11px] uppercase tracking-wider text-[#4A4A4A] font-bold block mb-1">Tỷ Lệ Mỡ (Fat %)</span>
+                                <div class="text-3xl font-playfair font-black text-[#D73B3E]">
+                                    <span id="view-bodyfat">--</span><span class="text-sm font-normal">%</span>
+                                </div>
+                                <span class="text-[11px] text-[#4A4A4A] italic block mt-0.5">Eo: <b id="view-waist">--</b> cm</span>
+                            </div>
+
+                            <!-- Stat 4: Heart Rate & BP -->
+                            <div class="p-4 rounded-xl border border-[#D1CCC5] bg-[#F9F6F0] text-center">
+                                <span class="text-[11px] uppercase tracking-wider text-[#4A4A4A] font-bold block mb-1">Huyết Áp &amp; Nhịp Tim</span>
+                                <div id="view-bp" class="text-xl font-playfair font-black text-[#1A1A1A]">--</div>
+                                <span class="text-xs text-[#007BA7] font-bold block mt-0.5"><b id="view-heartrate">--</b> bpm (RHR)</span>
+                            </div>
+                        </div>
+
+                        <!-- Kích thước Nam Học (Penis Dimensions) -->
+                        <div class="p-5 rounded-xl border border-[#007BA7]/40 bg-[#007BA7]/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <span class="text-xs uppercase font-mono tracking-widest text-[#007BA7] font-bold block">KÍCH THƯỚC SINH HỌC NAM HỌC</span>
+                                <span class="text-sm italic text-[#4A4A4A]">Thông số giải phẫu phục vụ đánh giá thể hang và lưu lượng máu</span>
+                            </div>
+                            <div class="flex items-center gap-6 text-center">
+                                <div>
+                                    <span class="text-[11px] uppercase text-[#4A4A4A] block">Chiều Dài Cương</span>
+                                    <span class="text-2xl font-playfair font-black text-[#007BA7]"><span id="view-penis-length">--</span> <span class="text-xs font-normal">cm</span></span>
+                                </div>
+                                <div class="h-8 w-px bg-[#D1CCC5]"></div>
+                                <div>
+                                    <span class="text-[11px] uppercase text-[#4A4A4A] block">Chu Vi Thể Hang</span>
+                                    <span class="text-2xl font-playfair font-black text-[#007BA7]"><span id="view-penis-girth">--</span> <span class="text-xs font-normal">cm</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. AN TOÀN TÌNH DỤC & SỨC KHỎE NAM HỌC (PR-EP & STDS) -->
+                    <div class="stat-card p-6 md:p-8 rounded-2xl border-2 border-[#D73B3E]/80">
+                        <div class="flex items-center justify-between border-b border-[#D1CCC5] pb-3 mb-6">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-7 h-7 rounded-full bg-[#D73B3E] text-white flex items-center justify-center font-playfair font-bold text-sm">II</span>
+                                <h2 class="font-playfair text-2xl font-bold text-[#D73B3E]">Sức Khỏe Tình Dục &amp; Y Tế Nam Học</h2>
+                            </div>
+                            <button onclick="window.toggleEditMode(true)" class="text-xs text-[#D73B3E] hover:underline font-bold italic cursor-pointer">
+                                Cập nhật y tế →
+                            </button>
+                        </div>
+
+                        <!-- KÍCH THƯỚC & HÌNH ẢNH CẬU NHỎ (MỤC II - BẢO MẬT NAM HỌC) -->
+                        <div class="mb-6 p-5 rounded-2xl border border-[#D73B3E]/30 bg-[#D73B3E]/5">
+                            <div class="flex items-center justify-between mb-3 border-b border-[#D73B3E]/20 pb-2.5">
+                                <span class="text-xs uppercase font-mono tracking-widest text-[#D73B3E] font-bold flex items-center gap-1.5">
+                                    <span>🍆</span> <span>KÍCH THƯỚC &amp; HÌNH ẢNH CẬU NHỎ</span>
+                                </span>
+                                <button type="button" id="btn-toggle-penis-blur" onclick="window.togglePenisPhotoBlur()" class="text-[11px] font-mono font-bold text-[#D73B3E] hover:underline cursor-pointer flex items-center gap-1.5 bg-white/80 px-2.5 py-1 rounded-full border border-[#D73B3E]/20 shadow-xs">
+                                    <span id="penis-blur-icon">👁️</span> <span id="penis-blur-text">Hiện Ảnh</span>
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                                <!-- Thông số kích thước -->
+                                <div class="md:col-span-7 flex flex-col justify-center gap-3">
+                                    <div class="grid grid-cols-2 gap-3 text-center">
+                                        <div class="p-3.5 rounded-xl bg-white border border-[#D1CCC5] shadow-xs">
+                                            <span class="text-[10px] uppercase font-mono text-[#4A4A4A] block mb-0.5">Chiều Dài Cương</span>
+                                            <span class="text-2xl font-playfair font-black text-[#D73B3E]"><span id="view-penis-length-sec2">15.5</span> <span class="text-xs font-normal text-stone-500">cm</span></span>
+                                        </div>
+                                        <div class="p-3.5 rounded-xl bg-white border border-[#D1CCC5] shadow-xs">
+                                            <span class="text-[10px] uppercase font-mono text-[#4A4A4A] block mb-0.5">Chu Vi Thể Hang</span>
+                                            <span class="text-2xl font-playfair font-black text-[#D73B3E]"><span id="view-penis-girth-sec2">12.8</span> <span class="text-xs font-normal text-stone-500">cm</span></span>
+                                        </div>
+                                    </div>
+                                    <div class="text-[11px] text-[#4A4A4A] italic bg-white/80 p-3 rounded-xl border border-stone-200 leading-relaxed">
+                                        💡 <b>Đánh giá thể hang:</b> Thể hang phát triển tối ưu, áp lực mạch máu thể hang đạt đỉnh khi cương cứng. Đạt chuẩn giải phẫu nam học phục vụ quan hệ an toàn.
+                                    </div>
+                                </div>
+
+                                <!-- Khung hiển thị ảnh cậu nhỏ -->
+                                <div class="md:col-span-5 flex justify-center">
+                                    <div id="view-penis-photo-container" class="w-full max-w-[210px] aspect-square rounded-2xl overflow-hidden border-2 border-[#D73B3E]/40 bg-stone-900 relative shadow-md group cursor-pointer" onclick="window.openPenisPhotoLightbox()">
+                                        <img id="view-penis-photo" src="" alt="Hình Cậu Nhỏ" class="w-full h-full object-cover penis-photo-blurred transition-all duration-300">
+                                        <div id="view-penis-photo-placeholder" class="hidden absolute inset-0 flex flex-col items-center justify-center p-3 text-center bg-stone-100 text-stone-500">
+                                            <span class="text-3xl mb-1">🍆</span>
+                                            <span class="text-[11px] font-bold">Chưa Có Ảnh</span>
+                                            <button type="button" onclick="event.stopPropagation(); window.toggleEditMode(true)" class="mt-2 text-[10px] px-3 py-1 rounded-full bg-[#D73B3E] text-white font-bold uppercase tracking-wider hover:opacity-90 transition-opacity">Thêm Ảnh</button>
+                                        </div>
+                                        <div class="absolute bottom-2 right-2 bg-black/75 backdrop-blur-xs text-white text-[9px] font-mono px-2 py-0.5 rounded-full pointer-events-none shadow-xs">
+                                            18+ BẢO MẬT
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5 text-sm">
+                            <!-- PrEP Status -->
+                            <div class="p-4 rounded-xl border border-[#D1CCC5] bg-[#F9F6F0]">
+                                <span class="text-xs uppercase font-mono tracking-wider text-[#4A4A4A] block mb-1">Phòng Ngừa PrEP</span>
+                                <div id="view-prep" class="text-base font-bold text-[#1A1A1A]">Đang dùng hàng ngày (Daily PrEP)</div>
+                                <span class="text-xs text-emerald-700 italic block mt-1">Được bảo vệ liên tục trước nguy cơ phơi nhiễm HIV</span>
+                            </div>
+
+                            <!-- STDs Status -->
+                            <div class="p-4 rounded-xl border border-[#D1CCC5] bg-[#F9F6F0]">
+                                <span class="text-xs uppercase font-mono tracking-wider text-[#4A4A4A] block mb-1">Xét Nghiệm STDs Gần Nhất</span>
+                                <div id="view-stds" class="text-base font-bold text-emerald-800">Âm tính tất cả</div>
+                                <span class="text-xs text-[#4A4A4A] italic block mt-1">Định kỳ khuyến nghị: 3 đến 6 tháng / lần</span>
+                            </div>
+                        </div>
+
+                        <!-- Medical Notes Box -->
+                        <div class="p-4 rounded-xl border border-[#D1CCC5] bg-white">
+                            <span class="text-xs uppercase font-mono tracking-wider text-[#4A4A4A] block mb-1 font-bold">Ghi Chú Y Tế &amp; Tiền Sử Dị Ứng</span>
+                            <p id="view-notes" class="text-sm italic text-[#4A4A4A] leading-relaxed">
+                                Chưa có ghi chú đặc biệt nào. Sức khỏe nội tiết và thể lực ổn định.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- KHỐI 2: CHẾ ĐỘ CHỈNH SỬA TRỰC TIẾP TRÊN TRANG (INLINE EDIT FORM - NO MODAL) -->
+        <!-- ========================================================================= -->
+        <div id="profile-edit-wrap" class="hidden mb-12">
+            <div class="stat-card p-6 md:p-8 rounded-2xl border-2 border-[#007BA7] bg-white shadow-md">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-stone-800 pb-4 mb-6 gap-3">
+                    <div>
+                        <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-[#007BA7]">CHỈNH SỬA TRỰC TIẾP TẠI TRANG</span>
+                        <h3 class="font-playfair text-2xl md:text-3xl font-bold text-[#1A1A1A]">Cập Nhật Thông Tin &amp; Thể Chất</h3>
+                        <p class="text-xs italic text-[#4A4A4A] mt-0.5">Sửa đổi thông số trực tiếp bên dưới. Bấm <b>"Lưu Thay Đổi"</b> khi hoàn tất.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="window.toggleEditMode(false)" class="px-5 py-2 rounded-full border border-[#D1CCC5] bg-[#F9F6F0] hover:bg-white text-xs font-bold uppercase tracking-wider cursor-pointer transition-all">
+                            ✕ Hủy Bỏ
+                        </button>
+                        <button type="button" onclick="window.saveInlineProfile()" id="btn-inline-save-top" 
+                                class="px-7 py-2 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+                                style="background-color: #007BA7 !important; color: #FFFFFF !important;">
+                            <span>💾</span> <span>Lưu Thay Đổi</span>
+                        </button>
+                    </div>
+                </div>
+
+                <form id="inline-edit-form" onsubmit="event.preventDefault(); window.saveInlineProfile();" class="space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                        
+                        <!-- Cột trái (lg:col-span-4): Thông tin cá nhân -->
+                        <div class="lg:col-span-4 space-y-4 bg-[#F9F6F0] p-5 rounded-xl border border-[#D1CCC5]">
+                            <h4 class="font-playfair font-bold text-base text-[#007BA7] border-b border-[#D1CCC5] pb-2">I. Nhận Diện &amp; Liên Lạc</h4>
+                            <div class="space-y-3 text-xs">
+                                <div>
+                                    <label class="block font-bold text-[#1A1A1A] mb-1">Ảnh / Video Bìa Trang Cá Nhân (Cover)</label>
+                                    <div class="relative w-full h-28 rounded-xl overflow-hidden border border-[#D1CCC5] bg-stone-100 mb-2">
+                                        <img id="edit-cover-preview" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80" class="w-full h-full object-cover" alt="Cover Preview">
+                                        <video id="edit-cover-preview-video" autoplay loop muted playsinline class="w-full h-full object-cover hidden"></video>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="inp-cover-url" oninput="window.updateEditCoverPreview(this.value)" class="flex-1 p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]" placeholder="https://... URL ảnh/video bìa hoặc media/...">
+                                        <button type="button" onclick="document.getElementById('inp-cover-file').click()" class="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 border border-[#D1CCC5] font-bold rounded-lg text-ink text-xs shrink-0 cursor-pointer">Tải Tệp</button>
+                                    </div>
+                                    <input type="file" id="inp-cover-file" accept="image/*,video/*,.mp4,.mov,.webm,.m4v" class="hidden" onchange="window.handleCoverUpload(event)">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-[#1A1A1A] mb-1">URL Ảnh Đại Diện</label>
+                                    <input type="url" id="inp-photo-url" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]" placeholder="https://...">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-[#1A1A1A] mb-1">Họ và Tên</label>
+                                    <input type="text" id="inp-full-name" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-[#1A1A1A] mb-1">Biệt Danh / Nickname</label>
+                                    <input type="text" id="inp-nickname" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-[#1A1A1A] mb-1">Ngày Sinh</label>
+                                    <input type="date" id="inp-dob" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-[#1A1A1A] mb-1">Số Điện Thoại</label>
+                                    <input type="tel" id="inp-phone" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-[#1A1A1A] mb-1">Nơi Sinh Sống</label>
+                                    <input type="text" id="inp-location" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-[#1A1A1A] mb-1">Nghề Nghiệp</label>
+                                    <input type="text" id="inp-occupation" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cột phải (lg:col-span-8): Sinh trắc & Y tế -->
+                        <div class="lg:col-span-8 space-y-6">
+                            <!-- Phần II: Thể chất & Nam học -->
+                            <div class="bg-[#F9F6F0] p-5 rounded-xl border border-[#D1CCC5]">
+                                <h4 class="font-playfair font-bold text-base text-[#007BA7] border-b border-[#D1CCC5] pb-2 mb-3">II. Chỉ Số Thể Chất &amp; Kích Thước Nam Học</h4>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                                    <div>
+                                        <label class="block font-bold text-[#1A1A1A] mb-1">Chiều Cao (cm)</label>
+                                        <input type="number" id="inp-height" step="0.5" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold text-[#1A1A1A] mb-1">Cân Nặng (kg)</label>
+                                        <input type="number" id="inp-weight" step="0.1" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold text-[#1A1A1A] mb-1">Body Fat (%)</label>
+                                        <input type="number" id="inp-bodyfat" step="0.1" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold text-[#1A1A1A] mb-1">Vòng Eo (cm)</label>
+                                        <input type="number" id="inp-waist" step="0.5" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold text-[#1A1A1A] mb-1">Huyết Áp (mmHg)</label>
+                                        <input type="text" id="inp-bp" placeholder="118/76" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold text-[#1A1A1A] mb-1">Nhịp Tim (bpm)</label>
+                                        <input type="number" id="inp-heartrate" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]">
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold text-[#007BA7] mb-1">Dài Cậu Nhỏ (cm)</label>
+                                        <input type="number" id="inp-penis-length" step="0.1" class="w-full p-2.5 rounded-lg border border-[#007BA7]/50 bg-white outline-none focus:border-[#007BA7] font-bold text-[#007BA7]">
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold text-[#007BA7] mb-1">Chu Vi Thể Hang (cm)</label>
+                                        <input type="number" id="inp-penis-girth" step="0.1" class="w-full p-2.5 rounded-lg border border-[#007BA7]/50 bg-white outline-none focus:border-[#007BA7] font-bold text-[#007BA7]">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Phần III: Tình dục & Y tế -->
+                            <div class="bg-[#F9F6F0] p-5 rounded-xl border border-[#D1CCC5]">
+                                <h4 class="font-playfair font-bold text-base text-[#D73B3E] border-b border-[#D1CCC5] pb-2 mb-3">III. Sức Khỏe Tình Dục &amp; Y Tế Nam Học</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                    <!-- Ảnh Cậu Nhỏ trong Form Sửa -->
+                                    <div class="sm:col-span-2 p-3.5 bg-white rounded-xl border border-[#D73B3E]/30 mb-2">
+                                        <span class="block font-bold text-[#D73B3E] mb-2 text-xs uppercase tracking-wider">🍆 Hình Ảnh Cậu Nhỏ (18+ Bảo Mật)</span>
+                                        <div class="flex flex-col sm:flex-row items-center gap-4">
+                                            <div class="w-20 h-20 rounded-xl overflow-hidden border border-[#D1CCC5] bg-stone-100 shrink-0 flex items-center justify-center relative shadow-xs">
+                                                <img id="edit-penis-photo-preview" src="" alt="Preview" class="w-full h-full object-cover hidden">
+                                                <span id="edit-penis-photo-empty" class="text-2xl text-stone-400">🍆</span>
+                                            </div>
+                                            <div class="flex-1 w-full space-y-2">
+                                                <input type="text" id="inp-penis-photo" placeholder="Đường dẫn ảnh (media/... hoặc https://...)" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#D73B3E] text-xs" oninput="window.updatePenisPhotoPreview(this.value)">
+                                                <div class="flex items-center gap-2">
+                                                    <input type="file" id="input-penis-photo-file" accept="image/*" class="hidden" onchange="window.handleUploadPenisPhoto(event)">
+                                                    <button type="button" onclick="document.getElementById('input-penis-photo-file').click()" class="px-3.5 py-1.5 rounded-full bg-[#D73B3E] text-white text-[11px] font-bold uppercase tracking-wider hover:opacity-90 transition-all cursor-pointer shadow-xs">
+                                                        📷 Tải Ảnh Lên Từ Máy
+                                                    </button>
+                                                    <span id="penis-photo-upload-status" class="text-[11px] text-stone-500 italic"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold text-[#1A1A1A] mb-1">Phòng Ngừa PrEP</label>
+                                        <select id="inp-prep-status" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#D73B3E]">
+                                            <option value="Chưa dùng">Chưa dùng PrEP</option>
+                                            <option value="Hàng ngày (Daily PrEP)">Đang dùng hàng ngày (Daily PrEP)</option>
+                                            <option value="Tình huống (2-1-1 On-Demand)">Dùng theo tình huống (On-Demand 2-1-1)</option>
+                                            <option value="Đã tiêm PrEP tác dụng kéo dài">Đã tiêm PrEP (Cabotegravir LA)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold text-[#1A1A1A] mb-1">Xét Nghiệm STDs Gần Nhất</label>
+                                        <input type="text" id="inp-stds" placeholder="Âm tính tất cả (01/2026)" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#D73B3E]">
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="block font-bold text-[#1A1A1A] mb-1">Ghi Chú Y Tế &amp; Tiền Sử Dị Ứng</label>
+                                        <textarea id="inp-health-notes" rows="2" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nút lưu cuối form -->
+                            <div class="flex items-center justify-end gap-3 pt-2">
+                                <button type="button" onclick="window.toggleEditMode(false)" class="px-5 py-2.5 rounded-full border border-[#D1CCC5] bg-white text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-stone-50">
+                                    Hủy Bỏ
+                                </button>
+                                <button type="button" onclick="window.saveInlineProfile()" id="btn-inline-save-bottom"
+                                        class="px-8 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                                        style="background-color: #007BA7 !important; color: #FFFFFF !important;">
+                                    💾 Lưu Thay Đổi
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- PHÂN HỆ MỚI: KHO MEDIA CÁ NHÂN (ẢNH & CLIP NÓNG + ẢNH THƯỜNG NGÀY) -->
+        <!-- ========================================================================= -->
+        <section id="section-media" class="mt-12 border-t-2 border-stone-800 pt-8 scroll-mt-20 w-full">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#D73B3E]/10 text-[#D73B3E] border border-[#D73B3E]/30 text-[10px] font-mono font-bold tracking-widest uppercase rounded-full mb-2">
+                        <span>AURA PRIVATE MEDIA VAULT</span> • <span>BẢO MẬT ĐA TẦNG 18+ &amp; LIFESTYLE</span>
+                    </div>
+                    <h2 class="font-playfair text-3xl md:text-5xl font-black text-[#1A1A1A]">Kho Media Cá Nhân Của Bạn</h2>
+                    <p class="text-sm md:text-base italic text-[#4A4A4A] mt-1 max-w-3xl">
+                        Không gian riêng tư tuyệt đối để tải lên và lưu trữ ảnh/clip nóng (18+ Private Vault) cùng bộ sưu tập khoảnh khắc thể thao, tập gym và sinh hoạt thường ngày. Hỗ trợ đầy đủ video clip MP4, WebM, MOV và ảnh chất lượng cao.
+                    </p>
+                </div>
+
+                <!-- Action controls -->
+                <div class="flex flex-wrap items-center gap-3 shrink-0">
+                    <div class="px-3.5 py-2 rounded-full border border-emerald-300 bg-emerald-50 text-emerald-800 text-xs font-bold uppercase tracking-wider shadow-2xs flex items-center gap-2 pointer-events-none" title="Tệp được lưu trữ trực tiếp vào thư mục media của máy chủ">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Media Local (Đang Lưu Máy Chủ)</span>
+                    </div>
+                    <button type="button" id="btn-toggle-blur" onclick="window.toggleHotBlur()" 
+                            class="px-4 py-2 rounded-full border border-[#D1CCC5] bg-white hover:border-[#D73B3E] hover:text-[#D73B3E] text-xs font-bold uppercase tracking-wider transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer">
+                        <span id="blur-icon">👁️</span>
+                        <span id="blur-label">Đang Che Mờ (Bảo Mật)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- BỐ CỤC 2 KHO MEDIA SONG SONG (LANDSCAPE DUAL VAULT) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+                <!-- VAULT 1: KHO ẢNH & CLIP NÓNG (NSFW / SPICY VAULT) -->
+                <div id="section-hot-media" class="stat-card p-6 md:p-7 rounded-2xl border-2 border-[#D73B3E] bg-white shadow-xs scroll-mt-24">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#D1CCC5] pb-4 mb-5 gap-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-9 h-9 rounded-full bg-[#D73B3E] text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">18+</span>
+                            <div>
+                                <h3 class="font-playfair text-xl md:text-2xl font-bold text-[#D73B3E]">Kho Ảnh &amp; Clip Nóng (Private Spicy)</h3>
+                                <span class="text-xs text-[#4A4A4A] italic" id="count-hot-media">0 tệp media</span>
+                            </div>
+                        </div>
+
+                        <!-- Bộ Lọc Nhanh -->
+                        <div class="flex items-center gap-1.5 text-[11px] font-bold">
+                            <button type="button" onclick="window.filterHotMedia('all')" id="filter-hot-all" class="px-2.5 py-1 rounded-full bg-[#D73B3E] text-white">Tất cả</button>
+                            <button type="button" onclick="window.filterHotMedia('video')" id="filter-hot-video" class="px-2.5 py-1 rounded-full bg-stone-100 text-[#4A4A4A] hover:text-[#D73B3E]">🎬 Clip</button>
+                            <button type="button" onclick="window.filterHotMedia('image')" id="filter-hot-image" class="px-2.5 py-1 rounded-full bg-stone-100 text-[#4A4A4A] hover:text-[#D73B3E]">🖼️ Ảnh</button>
+                        </div>
+                    </div>
+
+                    <!-- KHU VỰC THÊM TỆP MEDIA NÓNG (CHỈ XUẤT HIỆN KHI BẬT CHẾ ĐỘ CHỈNH SỬA) -->
+                    <div id="uploader-wrap-hot" class="hidden mb-5">
+                        <div id="dropzone-hot" class="border-2 border-dashed border-[#D73B3E]/40 hover:border-[#D73B3E] bg-[#D73B3E]/5 hover:bg-[#D73B3E]/10 rounded-2xl p-5 text-center transition-all cursor-pointer group"
+                             onclick="document.getElementById('input-upload-hot').click()">
+                            <div class="flex flex-col items-center justify-center">
+                                <div class="w-12 h-12 rounded-full bg-[#D73B3E]/10 group-hover:bg-[#D73B3E] text-[#D73B3E] group-hover:text-white flex items-center justify-center text-xl transition-all shadow-xs mb-2">
+                                    🔞
+                                </div>
+                                <span class="text-sm font-playfair font-bold text-[#D73B3E]">Kéo &amp; Thả Ảnh Hoặc Clip Nóng Vào Đây</span>
+                                <span class="text-xs text-[#4A4A4A] italic mt-0.5">Hoặc bấm để chọn tệp từ máy / dán link Google Drive (MP4, MOV, WebM, JPG, PNG)</span>
+                                
+                                <div class="mt-3 flex items-center gap-2" onclick="event.stopPropagation()">
+                                    <button type="button" onclick="document.getElementById('input-upload-hot').click()" 
+                                            class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+                                            style="background-color: #D73B3E !important; color: #FFFFFF !important;">
+                                        <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                        <span>Tải Lên Từ Máy</span>
+                                    </button>
+                                    <button type="button" onclick="window.promptAddMediaUrl('hot')" 
+                                            class="px-3.5 py-1.5 rounded-full border border-[#D73B3E] text-[#D73B3E] hover:bg-[#D73B3E]/10 text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1">
+                                        <span>🔗 Dán Link URL / Drive</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" id="input-upload-hot" accept="image/*,video/*,.mp4,.mov,.webm,.m4v" multiple class="hidden" onchange="window.handleUploadMedia(event, 'hot')">
+                    </div>
+
+                    <!-- Container Grid Media Nóng (Có Thanh Cuộn) -->
+                    <div class="max-h-[560px] overflow-y-auto pr-1.5 custom-gallery-scrollbar">
+                        <div id="container-hot-media" class="hot-media-blurred grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 min-h-[140px]">
+                            <!-- Render danh sách tệp media nóng -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VAULT 2: KHO ẢNH & CLIP THƯỜNG NGÀY (DAILY & LIFESTYLE VAULT) -->
+                <div id="section-daily-media" class="stat-card p-6 md:p-7 rounded-2xl border-2 border-[#007BA7] bg-white shadow-xs scroll-mt-24">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#D1CCC5] pb-4 mb-5 gap-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-9 h-9 rounded-full bg-[#007BA7] text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">📸</span>
+                            <div>
+                                <h3 class="font-playfair text-xl md:text-2xl font-bold text-[#007BA7]">Ảnh &amp; Clip Thường Ngày (Daily Life &amp; Gym)</h3>
+                                <span class="text-xs text-[#4A4A4A] italic" id="count-daily-media">0 tệp media</span>
+                            </div>
+                        </div>
+
+                        <!-- Bộ Lọc Nhanh -->
+                        <div class="flex items-center gap-1.5 text-[11px] font-bold">
+                            <button type="button" onclick="window.filterDailyMedia('all')" id="filter-daily-all" class="px-2.5 py-1 rounded-full bg-[#007BA7] text-white">Tất cả</button>
+                            <button type="button" onclick="window.filterDailyMedia('video')" id="filter-daily-video" class="px-2.5 py-1 rounded-full bg-stone-100 text-[#4A4A4A] hover:text-[#007BA7]">🎬 Clip</button>
+                            <button type="button" onclick="window.filterDailyMedia('image')" id="filter-daily-image" class="px-2.5 py-1 rounded-full bg-stone-100 text-[#4A4A4A] hover:text-[#007BA7]">🖼️ Ảnh</button>
+                        </div>
+                    </div>
+
+                    <!-- KHU VỰC THÊM TỆP MEDIA THƯỜNG NGÀY (CHỈ XUẤT HIỆN KHI BẬT CHẾ ĐỘ CHỈNH SỬA) -->
+                    <div id="uploader-wrap-daily" class="hidden mb-5">
+                        <div id="dropzone-daily" class="border-2 border-dashed border-[#007BA7]/40 hover:border-[#007BA7] bg-[#007BA7]/5 hover:bg-[#007BA7]/10 rounded-2xl p-5 text-center transition-all cursor-pointer group"
+                             onclick="document.getElementById('input-upload-daily').click()">
+                            <div class="flex flex-col items-center justify-center">
+                                <div class="w-12 h-12 rounded-full bg-[#007BA7]/10 group-hover:bg-[#007BA7] text-[#007BA7] group-hover:text-white flex items-center justify-center text-xl transition-all shadow-xs mb-2">
+                                    📸
+                                </div>
+                                <span class="text-sm font-playfair font-bold text-[#007BA7]">Kéo &amp; Thả Ảnh Hoặc Clip Sinh Hoạt Vào Đây</span>
+                                <span class="text-xs text-[#4A4A4A] italic mt-0.5">Khoảnh khắc tập gym, check physique, du lịch, đời sống (MP4, MOV, JPG, PNG)</span>
+                                
+                                <div class="mt-3 flex items-center gap-2" onclick="event.stopPropagation()">
+                                    <button type="button" onclick="document.getElementById('input-upload-daily').click()" 
+                                            class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+                                            style="background-color: #007BA7 !important; color: #FFFFFF !important;">
+                                        <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                        <span>Tải Lên Từ Máy</span>
+                                    </button>
+                                    <button type="button" onclick="window.promptAddMediaUrl('daily')" 
+                                            class="px-3.5 py-1.5 rounded-full border border-[#007BA7] text-[#007BA7] hover:bg-[#007BA7]/10 text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1">
+                                        <span>🔗 Dán Link URL / Drive</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" id="input-upload-daily" accept="image/*,video/*,.mp4,.mov,.webm,.m4v" multiple class="hidden" onchange="window.handleUploadMedia(event, 'daily')">
+                    </div>
+
+                    <!-- Container Grid Media Thường Ngày (Có Thanh Cuộn) -->
+                    <div class="max-h-[560px] overflow-y-auto pr-1.5 custom-gallery-scrollbar">
+                        <div id="container-daily-media" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 min-h-[180px]">
+                            <!-- Render danh sách tệp media đời thường -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FLOATING UPLOAD PROGRESS TOAST -->
+    <div id="upload-toast" class="fixed bottom-6 right-6 z-50 bg-[#1A1A1A] text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-stone-700 flex items-center gap-3 transition-all duration-300 transform translate-y-24 opacity-0 pointer-events-none">
+        <span id="toast-spinner" class="animate-spin text-xl">⏳</span>
+        <div>
+            <div id="toast-title" class="text-xs font-bold text-white uppercase tracking-wider">Đang Xử Lý Media</div>
+            <div id="toast-msg" class="text-[11px] text-stone-300 font-mono">Đang tải tệp lên hệ thống...</div>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN LIGHTBOX MEDIA VIEWER -->
+    <div id="media-lightbox" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md hidden flex flex-col items-center justify-center p-4">
+        <!-- Top Control Bar in Lightbox -->
+        <div class="w-full max-w-5xl flex items-center justify-between pb-4 text-white">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <span id="lightbox-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#D73B3E] uppercase shrink-0">CLIP 18+</span>
+                <span id="lightbox-title" class="text-sm font-bold truncate">Xem Toàn Cảnh</span>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+                <a id="lightbox-download-link" href="#" download class="px-4 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer">
+                    <span>⬇</span> <span>Tải Về Máy</span>
+                </a>
+                <button onclick="window.closeLightbox()" class="w-9 h-9 rounded-full bg-white/20 hover:bg-[#D73B3E] text-white flex items-center justify-center text-lg cursor-pointer transition-colors shadow-lg">
+                    ✕
+                </button>
+            </div>
+        </div>
+        <div id="lightbox-content" class="max-w-5xl max-h-[82vh] w-full flex items-center justify-center overflow-hidden">
+            <!-- image or video element dynamically inserted -->
+        </div>
+    </div>
+
+    <!-- MODAL CẤU HÌNH GOOGLE DRIVE TỰ ĐỘNG -->
+    <div id="modal-drive-settings" class="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-stone-200 overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-stone-900 to-stone-800 text-white p-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-xl">
+                        ☁️
+                    </div>
+                    <div>
+                        <h3 class="font-playfair text-xl font-bold">Cấu Hình Google Drive Tự Động</h3>
+                        <p class="text-xs text-stone-300">Tự động sao lưu ảnh &amp; clip lên Google Drive khi tải lên Aura</p>
+                    </div>
+                </div>
+                <button type="button" onclick="window.closeDriveSettingsModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors">✕</button>
+            </div>
+
+            <!-- Body (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-1 text-sm text-[#1A1A1A]">
+                <!-- Trạng thái hiện tại -->
+                <div id="drive-status-card" class="p-4 rounded-2xl border border-stone-200 bg-stone-50 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div id="drive-status-badge-icon" class="w-9 h-9 rounded-full bg-stone-200 flex items-center justify-center text-stone-600 font-bold text-xs shrink-0">●</div>
+                        <div>
+                            <div class="font-mono text-[10px] font-bold uppercase tracking-wider text-stone-500">TRẠNG THÁI HIỆN TẠI</div>
+                            <div class="font-bold text-sm" id="drive-status-badge-desc">Đang tải trạng thái...</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="window.testDriveConnection()" id="btn-drive-test" class="px-3.5 py-1.5 rounded-full border border-stone-300 hover:border-stone-800 bg-white text-xs font-bold uppercase transition-all cursor-pointer">
+                        Kiểm Tra Kết Nối
+                    </button>
+                </div>
+
+                <!-- Ô nhập Web App URL -->
+                <div class="space-y-2">
+                    <label class="block font-bold text-xs uppercase tracking-wider text-[#4A4A4A]">
+                        Google Apps Script Web App URL:
+                    </label>
+                    <input type="url" id="input-drive-script-url" placeholder="https://script.google.com/macros/s/AKfycbx.../exec"
+                           class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:border-[#007BA7] focus:ring-2 focus:ring-[#007BA7]/20 outline-none text-xs font-mono">
+                    <p class="text-[11px] text-stone-500 italic">Dán URL bạn nhận được từ Google Apps Script sau khi bấm Triển khai (Deploy) Web App.</p>
+                </div>
+
+                <!-- Checkbox Bật/Tắt -->
+                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-stone-200 hover:bg-stone-50 cursor-pointer">
+                    <input type="checkbox" id="check-drive-enabled" class="w-4 h-4 text-[#007BA7] rounded border-stone-300 focus:ring-[#007BA7]">
+                    <div>
+                        <div class="font-bold text-xs text-stone-800">Kích hoạt tự động đẩy media lên Google Drive</div>
+                        <div class="text-[11px] text-stone-500">Ảnh và video sẽ được lưu thẳng vào thư mục Google Drive của bạn (đồng thời giữ bản sao cục bộ dự phòng).</div>
+                    </div>
+                </label>
+
+                <!-- Kết Quả Kiểm Tra -->
+                <div id="drive-test-result" class="hidden p-3.5 rounded-xl text-xs font-mono border"></div>
+
+                <!-- Hướng Dẫn Tóm Tắt & Nút Sao Chép Mã -->
+                <div class="border border-stone-200 rounded-2xl p-4 bg-stone-50/60 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-xs uppercase tracking-wider text-stone-700">Mã Nguồn Google Apps Script:</span>
+                        <button type="button" onclick="window.copyDriveScriptCode()" class="px-3 py-1 rounded-full bg-[#007BA7] text-white hover:bg-[#007BA7]/90 text-[11px] font-bold uppercase transition-all cursor-pointer">
+                            📋 Sao Chép Mã Apps Script
+                        </button>
+                    </div>
+                    <div class="text-xs text-[#4A4A4A] space-y-1.5 leading-relaxed">
+                        <p>1. Mở <a href="https://drive.google.com" target="_blank" class="text-[#007BA7] underline font-bold">Google Drive</a> → Tạo thư mục <b>Aura Media</b> → Copy <b>Folder ID</b> trên thanh URL.</p>
+                        <p>2. Mở <a href="https://script.google.com" target="_blank" class="text-[#007BA7] underline font-bold">script.google.com</a> → Tạo dự án mới → Dán mã nguồn đã sao chép vào <code>Code.gs</code>.</p>
+                        <p>3. Thay <code>YOUR_FOLDER_ID</code> ở dòng đầu bằng Folder ID ở Bước 1.</p>
+                        <p>4. Bấm <b>Deploy → New deployment</b> → Chọn <b>Web app</b> → Ai có quyền truy cập: <b>Anyone (Bất kỳ ai)</b> → Bấm <b>Deploy</b>.</p>
+                        <p>5. Copy Web App URL dán vào ô bên trên rồi bấm <b>Lưu &amp; Áp Dụng</b>!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-stone-50 border-t border-stone-200 p-4 px-6 flex items-center justify-between">
+                <span class="text-xs text-stone-400">Tự động kích hoạt ngay không cần khởi động lại</span>
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="window.closeDriveSettingsModal()" class="px-4 py-2 rounded-full border border-stone-300 text-stone-700 hover:bg-stone-100 text-xs font-bold uppercase transition-all cursor-pointer">
+                        Đóng
+                    </button>
+                    <button type="button" onclick="window.saveDriveSettings()" class="px-5 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider shadow-sm transition-all cursor-pointer">
+                        💾 Lưu &amp; Áp Dụng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-[#D1CCC5] py-6 mt-12 font-newsreader">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center text-xs text-[#4A4A4A] gap-2">
+            <span>© 2026 Aura Protocol. Y học nam khoa & bảo mật hồ sơ đa tài khoản.</span>
+            <div class="flex space-x-6 font-bold uppercase font-newsreader">
+                <a href="index.html" class="hover:text-[#007BA7]">Trang Chủ</a>
+                <a href="dashboard.html" class="hover:text-[#007BA7]">Bảng Điều Khiển</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- (Modal đã được gỡ bỏ hoàn toàn theo thiết kế chỉnh sửa trực tiếp trên trang) -->
+
+    <!-- SCRIPT TÍCH HỢP DATA FIRESTORE, KHO MEDIA & LIGHTBOX -->
+    <script type="module">
+        import { setupEditorialHeader, auth, db, onAuthChange, loginWithGoogle } from './auth.js';
+        import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        setupEditorialHeader('ca-nhan');
+
+        let currentUid = 'guest_local';
+        let cachedUserData = {};
+        let userHotGallery = [];
+        let userDailyGallery = [];
+        let isHotBlurred = true;
+        let currentHotFilter = 'all'; // 'all' | 'video' | 'image'
+        let currentDailyFilter = 'all'; // 'all' | 'video' | 'image'
+        let isEditMode = false; // CHẾ ĐỘ CHỈNH SỬA TRỰC TIẾP TRÊN TRANG
+
+        // Chuẩn hóa URL media sang định dạng thư mục phân cấp mới
+        function normalizeMediaUrl(u) {
+            if (!u || typeof u !== 'string') return '';
+            if (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('data:')) return u;
+            let clean = u.replace(/^[/\\]+/, '');
+            const m = clean.match(/^media[\/\\]users[\/\\]([^\/\\]+)[\/\\](daily|hot)[\/\\](.+)$/i);
+            if (m) {
+                const uid = m[1];
+                const sub = m[2].toLowerCase() === 'hot' ? 'Ảnh Nóng' : 'Ảnh Đời Thường';
+                const file = m[3];
+                return `media/${uid}/Cá Nhân/${sub}/${file}`;
+            }
+            return clean;
+        }
+        window.normalizeMediaUrl = normalizeMediaUrl;
+
+        // ==========================================
+        // HỖ TRỢ XỬ LÝ MEDIA & VIDEO TRANG BÌA (COVER BANNER)
+        // ==========================================
+        window.isMediaVideo = function(url, type) {
+            if (!url && !type) return false;
+            if (type && type.startsWith('video')) return true;
+            if (typeof url === 'string') {
+                const clean = url.split('?')[0].split('#')[0].toLowerCase();
+                if (clean.endsWith('.mp4') || clean.endsWith('.webm') || clean.endsWith('.mov') || clean.endsWith('.m4v') || clean.endsWith('.ogg')) return true;
+                if (url.startsWith('data:video/')) return true;
+                if (url.includes('/video/upload/')) return true;
+            }
+            return false;
+        };
+
+        window.updateViewCover = function(url) {
+            const defaultCover = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80';
+            const targetUrl = url || defaultCover;
+            const imgEl = document.getElementById('view-cover');
+            const videoEl = document.getElementById('view-cover-video');
+            const isVid = window.isMediaVideo(targetUrl);
+            if (isVid) {
+                if (imgEl) imgEl.classList.add('hidden');
+                if (videoEl) {
+                    if (videoEl.src !== targetUrl) videoEl.src = targetUrl;
+                    videoEl.classList.remove('hidden');
+                    videoEl.play().catch(() => {});
+                }
+            } else {
+                if (videoEl) {
+                    videoEl.pause();
+                    videoEl.removeAttribute('src');
+                    videoEl.load();
+                    videoEl.classList.add('hidden');
+                }
+                if (imgEl) {
+                    imgEl.src = targetUrl;
+                    imgEl.classList.remove('hidden');
+                }
+            }
+        };
+
+        window.updateEditCoverPreview = function(url) {
+            const defaultCover = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80';
+            const targetUrl = url || defaultCover;
+            const imgEl = document.getElementById('edit-cover-preview');
+            const videoEl = document.getElementById('edit-cover-preview-video');
+            const isVid = window.isMediaVideo(targetUrl);
+            if (isVid) {
+                if (imgEl) imgEl.classList.add('hidden');
+                if (videoEl) {
+                    if (videoEl.src !== targetUrl) videoEl.src = targetUrl;
+                    videoEl.classList.remove('hidden');
+                    videoEl.play().catch(() => {});
+                }
+            } else {
+                if (videoEl) {
+                    videoEl.pause();
+                    videoEl.removeAttribute('src');
+                    videoEl.load();
+                    videoEl.classList.add('hidden');
+                }
+                if (imgEl) {
+                    imgEl.src = targetUrl;
+                    imgEl.classList.remove('hidden');
+                }
+            }
+        };
+
+        // ==========================================
+        // TOAST THÔNG BÁO TIẾN TRÌNH TẢI LÊN
+        // ==========================================
+        let toastTimeout = null;
+        window.showToast = function(title, msg, isSpin = false) {
+            const toast = document.getElementById('upload-toast');
+            const toastTitle = document.getElementById('toast-title');
+            const toastMsg = document.getElementById('toast-msg');
+            const spinner = document.getElementById('toast-spinner');
+            if (!toast) return;
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTitle.innerText = title;
+            toastMsg.innerText = msg;
+            spinner.innerText = isSpin ? '⏳' : '✓';
+            if (isSpin) spinner.classList.add('animate-spin');
+            else spinner.classList.remove('animate-spin');
+
+            toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            if (!isSpin) {
+                toastTimeout = setTimeout(() => {
+                    window.hideToast();
+                }, 4000);
+            }
+        };
+
+        window.hideToast = function() {
+            const toast = document.getElementById('upload-toast');
+            if (toast) {
+                toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }
+        };
+
+        // Bật/tắt chế độ làm mờ bảo mật kho media nóng
+        window.toggleHotBlur = function() {
+            isHotBlurred = !isHotBlurred;
+            const container = document.getElementById('container-hot-media');
+            const icon = document.getElementById('blur-icon');
+            const label = document.getElementById('blur-label');
+
+            if (isHotBlurred) {
+                container.classList.add('hot-media-blurred');
+                icon.innerText = '👁️';
+                label.innerText = 'Đang Che Mờ (Bảo Mật)';
+            } else {
+                container.classList.remove('hot-media-blurred');
+                icon.innerText = '🔓';
+                label.innerText = 'Đang Mở Khóa Xem';
+            }
+        };
+
+        // ==========================================
+        // BỘ LỌC MEDIA THEO ĐỊNH DẠNG
+        // ==========================================
+        window.filterHotMedia = function(type) {
+            currentHotFilter = type;
+            ['all', 'video', 'image'].forEach(t => {
+                const btn = document.getElementById(`filter-hot-${t}`);
+                if (!btn) return;
+                if (t === type) {
+                    btn.className = 'px-2.5 py-1 rounded-full bg-[#D73B3E] text-white';
+                } else {
+                    btn.className = 'px-2.5 py-1 rounded-full bg-stone-100 text-[#4A4A4A] hover:text-[#D73B3E]';
+                }
+            });
+            renderMediaGallery('hot');
+        };
+
+        window.filterDailyMedia = function(type) {
+            currentDailyFilter = type;
+            ['all', 'video', 'image'].forEach(t => {
+                const btn = document.getElementById(`filter-daily-${t}`);
+                if (!btn) return;
+                if (t === type) {
+                    btn.className = 'px-2.5 py-1 rounded-full bg-[#007BA7] text-white';
+                } else {
+                    btn.className = 'px-2.5 py-1 rounded-full bg-stone-100 text-[#4A4A4A] hover:text-[#007BA7]';
+                }
+            });
+            renderMediaGallery('daily');
+        };
+
+        // ==========================================
+        // RENDER DANH SÁCH MEDIA TRONG TỪNG KHO
+        // ==========================================
+        function renderMediaGallery(category) {
+            const isHot = category === 'hot';
+            const rawList = isHot ? userHotGallery : userDailyGallery;
+            const filter = isHot ? currentHotFilter : currentDailyFilter;
+            const container = document.getElementById(isHot ? 'container-hot-media' : 'container-daily-media');
+            const countBadge = document.getElementById(isHot ? 'count-hot-media' : 'count-daily-media');
+            const quickBadge = document.getElementById(isHot ? 'quick-badge-hot-count' : 'quick-badge-daily-count');
+
+            if (countBadge) countBadge.innerText = `${rawList.length} tệp media`;
+            if (quickBadge) quickBadge.innerText = `${rawList.length}`;
+            if (!container) return;
+
+            // Áp dụng bộ lọc
+            const list = rawList.filter(item => {
+                const isVideo = item.type === 'video' || (typeof item.url === 'string' && /\.(mp4|webm|mov|ogg|m4v)(\?.*)?$/i.test(item.url));
+                if (filter === 'video') return isVideo;
+                if (filter === 'image') return !isVideo;
+                return true;
+            });
+
+            if (list.length === 0) {
+                if (!isEditMode) {
+                    container.innerHTML = `
+                        <div class="col-span-full py-10 px-4 text-center text-xs italic text-[#4A4A4A] bg-[#F9F6F0] rounded-2xl border border-dashed border-[#D1CCC5]">
+                            <span class="text-2xl block mb-2">${isHot ? '🔥' : '📷'}</span>
+                            Kho này hiện chưa có tệp media nào được lưu trữ.<br>
+                            Bấm <button type="button" onclick="window.toggleEditMode(true)" class="font-bold text-[#007BA7] hover:underline cursor-pointer">"Chỉnh Sửa Hồ Sơ"</button> ở phía trên để thêm hình và video.
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="col-span-full py-6 px-4 text-center text-xs italic text-[#4A4A4A] bg-[#F9F6F0] rounded-xl border border-dashed border-[#D1CCC5]">
+                            <span class="text-xl block mb-1">📂</span>
+                            Kho đang trống. Kéo thả tệp vào khung bên trên hoặc bấm <b>"Tải Lên Từ Máy"</b> / <b>"Dán Link URL / Drive"</b> để thêm ngay!
+                        </div>
+                    `;
+                }
+                return;
+            }
+
+            container.innerHTML = list.map((item, idx) => {
+                const isVideo = item.type === 'video' || (typeof item.url === 'string' && /\.(mp4|webm|mov|ogg|m4v)(\?.*)?$/i.test(item.url));
+                const filename = item.filename || (isVideo ? 'Video Clip' : 'Hình Ảnh');
+                const cleanTitle = filename.replace(/["']/g, '');
+
+                let driveId = item.driveFileId || '';
+                if (!driveId && typeof item.url === 'string') {
+                    const m = item.url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:.*&)?id=|thumbnail\?(?:.*&)?id=)([a-zA-Z0-9_-]+)/);
+                    if (m) driveId = m[1];
+                }
+
+                const cleanItemUrl = normalizeMediaUrl(item.url || '');
+                const cleanLocalPath = normalizeMediaUrl(item.localUrl || '');
+                const rawPlayUrl = cleanLocalPath || cleanItemUrl;
+                const mainPlayUrl = rawPlayUrl.startsWith('http') ? rawPlayUrl : encodeURI(rawPlayUrl);
+                let thumbSrc = mainPlayUrl;
+                if (driveId && (!cleanLocalPath || cleanLocalPath.startsWith('http'))) {
+                    thumbSrc = `https://lh3.googleusercontent.com/d/${driveId}=w600`;
+                }
+                const fallbackLocal = cleanLocalPath ? (cleanLocalPath.startsWith('http') ? cleanLocalPath : encodeURI(cleanLocalPath)) : '';
+
+                return `
+                    <div class="media-card relative group rounded-xl overflow-hidden aspect-square border border-[#D1CCC5] bg-stone-900 cursor-pointer shadow-xs hover:shadow-lg transition-all"
+                         onclick="window.openLightbox('${mainPlayUrl}', ${isVideo}, '${cleanTitle}', '${fallbackLocal}', '${driveId}')">
+                        ${isVideo ? (
+                            driveId && (!cleanLocalPath || cleanLocalPath.startsWith('http')) ? `
+                                <img src="${thumbSrc}" referrerpolicy="no-referrer" loading="lazy" class="w-full h-full object-cover transition-transform group-hover:scale-105" alt="${cleanTitle}" data-local="${fallbackLocal}">
+                                <div class="absolute inset-0 bg-black/25 flex items-center justify-center pointer-events-none group-hover:bg-black/10 transition-colors">
+                                    <span class="w-10 h-10 rounded-full bg-black/60 backdrop-blur-xs text-white flex items-center justify-center text-base shadow-lg">▶</span>
+                                </div>
+                                <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/80 text-white text-[9px] font-mono font-bold flex items-center gap-1 shadow-xs z-10">
+                                    <span class="text-red-400">▶</span> <span>DRIVE CLIP</span>
+                                </span>
+                            ` : `
+                                <video src="${mainPlayUrl}#t=0.001" muted preload="metadata" class="w-full h-full object-cover pointer-events-none"></video>
+                                <div class="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
+                                    <span class="w-10 h-10 rounded-full bg-black/60 backdrop-blur-xs text-white flex items-center justify-center text-base shadow-lg">▶</span>
+                                </div>
+                                <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/80 text-white text-[9px] font-mono font-bold flex items-center gap-1 shadow-xs z-10">
+                                    <span class="text-red-400">▶</span> <span>CLIP</span>
+                                </span>
+                            `
+                        ) : `
+                            <img src="${thumbSrc}" referrerpolicy="no-referrer" loading="lazy" class="w-full h-full object-cover transition-transform group-hover:scale-105" alt="${cleanTitle}"
+                                 data-local="${fallbackLocal}"
+                                 onerror="if (this.dataset.local && this.src !== this.dataset.local) { this.src = this.dataset.local; }">
+                        `}
+                        
+                        <!-- Overlay khi rê chuột -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2.5 z-20"
+                             onclick="event.stopPropagation()">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[9px] text-white/90 font-mono truncate max-w-[90px] bg-black/60 px-1.5 py-0.5 rounded">
+                                    ${isVideo ? 'VIDEO' : 'PHOTO'}
+                                </span>
+                                ${isEditMode ? `
+                                    <button type="button" onclick="event.stopPropagation(); window.deleteUserMedia('${category}', ${idx})" 
+                                            class="w-6 h-6 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center text-xs shadow-md transition-colors" title="Xóa tệp này">
+                                        ✕
+                                    </button>
+                                ` : ''}
+                            </div>
+                            
+                            <div>
+                                <p class="text-[11px] font-bold text-white truncate drop-shadow-sm mb-1">${cleanTitle}</p>
+                                <div class="flex items-center gap-1.5">
+                                    <button type="button" onclick="window.openLightbox('${mainPlayUrl}', ${isVideo}, '${cleanTitle}', '${fallbackLocal}', '${driveId}')" 
+                                            class="flex-1 py-1 rounded-full bg-white/95 hover:bg-white text-[#1A1A1A] text-[10px] font-bold uppercase tracking-wider text-center shadow-xs">
+                                        Phóng To
+                                    </button>
+                                    <a href="${fallbackLocal || mainPlayUrl || item.url}" download="${filename}" onclick="event.stopPropagation()" 
+                                       class="w-6 h-6 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center text-[10px] shadow-xs" title="Tải xuống tệp">
+                                        ⬇
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==========================================
+        // XỬ LÝ TẢI LÊN MULTI-FILES & KÉO THẢ
+        // (TỐI ƯU: Nén ảnh phía client + tải song song tối đa 3 tệp cùng lúc)
+        // ==========================================
+
+        /**
+         * Nén ảnh phía trình duyệt trước khi tải lên (giảm đáng kể dung lượng & thời gian)
+         * Chỉ nén ảnh > 2MB, giữ nguyên video và ảnh nhỏ.
+         * @param {File} file - Tệp ảnh gốc
+         * @param {number} maxWidth - Chiều rộng tối đa (mặc định 2560px, đủ rõ cho gallery)
+         * @param {number} quality - Chất lượng JPEG (0-1, mặc định 0.82)
+         * @returns {Promise<File>} Tệp ảnh đã nén hoặc tệp gốc nếu không cần nén
+         */
+        function compressImageBeforeUpload(file, maxWidth = 2560, quality = 0.82) {
+            return new Promise((resolve) => {
+                // Chỉ nén ảnh lớn hơn 2MB, bỏ qua GIF (giữ animation) và ảnh nhỏ
+                if (!file.type.startsWith('image/') || file.type === 'image/gif' || file.size < 2 * 1024 * 1024) {
+                    return resolve(file);
+                }
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                const timer = setTimeout(() => {
+                    URL.revokeObjectURL(url);
+                    resolve(file);
+                }, 4000);
+                img.onload = () => {
+                    clearTimeout(timer);
+                    URL.revokeObjectURL(url);
+                    // Nếu ảnh đã nhỏ hơn maxWidth, giữ nguyên kích thước gốc
+                    let w = img.naturalWidth, h = img.naturalHeight;
+                    if (w > maxWidth) {
+                        h = Math.round(h * maxWidth / w);
+                        w = maxWidth;
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    canvas.toBlob((blob) => {
+                        if (blob && blob.size < file.size) {
+                            // Tạo File mới với tên gốc để server nhận đúng filename
+                            const compressed = new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() });
+                            console.log(`[Aura Compress] ${file.name}: ${(file.size/1024/1024).toFixed(1)}MB → ${(compressed.size/1024/1024).toFixed(1)}MB (−${Math.round((1 - compressed.size/file.size)*100)}%)`);
+                            resolve(compressed);
+                        } else {
+                            resolve(file); // Nén không hiệu quả, giữ nguyên
+                        }
+                    }, 'image/jpeg', quality);
+                };
+                img.onerror = () => {
+                    clearTimeout(timer);
+                    URL.revokeObjectURL(url);
+                    resolve(file);
+                };
+                img.src = url;
+            });
+        }
+
+        /** Số lượng tệp tải lên đồng thời tối đa */
+        const UPLOAD_CONCURRENCY = 3;
+
+        async function uploadFilesList(files, category) {
+            if (!files || files.length === 0) return;
+            const fileArr = Array.from(files);
+
+            window.showToast("Đang Tải Lên", `Đang xử lý ${fileArr.length} tệp media (song song ×${Math.min(UPLOAD_CONCURRENCY, fileArr.length)})...`, true);
+
+            let successCount = 0;
+            let completedCount = 0;
+            const results = [];
+
+            /**
+             * Tải lên 1 tệp đơn lẻ (nén ảnh nếu cần, rồi POST lên server)
+             */
+            async function uploadSingleFile(file) {
+                try {
+                    const isVid = file.type.startsWith('video') || /\.(mp4|mov|webm|m4v)$/i.test(file.name);
+
+                    // Nén ảnh phía client trước khi gửi (giảm upload time đáng kể cho ảnh lớn)
+                    const fileToSend = isVid ? file : await compressImageBeforeUpload(file);
+                    const uid = currentUid || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+                    const personalSub = category === 'hot' ? 'Ảnh Nóng' : 'Ảnh Đời Thường';
+                    const folderName = `${uid}/Cá Nhân/${personalSub}`;
+
+                    const res = await fetch('/api/upload-media', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': fileToSend.type || 'application/octet-stream',
+                            'x-filename': encodeURIComponent(file.name),
+                            'x-folder': encodeURIComponent(folderName),
+                            'x-user-id': uid,
+                            'x-category': category
+                        },
+                        body: fileToSend
+                    });
+                    
+                    const data = await res.json();
+                    if (data.success && data.url) {
+                        const newItem = {
+                            url: data.url,
+                            localUrl: data.localUrl || '',
+                            driveFileId: data.driveFileId || '',
+                            thumbnailUrl: data.thumbnailUrl || (data.driveFileId ? `https://lh3.googleusercontent.com/d/${data.driveFileId}=w600` : ''),
+                            type: isVid ? 'video' : 'image',
+                            filename: file.name,
+                            size: fileToSend.size,
+                            createdAt: new Date().toISOString()
+                        };
+                        results.push({ newItem, category });
+                        successCount++;
+                    }
+                } catch (err) {
+                    console.error("Lỗi tải tệp lên:", err);
+                } finally {
+                    completedCount++;
+                    // Cập nhật trạng thái tiến trình cho người dùng
+                    window.showToast("Đang Tải Lên", `Hoàn tất ${completedCount}/${fileArr.length} tệp...`, true);
+                }
+            }
+
+            // Tải lên song song tối đa UPLOAD_CONCURRENCY tệp cùng lúc
+            const executing = new Set();
+            for (const file of fileArr) {
+                const p = uploadSingleFile(file).then(() => executing.delete(p));
+                executing.add(p);
+                if (executing.size >= UPLOAD_CONCURRENCY) {
+                    await Promise.race(executing);
+                }
+            }
+            await Promise.all(executing);
+
+            // Cập nhật gallery sau khi tất cả tệp đã xử lý xong
+            for (const { newItem, category: cat } of results) {
+                if (cat === 'hot') {
+                    userHotGallery.unshift(newItem);
+                } else {
+                    userDailyGallery.unshift(newItem);
+                }
+            }
+
+            renderMediaGallery(category);
+            await saveGalleriesToFirestore();
+
+            if (successCount > 0) {
+                window.showToast("Thành Công", `Đã lưu thành công ${successCount} tệp vào kho media!`, false);
+            } else {
+                window.showToast("Lỗi", "Không thể tải tệp lên. Vui lòng kiểm tra lại kết nối.", false);
+            }
+        }
+
+        // Event handler cho input file
+        window.handleUploadMedia = async function(e, category) {
+            await uploadFilesList(e.target.files, category);
+            e.target.value = '';
+        };
+
+        // Kéo thả Dropzone
+        function setupDropzone(dropzoneId, category) {
+            const el = document.getElementById(dropzoneId);
+            if (!el) return;
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                el.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    el.classList.add('scale-[1.01]', 'border-stone-800');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                el.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    el.classList.remove('scale-[1.01]', 'border-stone-800');
+                });
+            });
+
+            el.addEventListener('drop', async (e) => {
+                const dt = e.dataTransfer;
+                if (dt && dt.files && dt.files.length > 0) {
+                    await uploadFilesList(dt.files, category);
+                }
+            });
+        }
+
+        setupDropzone('dropzone-hot', 'hot');
+        setupDropzone('dropzone-daily', 'daily');
+
+        // Thêm link media từ URL (Google Drive, CDN ảnh, Cloudinary, link trực tiếp...)
+        window.promptAddMediaUrl = async function(category) {
+            const inputVal = prompt(`Nhập liên kết (URL) ảnh/clip hoặc link tệp Google Drive của bạn:\n(Ví dụ: https://drive.google.com/file/d/xxx hoặc link ảnh/video MP4)`);
+            if (!inputVal || !inputVal.trim()) return;
+
+            let finalUrl = inputVal.trim();
+            let isDrive = false;
+            let isVid = false;
+
+            // Kiểm tra link Google Drive file ID
+            const driveMatch = finalUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || finalUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+            if (driveMatch) {
+                const fileId = driveMatch[1];
+                isDrive = true;
+                const isUserVideo = confirm("Tệp Google Drive này có phải là VIDEO CLIP không?\n\n• Bấm OK nếu là Video Clip\n• Bấm Cancel nếu là Hình Ảnh");
+                if (isUserVideo) {
+                    finalUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                    isVid = true;
+                } else {
+                    finalUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
+                    isVid = false;
+                }
+            } else {
+                isVid = /\.(mp4|webm|mov|ogg|m4v)(\?.*)?$/i.test(finalUrl);
+                // Thử tải về lưu trực tiếp vào thư mục media Mô hình 1 của người dùng
+                try {
+                    const downloadRes = await fetch('/api/download-media', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            url: finalUrl,
+                            userId: currentUid || 'guest_local',
+                            category: category
+                        })
+                    });
+                    if (downloadRes.ok) {
+                        const dlData = await downloadRes.json();
+                        if (dlData.success && dlData.url) {
+                            finalUrl = dlData.url;
+                            if (dlData.type === 'video') isVid = true;
+                        }
+                    }
+                } catch (e) {
+                    console.log("Giữ nguyên URL gốc:", e);
+                }
+            }
+
+            const newItem = {
+                url: finalUrl,
+                type: isVid ? 'video' : 'image',
+                filename: isDrive ? (isVid ? `Google Drive Clip (${new Date().toLocaleDateString('vi-VN')})` : `Google Drive Ảnh (${new Date().toLocaleDateString('vi-VN')})`) : `Media (${new Date().toLocaleDateString('vi-VN')})`,
+                createdAt: new Date().toISOString()
+            };
+
+            if (category === 'hot') {
+                userHotGallery.unshift(newItem);
+            } else {
+                userDailyGallery.unshift(newItem);
+            }
+
+            renderMediaGallery(category);
+            await saveGalleriesToFirestore();
+            window.showToast("Đã Thêm Media", "Đã lưu tệp vào kho cá nhân thành công!", false);
+        };
+
+        // Nạp dữ liệu mẫu thử nghiệm nếu kho còn trống
+        window.seedSampleMedia = async function() {
+            const sampleHot = [
+                {
+                    url: 'https://assets.mixkit.co/videos/preview/mixkit-man-holding-dumbbells-in-a-gym-42750-large.mp4',
+                    type: 'video',
+                    filename: 'Clip Hot 01 • Thể Hình Kháng Lực (Demo)',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=800&auto=format&fit=crop&q=80',
+                    type: 'image',
+                    filename: 'Ảnh Hot 02 • Cơ Bắp Vùng Ngực & Bụng',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&auto=format&fit=crop&q=80',
+                    type: 'image',
+                    filename: 'Ảnh Hot 03 • Check Physique Phòng Tập',
+                    createdAt: new Date().toISOString()
+                }
+            ];
+
+            const sampleDaily = [
+                {
+                    url: 'https://assets.mixkit.co/videos/preview/mixkit-athlete-running-on-an-athletics-track-40748-large.mp4',
+                    type: 'video',
+                    filename: 'Clip Đời Thường 01 • Cardio Sáng Ngoài Trời (Demo)',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&auto=format&fit=crop&q=80',
+                    type: 'image',
+                    filename: 'Ảnh Đời Thường 02 • Du Lịch Thiên Nhiên',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=80',
+                    type: 'image',
+                    filename: 'Ảnh Đời Thường 03 • Sinh Hoạt Phòng Gym',
+                    createdAt: new Date().toISOString()
+                }
+            ];
+
+            userHotGallery = [...sampleHot, ...userHotGallery];
+            userDailyGallery = [...sampleDaily, ...userDailyGallery];
+
+            renderMediaGallery('hot');
+            renderMediaGallery('daily');
+            await saveGalleriesToFirestore();
+            window.showToast("Đã Nạp Mẫu", "Đã nạp 6 tệp ảnh & clip video demo thành công!", false);
+        };
+
+        // Xóa một tệp khỏi kho
+        window.deleteUserMedia = async function(category, idx) {
+            if (!confirm("Bạn có chắc chắn muốn xóa tệp này khỏi kho lưu trữ?")) return;
+            
+            if (category === 'hot') {
+                userHotGallery.splice(idx, 1);
+            } else {
+                userDailyGallery.splice(idx, 1);
+            }
+
+            renderMediaGallery(category);
+            await saveGalleriesToFirestore();
+            window.showToast("Đã Xóa Tệp", "Tệp đã được gỡ khỏi kho lưu trữ.", false);
+        };
+
+        // Lưu hai kho gallery lên Firestore và LocalStorage
+        async function saveGalleriesToFirestore() {
+            try {
+                localStorage.setItem('aura_hot_gallery', JSON.stringify(userHotGallery));
+                localStorage.setItem('aura_daily_gallery', JSON.stringify(userDailyGallery));
+            } catch (_) {}
+
+            if (!currentUid || currentUid === 'guest_local') return;
+
+            try {
+                const payload = {
+                    hotGallery: userHotGallery,
+                    dailyGallery: userDailyGallery,
+                    updatedAt: serverTimestamp()
+                };
+                await setDoc(doc(db, "users", currentUid), payload, { merge: true });
+                await setDoc(doc(db, "profiles", `profile_${currentUid}`), payload, { merge: true });
+            } catch (err) {
+                console.error("Lỗi lưu media lên Firestore:", err);
+            }
+        }
+
+        // ==========================================
+        // LIGHTBOX XEM FULLSCREEN & PHÁT VIDEO
+        // ==========================================
+        window.openLightbox = function(url, isVideo, title, localUrl = '', driveFileId = '') {
+            const box = document.getElementById('media-lightbox');
+            const content = document.getElementById('lightbox-content');
+            const badge = document.getElementById('lightbox-badge');
+            const titleEl = document.getElementById('lightbox-title');
+            const dlLink = document.getElementById('lightbox-download-link');
+            if (!box || !content) return;
+
+            // 1. Luôn ưu tiên tệp cục bộ (localUrl hoặc url local) để tải ngay lập tức trong vài mili-giây
+            const isLocal = (u) => u && typeof u === 'string' && !u.startsWith('http://') && !u.startsWith('https://') && !u.startsWith('data:');
+            let targetUrl = '';
+            if (isLocal(localUrl)) {
+                targetUrl = encodeURI(localUrl);
+            } else if (isLocal(url)) {
+                targetUrl = encodeURI(url);
+            } else if (localUrl && !localUrl.includes('drive.google.com')) {
+                targetUrl = localUrl;
+            } else if (url && !url.includes('drive.google.com')) {
+                targetUrl = url;
+            } else {
+                targetUrl = localUrl || url || '';
+            }
+
+            // Trích xuất driveId nếu là link Google Drive
+            let driveId = driveFileId || '';
+            if (!driveId && typeof targetUrl === 'string' && targetUrl.includes('drive.google.com')) {
+                const m = targetUrl.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:.*&)?id=|thumbnail\?(?:.*&)?id=)([a-zA-Z0-9_-]+)/);
+                if (m) driveId = m[1];
+            }
+
+            const mediaTitle = title || (isVideo ? 'Video Clip Toàn Cảnh' : 'Hình Ảnh Toàn Cảnh');
+            if (badge) {
+                badge.innerText = isVideo ? 'CLIP VIDEO' : 'HÌNH ẢNH';
+                badge.className = isVideo 
+                    ? 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#D73B3E] uppercase shrink-0' 
+                    : 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#007BA7] uppercase shrink-0';
+            }
+            if (titleEl) titleEl.innerText = mediaTitle;
+            if (dlLink) {
+                dlLink.href = targetUrl || url;
+                dlLink.download = mediaTitle;
+            }
+
+            // Hiển thị khung chờ nạp tức thì (Loading spinner) để người dùng không cảm giác bị đơ
+            const spinnerHtml = `
+                <div id="lightbox-spinner" class="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10 pointer-events-none transition-opacity duration-300">
+                    <div class="w-10 h-10 border-3 border-white/20 border-t-[#007BA7] rounded-full animate-spin"></div>
+                    <span class="text-xs font-mono text-white/70">Đang nạp nhanh...</span>
+                </div>
+            `;
+
+            if (isVideo) {
+                if (targetUrl && !targetUrl.includes('drive.google.com')) {
+                    content.innerHTML = `
+                        <div class="relative w-full h-full flex items-center justify-center">
+                            ${spinnerHtml}
+                            <video src="${targetUrl}" controls autoplay loop playsinline preload="auto"
+                                   oncanplay="document.getElementById('lightbox-spinner')?.remove(); this.classList.remove('opacity-0')"
+                                   class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain border border-stone-800 bg-black opacity-0 transition-opacity duration-300">
+                            </video>
+                        </div>
+                    `;
+                } else if (driveId) {
+                    content.innerHTML = `
+                        <div class="relative w-full h-full flex items-center justify-center">
+                            ${spinnerHtml}
+                            <iframe src="https://drive.google.com/file/d/${driveId}/preview" 
+                                    onload="document.getElementById('lightbox-spinner')?.remove()"
+                                    class="w-[90vw] max-w-4xl h-[70vh] rounded-2xl shadow-2xl border border-stone-800 bg-black" 
+                                    allow="autoplay; fullscreen" allowfullscreen>
+                            </iframe>
+                        </div>
+                    `;
+                } else {
+                    content.innerHTML = `
+                        <div class="relative w-full h-full flex items-center justify-center">
+                            ${spinnerHtml}
+                            <video src="${targetUrl}" controls autoplay loop playsinline preload="auto"
+                                   oncanplay="document.getElementById('lightbox-spinner')?.remove(); this.classList.remove('opacity-0')"
+                                   class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain border border-stone-800 bg-black opacity-0 transition-opacity duration-300">
+                            </video>
+                        </div>
+                    `;
+                }
+            } else {
+                let imgSource = targetUrl;
+                if (driveId && targetUrl.includes('drive.google.com')) {
+                    imgSource = `https://lh3.googleusercontent.com/d/${driveId}=w1600`;
+                }
+                content.innerHTML = `
+                    <div class="relative w-full h-full flex items-center justify-center">
+                        ${spinnerHtml}
+                        <img src="${imgSource}" referrerpolicy="no-referrer" decoding="async"
+                             onload="document.getElementById('lightbox-spinner')?.remove(); this.classList.remove('opacity-0')"
+                             onerror="document.getElementById('lightbox-spinner')?.remove(); this.classList.remove('opacity-0')"
+                             class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain border border-stone-800 opacity-0 transition-opacity duration-300" 
+                             alt="${mediaTitle}">
+                    </div>
+                `;
+            }
+
+            box.classList.remove('hidden');
+            box.classList.add('flex');
+        };
+
+        window.closeLightbox = function() {
+            const box = document.getElementById('media-lightbox');
+            const content = document.getElementById('lightbox-content');
+            if (content) content.innerHTML = '';
+            if (box) {
+                box.classList.add('hidden');
+                box.classList.remove('flex');
+            }
+        };
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                window.closeLightbox();
+                if (isEditMode) window.toggleEditMode(false);
+            }
+        });
+
+        // ==========================================
+        // QUẢN LÝ HÌNH ẢNH & KÍCH THƯỚC CẬU NHỎ (MỤC II)
+        // ==========================================
+        window.updatePenisPhotoPreview = function(url) {
+            const preview = document.getElementById('edit-penis-photo-preview');
+            const empty = document.getElementById('edit-penis-photo-empty');
+            if (!preview || !empty) return;
+            if (url && url.trim()) {
+                const norm = normalizeMediaUrl(url.trim());
+                preview.src = norm.startsWith('http') ? norm : encodeURI(norm);
+                preview.classList.remove('hidden');
+                empty.classList.add('hidden');
+            } else {
+                preview.src = '';
+                preview.classList.add('hidden');
+                empty.classList.remove('hidden');
+            }
+        };
+
+        window.handleUploadPenisPhoto = async function(e) {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const statusEl = document.getElementById('penis-photo-upload-status');
+            if (statusEl) statusEl.innerText = "Đang nén & tải ảnh lên...";
+            try {
+                const fileToSend = await compressImageBeforeUpload(file);
+                const uid = currentUid || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+                const folderName = `${uid}/Cá Nhân/Ảnh Cậu Nhỏ`;
+                const res = await fetch('/api/upload-media', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': fileToSend.type || 'application/octet-stream',
+                        'x-filename': encodeURIComponent(file.name),
+                        'x-folder': encodeURIComponent(folderName),
+                        'x-user-id': uid,
+                        'x-category': 'hot'
+                    },
+                    body: fileToSend
+                });
+                const data = await res.json();
+                if (data.success && data.url) {
+                    const inputEl = document.getElementById('inp-penis-photo');
+                    if (inputEl) {
+                        inputEl.value = data.url;
+                        window.updatePenisPhotoPreview(data.url);
+                    }
+                    if (statusEl) statusEl.innerText = "✓ Tải ảnh thành công!";
+                    window.showToast("Ảnh Cậu Nhỏ", "Đã tải ảnh cậu nhỏ thành công! Bấm Lưu Thay Đổi để cập nhật.", false);
+                } else {
+                    throw new Error(data.error || "Lỗi máy chủ khi lưu ảnh");
+                }
+            } catch (err) {
+                if (statusEl) statusEl.innerText = "✗ Lỗi: " + err.message;
+                window.showToast("Lỗi Tải Ảnh", err.message, false);
+            } finally {
+                e.target.value = '';
+            }
+        };
+
+        let isPenisPhotoBlurred = true;
+        window.togglePenisPhotoBlur = function() {
+            const img = document.getElementById('view-penis-photo');
+            const icon = document.getElementById('penis-blur-icon');
+            const txt = document.getElementById('penis-blur-text');
+            if (!img) return;
+            isPenisPhotoBlurred = !isPenisPhotoBlurred;
+            if (isPenisPhotoBlurred) {
+                img.classList.remove('penis-photo-clear');
+                img.classList.add('penis-photo-blurred');
+                if (icon) icon.innerText = '👁️';
+                if (txt) txt.innerText = 'Hiện Ảnh';
+            } else {
+                img.classList.remove('penis-photo-blurred');
+                img.classList.add('penis-photo-clear');
+                if (icon) icon.innerText = '🙈';
+                if (txt) txt.innerText = 'Làm Mờ';
+            }
+        };
+
+        window.openPenisPhotoLightbox = function() {
+            const img = document.getElementById('view-penis-photo');
+            if (img && img.src && !img.src.includes('data:image') && !img.classList.contains('hidden')) {
+                window.openLightbox(img.src, false, 'Kích Thước & Hình Ảnh Cậu Nhỏ');
+            } else {
+                window.toggleEditMode(true);
+            }
+        };
+
+        // Kích hoạt đăng nhập Google từ banner
+        window.triggerGoogleLogin = async function() {
+            const res = await loginWithGoogle();
+            if (res.success) {
+                window.location.reload();
+            } else {
+                alert("Lỗi đăng nhập Google: " + res.error);
+            }
+        };
+
+        // =========================================================================
+        // CHẾ ĐỘ CHỈNH SỬA TRỰC TIẾP TRÊN TRANG (INLINE EDIT - NO MODAL)
+        // =========================================================================
+        window.handleCoverUpload = async function(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            const isVideo = file.type.startsWith('video') || /\.(mp4|webm|mov|m4v|ogg)$/i.test(file.name);
+            window.showToast("Trang Bìa", isVideo ? "Đang xử lý tải video bìa..." : "Đang xử lý tải ảnh bìa...", true);
+
+            try {
+                // Thử tải lên qua server local /api/upload-media (lưu trữ media/ và đồng bộ background mirror)
+                let fileToSend = file;
+                if (!isVideo && typeof compressImageBeforeUpload === 'function') {
+                    try {
+                        fileToSend = await compressImageBeforeUpload(file, 2560, 0.85);
+                    } catch (cErr) {
+                        fileToSend = file;
+                    }
+                }
+
+                const uid = currentUid || 'guest_local';
+                const folderName = `${uid}/Cá Nhân/Trang Bìa`;
+                const res = await fetch('/api/upload-media', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': fileToSend.type || (isVideo ? 'video/mp4' : 'image/jpeg'),
+                        'x-filename': encodeURIComponent(file.name),
+                        'x-folder': encodeURIComponent(folderName),
+                        'x-user-id': uid,
+                        'x-category': 'daily'
+                    },
+                    body: fileToSend
+                });
+
+                const data = await res.json();
+                if (data.success && data.url) {
+                    const inp = document.getElementById('inp-cover-url');
+                    if (inp) inp.value = data.url;
+                    window.updateEditCoverPreview(data.url);
+                    window.showToast("Trang Bìa", isVideo ? "Đã lưu video bìa vào thư mục media!" : "Đã lưu ảnh bìa vào thư mục media!", false);
+                    return;
+                }
+                throw new Error(data.error || "Máy chủ không thể lưu tệp bìa");
+            } catch (err) {
+                console.warn("Upload server local thất bại, chuyển sang FileReader DataURL:", err);
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const dataUrl = evt.target.result;
+                    const inp = document.getElementById('inp-cover-url');
+                    if (inp) inp.value = dataUrl;
+                    window.updateEditCoverPreview(dataUrl);
+                    window.showToast("Trang Bìa", isVideo ? "Đã nạp video bìa từ máy tính!" : "Đã nạp ảnh bìa từ máy tính!", false);
+                };
+                reader.readAsDataURL(file);
+            } finally {
+                e.target.value = "";
+            }
+        };
+
+        function fillInlineEditForm(data) {
+            if (!data) return;
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val != null ? val : '';
+            };
+
+            setVal('inp-cover-url', data.coverURL || '');
+            window.updateEditCoverPreview(data.coverURL || '');
+
+            setVal('inp-photo-url', data.photoURL || '');
+            setVal('inp-full-name', data.fullName || data.displayName || '');
+            setVal('inp-nickname', data.nickname || '');
+            setVal('inp-dob', data.dob || '');
+            setVal('inp-phone', data.phone || '');
+            setVal('inp-location', data.location || '');
+            setVal('inp-occupation', data.occupation || '');
+            setVal('inp-height', data.height || 178);
+            setVal('inp-weight', data.weight || 75);
+            setVal('inp-bodyfat', data.bodyFat != null ? data.bodyFat : 14.5);
+            setVal('inp-waist', data.waist || 78);
+            setVal('inp-bp', data.bp || '118/76');
+            setVal('inp-heartrate', data.heartRate || 62);
+            setVal('inp-penis-length', data.penisLength || 15.5);
+            setVal('inp-penis-girth', data.penisGirth || 12.8);
+            setVal('inp-penis-photo', data.penisPhoto || '');
+            window.updatePenisPhotoPreview(data.penisPhoto || '');
+            setVal('inp-prep-status', data.prepStatus || 'Hàng ngày (Daily PrEP)');
+            setVal('inp-stds', data.stds || 'Âm tính tất cả (01/2026)');
+            setVal('inp-health-notes', data.healthNotes || '');
+        }
+
+        window.toggleEditMode = function(enable) {
+            isEditMode = !!enable;
+
+            const viewActions = document.getElementById('header-view-actions');
+            const editActions = document.getElementById('header-edit-actions');
+            const editBanner = document.getElementById('editing-mode-banner');
+            const profileViewWrap = document.getElementById('profile-view-wrap');
+            const profileEditWrap = document.getElementById('profile-edit-wrap');
+            const uploaderHot = document.getElementById('uploader-wrap-hot');
+            const uploaderDaily = document.getElementById('uploader-wrap-daily');
+
+            if (isEditMode) {
+                if (viewActions) viewActions.classList.add('hidden');
+                if (editActions) editActions.classList.remove('hidden');
+                if (editBanner) editBanner.classList.remove('hidden');
+                if (profileViewWrap) profileViewWrap.classList.add('hidden');
+                if (profileEditWrap) profileEditWrap.classList.remove('hidden');
+                if (uploaderHot) uploaderHot.classList.remove('hidden');
+                if (uploaderDaily) uploaderDaily.classList.remove('hidden');
+
+                fillInlineEditForm(cachedUserData);
+                profileEditWrap?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                if (viewActions) viewActions.classList.remove('hidden');
+                if (editActions) editActions.classList.add('hidden');
+                if (editBanner) editBanner.classList.add('hidden');
+                if (profileViewWrap) profileViewWrap.classList.remove('hidden');
+                if (profileEditWrap) profileEditWrap.classList.add('hidden');
+                if (uploaderHot) uploaderHot.classList.add('hidden');
+                if (uploaderDaily) uploaderDaily.classList.add('hidden');
+            }
+
+            renderMediaGallery('hot');
+            renderMediaGallery('daily');
+        };
+
+        // Alias tương thích ngược
+        window.openEditModal = () => window.toggleEditMode(true);
+        window.closeEditModal = () => window.toggleEditMode(false);
+
+        // Lưu thông tin chỉnh sửa trực tiếp
+        window.saveInlineProfile = async function() {
+            const btnTop = document.getElementById('btn-inline-save-top');
+            const btnBottom = document.getElementById('btn-inline-save-bottom');
+            const btnHeader = document.getElementById('btn-save-inline');
+
+            const setButtonsLoading = (isLoading) => {
+                [btnTop, btnBottom, btnHeader].forEach(b => {
+                    if (b) {
+                        b.disabled = isLoading;
+                        b.innerHTML = isLoading ? '<span>⏳ Đang lưu...</span>' : '<span>💾 Lưu Thay Đổi</span>';
+                    }
+                });
+            };
+
+            setButtonsLoading(true);
+
+            const payload = {
+                uid: currentUid,
+                coverURL: document.getElementById('inp-cover-url')?.value || '',
+                photoURL: document.getElementById('inp-photo-url').value,
+                fullName: document.getElementById('inp-full-name').value,
+                nickname: document.getElementById('inp-nickname').value,
+                dob: document.getElementById('inp-dob').value,
+                phone: document.getElementById('inp-phone').value,
+                location: document.getElementById('inp-location').value,
+                occupation: document.getElementById('inp-occupation').value,
+                height: parseFloat(document.getElementById('inp-height').value) || null,
+                weight: parseFloat(document.getElementById('inp-weight').value) || null,
+                bodyFat: parseFloat(document.getElementById('inp-bodyfat').value) || null,
+                waist: parseFloat(document.getElementById('inp-waist').value) || null,
+                bp: document.getElementById('inp-bp').value,
+                heartRate: parseInt(document.getElementById('inp-heartrate').value, 10) || null,
+                penisLength: parseFloat(document.getElementById('inp-penis-length').value) || null,
+                penisGirth: parseFloat(document.getElementById('inp-penis-girth').value) || null,
+                penisPhoto: document.getElementById('inp-penis-photo')?.value || null,
+                prepStatus: document.getElementById('inp-prep-status').value,
+                stds: document.getElementById('inp-stds').value,
+                healthNotes: document.getElementById('inp-health-notes').value,
+                updatedAt: serverTimestamp()
+            };
+
+            try {
+                localStorage.setItem('aura_local_profile', JSON.stringify(payload));
+            } catch (_) {}
+
+            if (currentUid && currentUid !== 'guest_local') {
+                try {
+                    await setDoc(doc(db, "users", currentUid), payload, { merge: true });
+                    await setDoc(doc(db, "profiles", `profile_${currentUid}`), payload, { merge: true });
+                } catch (err) {
+                    console.error("Lỗi Firestore:", err);
+                }
+            }
+
+            renderProfileView({ ...cachedUserData, ...payload, hotGallery: userHotGallery, dailyGallery: userDailyGallery });
+            window.toggleEditMode(false);
+            window.showToast("Cập Nhật", "Đã cập nhật hồ sơ cá nhân thành công!", false);
+
+            setButtonsLoading(false);
+        };
+
+        function renderProfileView(data) {
+            cachedUserData = data;
+            
+            window.updateViewCover(data.coverURL || '');
+            window.updateEditCoverPreview(data.coverURL || '');
+
+            document.getElementById('view-avatar').src = data.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80';
+            document.getElementById('view-name').innerText = data.fullName || data.displayName || 'Người dùng Aura';
+            document.getElementById('view-nickname').innerText = data.nickname ? `@${data.nickname}` : '@aura_user';
+            document.getElementById('view-email').innerText = data.email || 'aura_local_mode@user';
+            document.getElementById('view-dob').innerText = data.dob || 'Chưa cập nhật';
+            
+            if (data.dob) {
+                const birthYear = new Date(data.dob).getFullYear();
+                const thisYear = new Date().getFullYear();
+                document.getElementById('view-calc-age').innerText = (thisYear - birthYear) || '--';
+            } else {
+                document.getElementById('view-calc-age').innerText = '--';
+            }
+
+            document.getElementById('view-phone').innerText = data.phone || 'Chưa cập nhật';
+            document.getElementById('view-location').innerText = data.location || 'Việt Nam';
+            document.getElementById('view-occupation').innerText = data.occupation || 'Chưa cập nhật';
+
+            // Biometrics
+            const h = data.height || 178;
+            const w = data.weight || 75;
+            document.getElementById('view-height').innerText = h;
+            document.getElementById('view-weight').innerText = w;
+            
+            if (h > 0 && w > 0) {
+                const bmiVal = (w / ((h/100) * (h/100))).toFixed(1);
+                document.getElementById('view-bmi').innerText = bmiVal;
+                const badge = document.getElementById('view-bmi-badge');
+                if (bmiVal < 18.5) {
+                    badge.innerText = "Thiếu cân";
+                    badge.className = "inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800";
+                } else if (bmiVal <= 24.9) {
+                    badge.innerText = "Chuẩn y khoa";
+                    badge.className = "inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800";
+                } else {
+                    badge.innerText = "Thừa cân";
+                    badge.className = "inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800";
+                }
+            }
+
+            document.getElementById('view-bodyfat').innerText = data.bodyFat != null ? data.bodyFat : '14.5';
+            document.getElementById('view-waist').innerText = data.waist || '78';
+            document.getElementById('view-bp').innerText = data.bp || '118/76';
+            document.getElementById('view-heartrate').innerText = data.heartRate || '62';
+
+            const pLen = data.penisLength != null ? data.penisLength : '15.5';
+            const pGirth = data.penisGirth != null ? data.penisGirth : '12.8';
+            document.getElementById('view-penis-length').innerText = pLen;
+            document.getElementById('view-penis-girth').innerText = pGirth;
+            const sec2Len = document.getElementById('view-penis-length-sec2');
+            if (sec2Len) sec2Len.innerText = pLen;
+            const sec2Girth = document.getElementById('view-penis-girth-sec2');
+            if (sec2Girth) sec2Girth.innerText = pGirth;
+
+            // Ảnh Cậu Nhỏ (Mục II)
+            const penisPhotoImg = document.getElementById('view-penis-photo');
+            const penisPhotoPlaceholder = document.getElementById('view-penis-photo-placeholder');
+            if (penisPhotoImg && penisPhotoPlaceholder) {
+                if (data.penisPhoto && data.penisPhoto.trim()) {
+                    const pUrl = normalizeMediaUrl(data.penisPhoto.trim());
+                    penisPhotoImg.src = pUrl.startsWith('http') ? pUrl : encodeURI(pUrl);
+                    penisPhotoImg.classList.remove('hidden');
+                    penisPhotoPlaceholder.classList.add('hidden');
+                } else if (Array.isArray(data.hotGallery) && data.hotGallery.length > 0) {
+                    const firstHot = data.hotGallery[0];
+                    const pUrl = normalizeMediaUrl(firstHot.url || firstHot.localUrl || '');
+                    if (pUrl) {
+                        penisPhotoImg.src = pUrl.startsWith('http') ? pUrl : encodeURI(pUrl);
+                        penisPhotoImg.classList.remove('hidden');
+                        penisPhotoPlaceholder.classList.add('hidden');
+                    } else {
+                        penisPhotoImg.classList.add('hidden');
+                        penisPhotoPlaceholder.classList.remove('hidden');
+                    }
+                } else {
+                    penisPhotoImg.classList.add('hidden');
+                    penisPhotoPlaceholder.classList.remove('hidden');
+                }
+            }
+
+            document.getElementById('view-prep').innerText = data.prepStatus || 'Đang dùng hàng ngày (Daily PrEP)';
+            document.getElementById('view-stds').innerText = data.stds || 'Âm tính tất cả (Định kỳ)';
+            document.getElementById('view-notes').innerText = data.healthNotes || 'Chưa có ghi chú đặc biệt nào. Sức khỏe nội tiết và thể chất ổn định.';
+
+            // Render 2 kho media với chuẩn hóa đường dẫn
+            userHotGallery = (Array.isArray(data.hotGallery) ? data.hotGallery : []).map(x => ({
+                ...x,
+                url: normalizeMediaUrl(x.url || x.localUrl),
+                localUrl: normalizeMediaUrl(x.localUrl || x.url)
+            }));
+            userDailyGallery = (Array.isArray(data.dailyGallery) ? data.dailyGallery : []).map(x => ({
+                ...x,
+                url: normalizeMediaUrl(x.url || x.localUrl),
+                localUrl: normalizeMediaUrl(x.localUrl || x.url)
+            }));
+            renderMediaGallery('hot');
+            renderMediaGallery('daily');
+        }
+
+        // Khởi tạo Auth
+        onAuthChange(async (user) => {
+            let profileData = {
+                uid: 'guest_local',
+                displayName: 'Người Dùng Aura',
+                email: 'Chưa Đăng Nhập (Lưu Trực Tiếp Trên Máy)',
+                coverURL: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80',
+                photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80',
+                fullName: 'Người Dùng Aura',
+                nickname: 'my_aura',
+                dob: '1998-05-15',
+                phone: '0988 123 456',
+                location: 'Hồ Chí Minh, Việt Nam',
+                occupation: 'Doanh Nhân / Chuyên Gia',
+                height: 178,
+                weight: 75,
+                bodyFat: 14.5,
+                waist: 78,
+                bp: '118/76',
+                heartRate: 62,
+                penisLength: 15.5,
+                penisGirth: 12.8,
+                prepStatus: 'Hàng ngày (Daily PrEP)',
+                stds: 'Âm tính tất cả (01/2026)',
+                healthNotes: 'Sức khỏe nội tiết tốt, không có bệnh nền.',
+                hotGallery: [],
+                dailyGallery: []
+            };
+
+            // Nạp từ localStorage trước
+            try {
+                const localHot = localStorage.getItem('aura_hot_gallery');
+                if (localHot) profileData.hotGallery = JSON.parse(localHot);
+                const localDaily = localStorage.getItem('aura_daily_gallery');
+                if (localDaily) profileData.dailyGallery = JSON.parse(localDaily);
+                const localProf = localStorage.getItem('aura_local_profile');
+                if (localProf) profileData = { ...profileData, ...JSON.parse(localProf) };
+            } catch (_) {}
+
+            if (user) {
+                currentUid = user.uid;
+                profileData.uid = user.uid;
+                profileData.displayName = user.displayName || profileData.displayName;
+                profileData.fullName = user.displayName || profileData.fullName;
+                profileData.email = user.email || profileData.email;
+                profileData.photoURL = user.photoURL || profileData.photoURL;
+
+                try {
+                    let remoteData = {};
+                    const userDocSnap = await getDoc(doc(db, "users", user.uid));
+                    if (userDocSnap.exists()) {
+                        remoteData = { ...remoteData, ...userDocSnap.data() };
+                    }
+                    const profileDocSnap = await getDoc(doc(db, "profiles", `profile_${user.uid}`));
+                    if (profileDocSnap.exists()) {
+                        const profData = profileDocSnap.data();
+                        remoteData = { ...remoteData, ...profData };
+                        if ((!remoteData.dailyGallery || remoteData.dailyGallery.length === 0) && Array.isArray(profData.dailyGallery)) {
+                            remoteData.dailyGallery = profData.dailyGallery;
+                        }
+                        if ((!remoteData.hotGallery || remoteData.hotGallery.length === 0) && Array.isArray(profData.hotGallery)) {
+                            remoteData.hotGallery = profData.hotGallery;
+                        }
+                    }
+                    profileData = { ...profileData, ...remoteData };
+                } catch (err) {
+                    console.error("Lỗi tải hồ sơ cá nhân:", err);
+                }
+
+                // Ẩn banner khách nếu đã login
+                const guestBanner = document.getElementById('guest-notice-banner');
+                if (guestBanner) guestBanner.classList.add('hidden');
+            } else {
+                currentUid = 'guest_local';
+                // Hiện banner khách nhắc đăng nhập nhưng không chặn người dùng
+                const guestBanner = document.getElementById('guest-notice-banner');
+                if (guestBanner) guestBanner.classList.remove('hidden');
+            }
+
+            renderProfileView(profileData);
+        });
+
+        // ==========================================
+        // QUẢN LÝ TÍCH HỢP GOOGLE DRIVE
+        // ==========================================
+        const APPS_SCRIPT_SOURCE = `// =============================================
+// AURA MEDIA VAULT — Google Drive Auto Upload
+// =============================================
+// Thay YOUR_FOLDER_ID bên dưới bằng ID thư mục Google Drive của bạn
+
+const ROOT_FOLDER_ID = 'YOUR_FOLDER_ID';
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var fileName = data.filename || ('media_' + Date.now());
+    var mimeType = data.mimeType || 'application/octet-stream';
+    var base64Data = data.base64;
+    var subFolder = data.folder || '';
+
+    if (!base64Data) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false, error: 'Thiếu dữ liệu base64'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var targetFolder = DriveApp.getFolderById(ROOT_FOLDER_ID);
+    if (subFolder) {
+      var parts = subFolder.split('/').filter(function(p) { return p && p.length > 0; });
+      for (var i = 0; i < parts.length; i++) {
+        var existing = targetFolder.getFoldersByName(parts[i]);
+        if (existing.hasNext()) {
+          targetFolder = existing.next();
+        } else {
+          targetFolder = targetFolder.createFolder(parts[i]);
+        }
+      }
+    }
+
+    var blob = Utilities.newBlob(Utilities.base64Decode(base64Data), mimeType, fileName);
+    var file = targetFolder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+    var fileId = file.getId();
+    var isVideo = mimeType.indexOf('video') === 0;
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      fileId: fileId,
+      fileName: file.getName(),
+      mimeType: mimeType,
+      size: file.getSize(),
+      url: isVideo
+        ? 'https://drive.google.com/file/d/' + fileId + '/preview'
+        : 'https://lh3.googleusercontent.com/d/' + fileId,
+      driveUrl: 'https://drive.google.com/file/d/' + fileId + '/view',
+      type: isVideo ? 'video' : 'image'
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false, error: err.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({
+    status: 'ok',
+    service: 'Aura Media Vault — Google Drive Bridge',
+    version: '1.0',
+    timestamp: new Date().toISOString()
+  })).setMimeType(ContentService.MimeType.JSON);
+}`;
+
+        async function fetchDriveConfig() {
+            try {
+                const res = await fetch('/api/drive-config');
+                if (res.ok) {
+                    return await res.json();
+                }
+            } catch (_) {}
+            return { enabled: false, scriptUrl: '' };
+        }
+
+        async function refreshDriveIndicator() {
+            const dot = document.getElementById('drive-indicator-dot');
+            const text = document.getElementById('drive-indicator-text');
+            if (!dot || !text) return;
+
+            const cfg = await fetchDriveConfig();
+            if (cfg.enabled && cfg.scriptUrl) {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                text.innerText = "Google Drive (Bật)";
+                text.className = "text-emerald-700 font-bold";
+            } else if (cfg.scriptUrl && !cfg.enabled) {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+                text.innerText = "Google Drive (Tắt)";
+                text.className = "text-amber-700 font-bold";
+            } else {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-stone-300";
+                text.innerText = "Google Drive";
+                text.className = "text-stone-600";
+            }
+        }
+
+        window.openDriveSettingsModal = async function() {
+            const modal = document.getElementById('modal-drive-settings');
+            const urlInput = document.getElementById('input-drive-script-url');
+            const checkEnabled = document.getElementById('check-drive-enabled');
+            const statusDesc = document.getElementById('drive-status-badge-desc');
+            const statusIcon = document.getElementById('drive-status-badge-icon');
+            const testResult = document.getElementById('drive-test-result');
+
+            if (testResult) testResult.classList.add('hidden');
+
+            const cfg = await fetchDriveConfig();
+            if (urlInput) urlInput.value = cfg.scriptUrl || '';
+            if (checkEnabled) checkEnabled.checked = Boolean(cfg.enabled);
+
+            if (statusDesc && statusIcon) {
+                if (cfg.enabled && cfg.scriptUrl) {
+                    statusIcon.className = "w-9 h-9 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm shrink-0";
+                    statusIcon.innerText = "✓";
+                    statusDesc.innerHTML = `<span class="text-emerald-700 font-bold">Đang Hoạt Động</span> — Tự động lưu tệp lên Drive`;
+                } else if (cfg.scriptUrl) {
+                    statusIcon.className = "w-9 h-9 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-sm shrink-0";
+                    statusIcon.innerText = "!";
+                    statusDesc.innerHTML = `<span class="text-amber-700 font-bold">Đã Cấu Hình Nhưng Đang Tắt</span>`;
+                } else {
+                    statusIcon.className = "w-9 h-9 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center font-bold text-sm shrink-0";
+                    statusIcon.innerText = "○";
+                    statusDesc.innerHTML = `<span class="text-stone-600">Chưa Cấu Hình URL Web App</span>`;
+                }
+            }
+
+            if (modal) modal.classList.remove('hidden');
+        };
+
+        window.closeDriveSettingsModal = function() {
+            const modal = document.getElementById('modal-drive-settings');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.testDriveConnection = async function() {
+            const urlInput = document.getElementById('input-drive-script-url');
+            const testBtn = document.getElementById('btn-drive-test');
+            const testResult = document.getElementById('drive-test-result');
+            const testUrl = (urlInput ? urlInput.value : '').trim();
+
+            if (!testUrl) {
+                alert("Vui lòng dán Web App URL của Google Apps Script trước khi kiểm tra!");
+                return;
+            }
+
+            if (testBtn) {
+                testBtn.disabled = true;
+                testBtn.innerText = "Đang kiểm tra...";
+            }
+
+            try {
+                const res = await fetch('/api/drive-test', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scriptUrl: testUrl })
+                });
+                const resp = await res.json();
+                const data = resp.result || resp;
+
+                if (testResult) {
+                    testResult.classList.remove('hidden');
+
+                    if (data.success) {
+                        testResult.className = "p-4 rounded-2xl text-xs border bg-emerald-50 text-emerald-900 border-emerald-300";
+                        testResult.innerHTML = `
+                            <div class="flex items-center gap-2 font-bold text-sm text-emerald-700 mb-1">
+                                <span>✓</span> <span>KẾT NỐI THÀNH CÔNG!</span>
+                            </div>
+                            <p class="text-stone-700">Google Apps Script đã sẵn sàng hoạt động. Bây giờ bạn hãy bấm nút <b>"💾 Lưu &amp; Áp Dụng"</b> ở góc dưới để bắt đầu tự động lưu ảnh/clip vào Drive!</p>
+                        `;
+                    } else {
+                        testResult.className = "p-4 rounded-2xl text-xs border bg-amber-50 text-amber-900 border-amber-300";
+                        let guidanceHtml = '';
+
+                        if (data.type === 'auth_required') {
+                            guidanceHtml = `
+                                <div class="mt-2 text-stone-800 bg-white/80 p-3.5 rounded-xl border border-amber-300">
+                                    <div class="font-bold text-amber-800 mb-1">👉 Cách khắc phục (trong 30 giây):</div>
+                                    <ol class="list-decimal list-inside space-y-1.5 text-[11px] leading-relaxed">
+                                        <li>Mở lại tab Google Apps Script (<a href="https://script.google.com" target="_blank" class="text-[#007BA7] underline font-bold">script.google.com</a>).</li>
+                                        <li>Bấm nút <b>Triển khai (Deploy)</b> → chọn <b>Quản lý triển khai (Manage deployments)</b>.</li>
+                                        <li>Bấm biểu tượng cây bút ✏️ <i>(Chỉnh sửa)</i> ở góc trên.</li>
+                                        <li>Tại mục <b>Ai có quyền truy cập (Who has access)</b>: Bấm đổi thành <b>Bất kỳ ai (Anyone)</b> <i>(hiện tại của bạn đang để "Chỉ mình tôi")</i>.</li>
+                                        <li>Tại mục <b>Phiên bản (Version)</b>: Chọn <b>Phiên bản mới (New version)</b>.</li>
+                                        <li>Bấm <b>Triển khai (Deploy)</b>, sao chép URL mới dán lại vào đây rồi kiểm tra lại nhé!</li>
+                                    </ol>
+                                </div>
+                            `;
+                        } else if (data.type === 'not_found') {
+                            guidanceHtml = `
+                                <div class="mt-2 text-stone-800 bg-white/80 p-3.5 rounded-xl border border-amber-300">
+                                    <div class="font-bold text-amber-800 mb-1">👉 Cách khắc phục:</div>
+                                    <p class="text-[11px] leading-relaxed">Đường dẫn không tồn tại. Vui lòng đảm bảo bạn đã copy <b>toàn bộ đường link</b> từ Google Apps Script (link chuẩn phải có chữ <code>/exec</code> ở cuối cùng, ví dụ: <code>.../macros/s/AKfycb.../exec</code>).</p>
+                                </div>
+                            `;
+                        } else if (data.type === 'invalid_url_type') {
+                            guidanceHtml = `
+                                <div class="mt-2 text-stone-800 bg-white/80 p-3.5 rounded-xl border border-amber-300">
+                                    <div class="font-bold text-amber-800 mb-1">👉 Cách khắc phục:</div>
+                                    <p class="text-[11px] leading-relaxed">Bạn đang dán link trình soạn thảo code (URL có chứa <code>/edit</code>). Hãy bấm nút xanh <b>Triển khai</b> → <b>Triển khai mới</b> → Chọn loại <b>Ứng dụng web</b> để nhận link có đuôi <code>/exec</code>.</p>
+                                </div>
+                            `;
+                        }
+
+                        testResult.innerHTML = `
+                            <div class="flex items-center gap-2 font-bold text-sm text-amber-800 mb-1">
+                                <span>⚠️</span> <span>CHƯA KẾT NỐI ĐƯỢC:</span>
+                            </div>
+                            <p class="font-medium text-amber-900">${data.message || 'Google yêu cầu cấp quyền hoặc URL chưa chính xác.'}</p>
+                            ${guidanceHtml}
+                        `;
+                    }
+                }
+            } catch (err) {
+                if (testResult) {
+                    testResult.classList.remove('hidden');
+                    testResult.className = "p-3.5 rounded-xl text-xs font-mono border bg-rose-50 text-rose-800 border-rose-300";
+                    testResult.innerHTML = `<b>✗ LỖI KẾT NỐI:</b> ${err.message}`;
+                }
+            } finally {
+                if (testBtn) {
+                    testBtn.disabled = false;
+                    testBtn.innerText = "Kiểm Tra Kết Nối";
+                }
+            }
+        };
+
+        window.saveDriveSettings = async function() {
+            const urlInput = document.getElementById('input-drive-script-url');
+            const checkEnabled = document.getElementById('check-drive-enabled');
+            const scriptUrl = (urlInput ? urlInput.value : '').trim();
+            const enabled = checkEnabled ? checkEnabled.checked : false;
+
+            try {
+                const res = await fetch('/api/drive-config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled, scriptUrl })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    window.showToast("Google Drive", enabled ? "Đã kích hoạt tự động lưu Google Drive!" : "Đã lưu cài đặt Google Drive.", false);
+                    await refreshDriveIndicator();
+                    window.closeDriveSettingsModal();
+                } else {
+                    alert("Lỗi lưu cấu hình: " + (data.error || 'Không xác định'));
+                }
+            } catch (err) {
+                alert("Lỗi kết nối máy chủ: " + err.message);
+            }
+        };
+
+        window.copyDriveScriptCode = function() {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(APPS_SCRIPT_SOURCE).then(() => {
+                    window.showToast("Đã Sao Chép", "Đã chép toàn bộ mã nguồn Google Apps Script vào bộ nhớ tạm!", false);
+                }).catch(() => {
+                    alert("Không thể sao chép tự động. Bạn có thể xem trong file huong_dan_google_drive.md!");
+                });
+            } else {
+                alert("Trình duyệt không hỗ trợ sao chép tự động. Bạn có thể xem trong file huong_dan_google_drive.md!");
+            }
+        };
+
+        // Tự động lưu trữ cục bộ vào media/ được kích hoạt mặc định
+
+        // Đồng bộ Friendly URL & khôi phục vị trí xem khi reload trang
+        window.addEventListener('DOMContentLoaded', () => {
+            // Cập nhật friendly url nếu đang ở ca-nhan.html
+            if (window.location.pathname === '/ca-nhan.html') {
+                try {
+                    window.history.replaceState(null, document.title, '/ca-nhan' + window.location.hash);
+                } catch (_) {}
+            }
+
+            // Khôi phục hash anchor khi reload (ví dụ #section-media)
+            const hash = window.location.hash;
+            if (hash) {
+                setTimeout(() => {
+                    const el = document.querySelector(hash);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+            }
+        });
+    </script>
+</body>
+</html>

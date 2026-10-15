@@ -1,0 +1,15 @@
+# Media folder (large local media assets)
+media/
+media/**
+
+# Scratch and test files
+scratch/
+*.log
+*.mp3
+*.wav
+
+# Node dependencies & environment
+node_modules/
+.env
+.DS_Store
+Thumbs.db

@@ -1,6 +1,10 @@
 {
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "@dataconnect/generated": "file:src/dataconnect-generated",
-    "firebase": "^12.19.0"
+    "firebase": "^12.19.0",
+    "googleapis": "^185.0.0"
   }
 }

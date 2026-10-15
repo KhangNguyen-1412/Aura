@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huấn Luyện Thể Chất & Virtual PT — Aura</title>
+    <meta name="description" content="Hệ thống huấn luyện thể chất chuyên biệt tăng cường sinh lực nam giới, phục hồi cơ sàn chậu Kegel và giáo án tăng testosterone.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Bản tương thích 100% với cấu hình Aura) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cerulean: '#007BA7',
+                        'cerulean-dark': '#005b7a',
+                        jasper: '#D73B3E',
+                        'jasper-dark': '#a82c2e',
+                        paper: '#F9F6F0',
+                        ink: '#1A1A1A',
+                        'ink-light': '#4A4A4A',
+                        line: '#D1CCC5'
+                    },
+                    fontFamily: {
+                        playfair: ['"Playfair Display"', 'serif'],
+                        newsreader: ['"Newsreader"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --cerulean: #007BA7;
+            --cerulean-dark: #005b7a;
+            --jasper: #D73B3E;
+            --jasper-dark: #a82c2e;
+            --paper: #F9F6F0;
+            --ink: #1A1A1A;
+            --ink-light: #4A4A4A;
+            --line: #D1CCC5;
+        }
+        body {
+            background-color: #F9F6F0;
+            color: #1A1A1A;
+            font-family: 'Newsreader', serif;
+        }
+        .font-sans-ui { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+
+        .bg-cerulean { background-color: #007BA7 !important; }
+        .text-cerulean { color: #007BA7 !important; }
+        .border-cerulean { border-color: #007BA7 !important; }
+        .bg-jasper { background-color: #D73B3E !important; }
+        .text-jasper { color: #D73B3E !important; }
+        .border-jasper { border-color: #D73B3E !important; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-[#007BA7] selection:text-white bg-[#F9F6F0]">
+
+    <!-- GLOBAL HEADER -->
+    <div id="aura-global-header"></div>
+
+    <main class="flex-1 py-12 md:py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header section -->
+            <div class="border-b border-[#D1CCC5] pb-10 mb-12">
+                <span class="text-xs font-mono uppercase tracking-[0.25em] text-[#007BA7] font-bold">AURA PERFORMANCE PROTOCOL • THỂ CHẤT & SINH LỰC</span>
+                <h1 class="font-playfair text-4xl sm:text-5xl font-bold text-[#1A1A1A] mt-2 mb-4">
+                    Huấn Luyện Thể Chất & <span class="text-[#007BA7]">Virtual PT Live</span>
+                </h1>
+                <p class="text-lg text-[#4A4A4A] font-light max-w-3xl leading-relaxed">
+                    Sự kết hợp giữa khoa học cơ sinh học (Biomechanics) và nội tiết học thể thao. Tối ưu hóa phản xạ cơ sàn chậu (Pubococcygeus), gia tăng nồng độ Testosterone tự nhiên qua các bài tập phức hợp và duy trì sức bền giường chiếu.
+                </p>
+            </div>
+
+            <!-- 3 Main Exercise Tracks -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <!-- Track 1: Heavy Compounds (Cerulean) -->
+                <div class="bg-white p-8 rounded-3xl border-2 border-[#007BA7] shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-[#007BA7]/10 text-[#007BA7] flex items-center justify-center font-bold text-xl mb-6">
+                            🏋️‍♂️
+                        </div>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-[#007BA7] font-bold">Giáo Án I</span>
+                        <h3 class="font-playfair text-2xl font-bold text-[#1A1A1A] mt-1 mb-3">Kích Hoạt Testosterone (Heavy Compounds)</h3>
+                        <p class="text-xs text-[#4A4A4A] leading-relaxed font-light mb-4">
+                            Các bài tập đa khớp trọng lượng cao: Barbell Squat, Romanian Deadlift, Hip Thrust và Bulgarian Split Squat. Kích thích tuyến yên giải phóng hormone tăng trưởng (GH) và testosterone nội sinh.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-[#D1CCC5]/60 flex items-center justify-between text-xs font-mono text-[#4A4A4A]">
+                        <span>Cường độ: RPE 8 - 9</span>
+                        <span class="text-[#007BA7] font-bold">3 buổi/tuần</span>
+                    </div>
+                </div>
+
+                <!-- Track 2: PC & Kegel (Jasper) -->
+                <div class="bg-white p-8 rounded-3xl border-2 border-[#D73B3E] shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-[#D73B3E]/10 text-[#D73B3E] flex items-center justify-center font-bold text-xl mb-6">
+                            ⚡
+                        </div>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-[#D73B3E] font-bold">Giáo Án II</span>
+                        <h3 class="font-playfair text-2xl font-bold text-[#1A1A1A] mt-1 mb-3">Kiểm Soát Cơ Sàn Chậu (PC & Kegel)</h3>
+                        <p class="text-xs text-[#4A4A4A] leading-relaxed font-light mb-4">
+                            Đồng hồ đếm nhịp Siết - Thả (Contraction & Release) 5 giây chuyên nghiệp. Giúp làm dày và làm chủ nhóm cơ mu cụt (PC Muscle), ngăn ngừa xuất tinh sớm và tăng cường lực phóng tinh.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-[#D1CCC5]/60 flex items-center justify-between text-xs font-mono text-[#4A4A4A]">
+                        <span>Nhịp độ: 5s Siết / 5s Thả</span>
+                        <span class="text-[#D73B3E] font-bold">Mỗi ngày</span>
+                    </div>
+                </div>
+
+                <!-- Track 3: Virtual PT Live (Cerulean) -->
+                <div class="bg-white p-8 rounded-3xl border-2 border-[#007BA7] shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-[#007BA7]/10 text-[#007BA7] flex items-center justify-center font-bold text-xl mb-6">
+                            ⏱️
+                        </div>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-[#007BA7] font-bold">Giáo Án III</span>
+                        <h3 class="font-playfair text-2xl font-bold text-[#1A1A1A] mt-1 mb-3">Đồng Hồ Virtual PT Trực Tiếp</h3>
+                        <p class="text-xs text-[#4A4A4A] leading-relaxed font-light mb-4">
+                            Môi trường tập luyện tương tác với âm thanh đếm giờ chuẩn quốc tế, ghi nhận số Reps, mức tạ (Kg) và thời gian nghỉ giữa các hiệp (Rest Timer) không làm gián đoạn buổi tập.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-[#D1CCC5]/60 flex items-center justify-between text-xs font-mono text-[#4A4A4A]">
+                        <span>Đồng bộ: Realtime Log</span>
+                        <span class="text-[#007BA7] font-bold">Âm báo live</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workout Schedule Banner -->
+            <div class="bg-white p-8 md:p-12 rounded-3xl border-2 border-[#D1CCC5] shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="max-w-xl">
+                    <span class="text-xs font-mono uppercase tracking-widest text-[#007BA7] font-bold">LỊCH TẬP PHÂN CHIA (WEEKLY SPLIT)</span>
+                    <h3 class="font-playfair text-3xl font-bold text-[#1A1A1A] mt-1 mb-3">Lộ trình 7 ngày đồng bộ theo năng lượng sinh lý</h3>
+                    <p class="text-xs text-[#4A4A4A] leading-relaxed">
+                        Tích hợp cùng chu kỳ sinh tinh: giảm bớt tải trọng vào ngày xuất tinh, đẩy mạnh tạ nặng vào ngày nồng độ Testosterone đạt đỉnh (ngày thứ 5 - 7 của chu kỳ).
+                    </p>
+                </div>
+                <div>
+                    <a href="dashboard.html" 
+                       class="inline-flex items-center gap-2 px-8 py-4 rounded-full font-sans-ui text-xs font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                       style="background-color: #007BA7 !important; color: #FFFFFF !important; box-shadow: 0 4px 14px rgba(0, 123, 167, 0.4) !important;">
+                        <span style="color: #FFFFFF !important;">Bắt Đầu Buổi Tập Live Trong Dashboard</span>
+                        <span style="color: #FFFFFF !important;">→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-[#D1CCC5] py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#4A4A4A]">
+            <span>© 2026 Aura Protocol. Huấn luyện thể chất & sinh lực nam giới.</span>
+            <div class="flex space-x-6 uppercase font-mono font-bold">
+                <a href="index.html" class="hover:text-[#007BA7]">Trang Chủ</a>
+                <a href="khao-sat.html" class="hover:text-[#007BA7]">Khảo Sát</a>
+                <a href="ban-dong-hanh.html" class="hover:text-[#D73B3E]">Bạn Đồng Hành</a>
+                <a href="gioi-thieu.html" class="hover:text-[#D73B3E]">Về Aura</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { setupEditorialHeader } from './auth.js';
+        setupEditorialHeader('pt');
+    </script>
+</body>
+</html>

@@ -31,6 +31,14 @@
           "user-select"
         ]
       }
+    ],
+    "css-prefix-order": "off",
+    "no-inline-styles": "off",
+    "axe/name-role-value": [
+      "default",
+      {
+        "button-name": "off"
+      }
     ]
   }
 }
