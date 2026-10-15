@@ -3838,7 +3838,7 @@
                                 <!-- Khối Profile Header Đẳng Cấp: Ảnh/Video Bìa & Avatar Lồng Ghép Chuẩn Profile Hiện Đại -->
                 <div class="bg-white border border-stone-200/90 rounded-2xl overflow-hidden shadow-2xs mb-5">
                     <!-- 1. Ảnh & Video Bìa (Cover Banner) -->
-                    <div id="partner-cover-card" class="relative w-full h-36 sm:h-44 md:h-48 bg-stone-900 group overflow-hidden" title="Bấm để tải tệp bìa (ảnh/video) từ máy tính">
+                    <div id="partner-cover-card" class="relative w-full h-56 sm:h-68 md:h-80 lg:h-88 bg-stone-900 group overflow-hidden" title="Bấm để tải tệp bìa (ảnh/video) từ máy tính">
                         <img id="partner-cover-preview" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&auto=format&fit=crop&q=80" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Cover Preview">
                         <video id="partner-cover-preview-video" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 hidden"></video>
                         
@@ -3874,14 +3874,14 @@
 
                     <!-- 2. Phần Avatar Lồng Ghép & Các Nút Điều Khiển -->
                     <div class="px-5 pb-4 pt-2 relative bg-white">
-                        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-14 sm:-mt-16 mb-4">
-                            <!-- Avatar Circle Chồng Chân Bìa -->
+                        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 sm:-mt-20 md:-mt-22 mb-4">
+                            <!-- Avatar Circle Chồng Chân Bìa To Rõ Ràng Hơn -->
                             <div class="flex items-end gap-4">
                                 <div id="partner-avatar-card" 
                                      ondragover="window.handleAvatarDragOver(event)" 
                                      ondragleave="window.handleAvatarDragLeave(event)" 
                                      ondrop="window.handleAvatarDrop(event)" 
-                                     class="relative group cursor-pointer shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-white shadow-xl bg-stone-100 ring-2 ring-stone-200/90 overflow-hidden transition-transform duration-300 hover:scale-105" 
+                                     class="relative group cursor-pointer shrink-0 w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full border-4 md:border-[5px] border-white shadow-2xl bg-stone-100 ring-2 ring-stone-300/80 overflow-hidden transition-transform duration-300 hover:scale-105" 
                                      onclick="document.getElementById('input-partner-avatar-file').click()" 
                                      title="Bấm để tải tệp hoặc kéo thả ảnh/clip từ thư viện vào đây để đặt Avatar">
                                     <div id="partner-avatar-preview-wrap" class="w-full h-full relative">
