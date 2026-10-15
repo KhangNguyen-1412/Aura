@@ -48,6 +48,31 @@ const MIME_TYPES = {
     '.bin': 'application/octet-stream'
 };
 
+// Chỉ mục bộ nhớ đệm Media: Tra cứu tức thì O(1) tên tệp -> đường dẫn tuyệt đối đầy đủ
+let mediaFileIndex = new Map();
+
+function rebuildMediaIndex() {
+    const newIndex = new Map();
+    function scan(dir) {
+        try {
+            const entries = fs.readdirSync(dir, { withFileTypes: true });
+            for (const ent of entries) {
+                const full = path.join(dir, ent.name);
+                if (ent.isDirectory()) {
+                    scan(full);
+                } else if (ent.isFile()) {
+                    newIndex.set(ent.name.toLowerCase(), full);
+                }
+            }
+        } catch (_) {}
+    }
+    if (fs.existsSync(MEDIA_DIR)) {
+        scan(MEDIA_DIR);
+    }
+    mediaFileIndex = newIndex;
+}
+rebuildMediaIndex();
+
 function sanitizeFilename(rawName) {
     let name = path.basename(decodeURIComponent(rawName || 'media_file'));
     name = name.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -532,11 +557,25 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({
             status: 'ok',
             mediaDir: MEDIA_DIR,
+            indexedFiles: mediaFileIndex.size,
             port: server.address()?.port || PORT,
             drive: {
                 enabled: Boolean(DRIVE_CONFIG.enabled),
                 configured: Boolean(DRIVE_CONFIG.scriptUrl)
             },
+            timestamp: new Date().toISOString()
+        }));
+        return;
+    }
+
+    // API: Quét lại chỉ mục bộ nhớ đệm Media
+    if (pathname === '/api/reindex-media' && (req.method === 'GET' || req.method === 'POST')) {
+        rebuildMediaIndex();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+            success: true,
+            message: 'Đã quét và lập chỉ mục lại toàn bộ thư mục media',
+            indexedFiles: mediaFileIndex.size,
             timestamp: new Date().toISOString()
         }));
         return;
@@ -665,6 +704,7 @@ const server = http.createServer((req, res) => {
                 }
 
                 fs.writeFileSync(targetPath, fileBuffer);
+                mediaFileIndex.set(uniqueName.toLowerCase(), targetPath);
 
                 const webUrl = (subDir ? `media/${subDir.replace(/\\/g, '/')}/${encodeURIComponent(uniqueName)}` : `media/${encodeURIComponent(uniqueName)}`);
                 console.log(`[Aura Media] Đã lưu tệp cục bộ: ${webUrl} (${(fileBuffer.length / (1024 * 1024)).toFixed(2)} MB)`);
@@ -793,6 +833,7 @@ const server = http.createServer((req, res) => {
                 };
 
                 await downloadFile(fileUrl);
+                mediaFileIndex.set(uniqueName.toLowerCase(), targetPath);
 
                 const ext = path.extname(uniqueName).toLowerCase();
                 const isVideo = ['.mp4', '.m4v', '.webm', '.mov', '.ogg'].includes(ext);
@@ -1027,6 +1068,17 @@ const server = http.createServer((req, res) => {
                     if (fs.statSync(cand).isFile()) {
                         resolvedFilePath = cand;
                         break;
+                    }
+                } catch (_) {}
+            }
+        }
+        // [MỚI] Tra cứu thông minh Media Index: Nếu chưa tìm thấy, tra cứu tức thì theo tên tệp trong toàn bộ cây media/
+        if (!fs.existsSync(resolvedFilePath) && mediaFileIndex.has(base.toLowerCase())) {
+            const indexedPath = mediaFileIndex.get(base.toLowerCase());
+            if (fs.existsSync(indexedPath)) {
+                try {
+                    if (fs.statSync(indexedPath).isFile()) {
+                        resolvedFilePath = indexedPath;
                     }
                 } catch (_) {}
             }
