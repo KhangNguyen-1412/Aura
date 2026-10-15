@@ -956,6 +956,7 @@ const server = http.createServer((req, res) => {
         '/chu-ky-sinh-tinh',
         '/nhat-ky-giai-phong',
         '/ban-dong-hanh',
+        '/trai-ngon',
         '/onlyfan',
         '/trai-onlyfans',
         '/dinh-duong-vi-chat',
