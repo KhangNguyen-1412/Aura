@@ -1118,7 +1118,7 @@
                 </div>
             </section>
 
-            <section id="module4" class="module-content hidden max-w-6xl mx-auto p-6 sm:p-8 md:p-12 pb-24 w-full">
+            <section id="module4" class="module-content hidden max-w-7xl 2xl:max-w-[1520px] mx-auto p-4 sm:p-6 md:p-8 pb-24 w-full">
                 <!-- Header Đẳng Cấp Phong Cách Tạp Chí Y Khoa (Aura Editorial Header) -->
                 <header class="mb-8 border-b-2 border-ink pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
@@ -1221,7 +1221,7 @@
                 </div>
             </section>
 
-            <section id="module10" class="module-content hidden max-w-6xl mx-auto p-6 sm:p-8 md:p-12 pb-24 w-full">
+            <section id="module10" class="module-content hidden max-w-7xl 2xl:max-w-[1520px] mx-auto p-4 sm:p-6 md:p-8 pb-24 w-full">
                 <!-- Header Đẳng Cấp Phong Cách Tạp Chí Y Khoa (Aura Editorial Header) -->
                 <header class="mb-8 border-b-2 border-ink pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
@@ -13390,10 +13390,10 @@
                 `;
             }
 
-            const rowsHtml = list.map(p => {
+            const rowsHtml = list.map((p, idx) => {
                 const partnerId = (p && p.id != null && String(p.id).trim() !== '') ? p.id : (p && p.name ? p.name : '0');
                 const safeId = String(partnerId).replace(/'/g, "\\'");
-                const defaultName = isOF ? 'Creator OnlyFan' : 'Bạn đồng hành';
+                const defaultName = isOF ? 'Creator OnlyFan' : 'Trai ngon';
                 const pName = p.name || defaultName;
                 const age = calculateAge(p.dob);
                 const ageText = (age !== null) ? `${age} tuổi` : '';
@@ -13403,75 +13403,75 @@
                 // Avatar
                 const hasVideoAvatar = (window.isMediaVideo && window.isMediaVideo(p.avatar));
                 const avatarHtml = hasVideoAvatar
-                    ? `<div class="relative w-12 h-12 shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="window.openPartnerDetail('${safeId}')">
-                         <video src="${p.avatar}#t=0.001" autoplay loop muted playsinline class="w-12 h-12 rounded-full object-cover ring-2 ring-stone-200/80 shadow-2xs bg-stone-900"></video>
+                    ? `<div class="relative w-11 h-11 shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="window.openPartnerDetail('${safeId}')">
+                         <video src="${p.avatar}#t=0.001" autoplay loop muted playsinline class="w-11 h-11 rounded-full object-cover ring-2 ring-stone-200 shadow-2xs bg-stone-900"></video>
                          <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full ${primaryBg} text-white flex items-center justify-center text-[7px] ring-1 ring-white">▶</span>
                        </div>`
-                    : `<img src="${p.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80'}" loading="lazy" decoding="async" class="w-12 h-12 rounded-full object-cover ring-2 ring-stone-200/80 shadow-2xs shrink-0 cursor-pointer hover:scale-105 transition-transform bg-stone-100" onclick="window.openPartnerDetail('${safeId}')" alt="Avatar">`;
+                    : `<img src="${p.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80'}" loading="lazy" decoding="async" class="w-11 h-11 rounded-full object-cover ring-2 ring-stone-200 shadow-2xs shrink-0 cursor-pointer hover:scale-105 transition-transform bg-stone-100" onclick="window.openPartnerDetail('${safeId}')" alt="Avatar">`;
 
                 // Badge Quan hệ / Thể loại
                 const relationBadge = p.relation || (isOF ? 'Creator OnlyFan' : 'Bạn trai');
 
-                // Media Gallery
+                // Media Gallery (rút gọn 2 thumbnails trực quan, không chiếm diện tích ngang)
                 const gallery = Array.isArray(p.gallery) ? p.gallery : [];
                 let mediaCellHtml = '';
                 if (gallery.length > 0) {
-                    const thumbs = gallery.slice(0, 3).map((item, idx) => {
+                    const thumbs = gallery.slice(0, 2).map((item, mIdx) => {
                         const isVid = item.type === 'video' || (typeof item.url === 'string' && /\.(mp4|webm|mov|ogg|m4v)(\?.*)?$/i.test(item.url));
                         const mediaElement = (typeof renderAuraMediaThumbnail === 'function')
                             ? renderAuraMediaThumbnail(item, 'w-full h-full object-cover pointer-events-none rounded-lg')
                             : `<img src="${item.url || ''}" class="w-full h-full object-cover rounded-lg">`;
                         return `
-                            <div onclick="window.openMediaFromCard('${safeId}', ${idx})" class="relative w-9 h-9 border border-stone-200 bg-stone-900 overflow-hidden cursor-pointer group rounded-lg shadow-2xs hover:border-cerulean hover:scale-105 transition-all shrink-0" title="Xem media #${idx+1}">
+                            <div onclick="window.openMediaFromCard('${safeId}', ${mIdx})" class="relative w-8 h-8 border border-stone-200 bg-stone-900 overflow-hidden cursor-pointer group rounded-lg shadow-2xs hover:border-cerulean hover:scale-105 transition-all shrink-0" title="Xem media #${mIdx+1}">
                                 ${mediaElement}
                                 ${isVid ? `
                                     <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center rounded-lg">
-                                        <svg class="w-3.5 h-3.5 text-white opacity-90" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                                        <svg class="w-3 h-3 text-white opacity-90" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
                                     </div>
                                 ` : ''}
                             </div>
                         `;
                     }).join('');
 
-                    const moreBadge = gallery.length > 3
-                        ? `<button type="button" onclick="window.openMediaFromCard('${safeId}', 3)" class="text-[10px] font-mono font-bold text-stone-500 hover:text-cerulean cursor-pointer shrink-0 bg-stone-100 hover:bg-stone-200 px-1.5 py-1 rounded-md transition-colors">+${gallery.length - 3}</button>`
+                    const moreBadge = gallery.length > 2
+                        ? `<button type="button" onclick="window.openMediaFromCard('${safeId}', 2)" class="text-[10px] font-mono font-bold text-stone-500 hover:text-cerulean cursor-pointer shrink-0 bg-stone-100 hover:bg-stone-200 px-1.5 py-0.5 rounded-md transition-colors">+${gallery.length - 2}</button>`
                         : '';
 
                     mediaCellHtml = `
                         <div class="flex items-center gap-1.5">
-                            <div class="flex items-center gap-1.5">${thumbs}</div>
+                            <div class="flex items-center gap-1 shrink-0">${thumbs}</div>
                             ${moreBadge}
-                            <span class="text-[11px] font-mono text-ink-light ml-0.5 font-semibold">(${gallery.length})</span>
+                            <span class="text-[11px] font-mono text-ink-light font-semibold">(${gallery.length})</span>
                         </div>
                     `;
                 } else {
                     mediaCellHtml = `<span class="text-xs text-stone-400 italic">0 tệp media</span>`;
                 }
 
-                // Cột đặc thù Bạn Đồng Hành vs Trai OnlyFan
+                // Cột đặc thù Trai Ngon vs Trai OnlyFan
                 let col2Html = '';
                 let col3Html = '';
                 if (!isOF) {
-                    // Cột Liên Hệ & Địa Chỉ
+                    // Cột Liên Hệ & Địa Bàn
                     col2Html = `
-                        <div class="space-y-0.5 max-w-[200px]">
-                            ${p.phone ? `<div class="font-mono text-xs font-semibold text-ink flex items-center gap-1">📞 ${p.phone}</div>` : ''}
-                            ${p.temporaryAddr ? `<div class="text-xs text-ink-light truncate" title="Tạm trú: ${p.temporaryAddr}"><span class="text-stone-400">Tạm trú:</span> ${p.temporaryAddr}</div>` : ''}
-                            ${p.permanentAddr ? `<div class="text-xs text-ink-light truncate" title="Thường trú: ${p.permanentAddr}"><span class="text-stone-400">Thường trú:</span> ${p.permanentAddr}</div>` : ''}
+                        <div class="space-y-0.5 min-w-0">
+                            ${p.phone ? `<div class="font-mono text-xs font-semibold text-ink truncate">📞 ${p.phone}</div>` : ''}
+                            ${p.temporaryAddr ? `<div class="text-[11px] text-ink-light truncate" title="Tạm trú: ${p.temporaryAddr}"><span class="text-stone-400">Tạm:</span> ${p.temporaryAddr}</div>` : ''}
+                            ${(p.permanentAddr && p.permanentAddr !== p.temporaryAddr) ? `<div class="text-[10px] text-stone-400 truncate" title="Thường trú: ${p.permanentAddr}"><span class="text-stone-400">Thường:</span> ${p.permanentAddr}</div>` : ''}
                             ${(!p.phone && !p.temporaryAddr && !p.permanentAddr) ? `<span class="text-xs text-stone-400 italic">Chưa cập nhật</span>` : ''}
                         </div>
                     `;
 
-                    // Cột Nghề Nghiệp & Vai Trò
+                    // Cột Nghề Nghiệp & Xu Hướng / Vai Trò
                     col3Html = `
-                        <div class="space-y-1 max-w-[220px]">
+                        <div class="space-y-1 min-w-0">
                             <div class="text-xs font-semibold text-ink truncate" title="${p.profession || 'Chưa cập nhật'}">
                                 ${p.profession || 'Chưa cập nhật'}
                             </div>
-                            <div class="flex items-center gap-1.5">
+                            <div>
                                 ${p.orientation === 'Trai thẳng'
-                                    ? '<span class="italic text-emerald-700 font-bold text-[11px] px-1.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200">Trai thẳng</span>'
-                                    : `<span class="italic text-cerulean font-semibold text-[11px] px-1.5 py-0.5 rounded-full bg-cerulean/5 border border-cerulean/10">${p.role || 'Bottom (Tiếp nhận)'}</span>`
+                                    ? '<span class="italic text-emerald-700 font-bold text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 inline-block">Trai thẳng</span>'
+                                    : `<span class="italic text-cerulean font-semibold text-[10px] px-1.5 py-0.5 rounded-full bg-cerulean/5 border border-cerulean/15 inline-block">${p.role || 'Bottom (Tiếp nhận)'}</span>`
                                 }
                             </div>
                         </div>
@@ -13525,22 +13525,27 @@
 
                     // Cột OnlyFans & Kênh MXH
                     col2Html = `
-                        <div class="flex flex-col gap-1 items-start max-w-[200px]">
-                            <a href="${ofHref}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#00AFF0]/10 text-[#008cc0] hover:bg-[#00AFF0] hover:text-white transition-all text-xs font-semibold shadow-2xs" title="Mở trang OnlyFans: ${ofHref}">
-                                <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.82 4.38a2.53 2.53 0 1 1 0 5.06 2.53 2.53 0 0 1 0-5.06zm-6.19 2.53a4.99 4.99 0 0 1 4.71 3.33 4.79 4.79 0 0 0-2.32.59 2.76 2.76 0 0 0-2.39-1.48 2.77 2.77 0 0 0-2.77 2.77c0 1.53 1.24 2.77 2.77 2.77a2.76 2.76 0 0 0 2.39-1.48 4.78 4.78 0 0 0 2.32.59 4.99 4.99 0 0 1-4.71 3.33 4.99 4.99 0 0 1-4.99-4.99 4.99 4.99 0 0 1 4.99-4.99zm7.14 7.7a3.03 3.03 0 1 1-6.06 0 3.03 3.03 0 0 1 6.06 0z"/></svg>
-                                <span class="font-mono truncate max-w-[130px]">${ofHandleDisplay}</span>
+                        <div class="flex flex-col gap-0.5 items-start min-w-0">
+                            <a href="${ofHref}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00AFF0]/10 text-[#008cc0] hover:bg-[#00AFF0] hover:text-white transition-all text-xs font-semibold shadow-2xs max-w-full" title="Mở trang OnlyFans: ${ofHref}">
+                                <svg class="w-3 h-3 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.82 4.38a2.53 2.53 0 1 1 0 5.06 2.53 2.53 0 0 1 0-5.06zm-6.19 2.53a4.99 4.99 0 0 1 4.71 3.33 4.79 4.79 0 0 0-2.32.59 2.76 2.76 0 0 0-2.39-1.48 2.77 2.77 0 0 0-2.77 2.77c0 1.53 1.24 2.77 2.77 2.77a2.76 2.76 0 0 0 2.39-1.48 4.78 4.78 0 0 0 2.32.59 4.99 4.99 0 0 1-4.71 3.33 4.99 4.99 0 0 1-4.99-4.99 4.99 4.99 0 0 1 4.99-4.99zm7.14 7.7a3.03 3.03 0 1 1-6.06 0 3.03 3.03 0 0 1 6.06 0z"/></svg>
+                                <span class="font-mono truncate max-w-[110px]">${ofHandleDisplay}</span>
                             </a>
                             ${(Array.isArray(p.socialLinks) && p.socialLinks.length > 0) ? `
-                                <span class="text-[10px] text-stone-500 font-mono ml-1">+${p.socialLinks.length} liên kết MXH</span>
+                                <span class="text-[10px] text-stone-500 font-mono">+${p.socialLinks.length} liên kết MXH</span>
                             ` : ''}
                         </div>
                     `;
 
                     // Cột Phong Cách & Vai Trò
                     col3Html = `
-                        <div class="space-y-0.5 max-w-[200px]">
-                            <div class="text-xs font-semibold text-ink">${p.profession || 'OnlyFan Creator'}</div>
-                            <div class="text-[11px] ${p.orientation === 'Trai thẳng' ? 'text-emerald-700 font-bold' : 'text-cerulean italic font-medium'}">${p.orientation === 'Trai thẳng' ? 'Trai thẳng' : (p.role || 'Chưa cập nhật')}</div>
+                        <div class="space-y-1 min-w-0">
+                            <div class="text-xs font-semibold text-ink truncate">${p.profession || 'OnlyFan Creator'}</div>
+                            <div>
+                                ${p.orientation === 'Trai thẳng'
+                                    ? '<span class="italic text-emerald-700 font-bold text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 inline-block">Trai thẳng</span>'
+                                    : `<span class="italic text-jasper font-semibold text-[10px] px-1.5 py-0.5 rounded-full bg-jasper/5 border border-jasper/15 inline-block">${p.role || 'Creator'}</span>`
+                                }
+                            </div>
                             ${(p.temporaryAddr || p.permanentAddr) ? `<div class="text-[10px] text-stone-500 truncate" title="${p.temporaryAddr || p.permanentAddr}">📍 ${p.temporaryAddr || p.permanentAddr}</div>` : ''}
                         </div>
                     `;
@@ -13548,56 +13553,60 @@
 
                 // Cột Ghi chú
                 const notesHtml = p.notes 
-                    ? `<div class="text-xs italic font-serif text-ink-light line-clamp-2 max-w-[220px]" title="${p.notes.replace(/"/g, '&quot;')}">"${p.notes}"</div>`
+                    ? `<div class="text-[11px] italic font-serif text-ink-light line-clamp-2 max-w-full leading-snug" title="${p.notes.replace(/"/g, '&quot;')}">"${p.notes}"</div>`
                     : `<span class="text-xs text-stone-300 italic">-</span>`;
+
+                const isLast = (idx === list.length - 1);
+                const cornerClassLeft = isLast ? 'rounded-bl-2xl' : '';
+                const cornerClassRight = isLast ? 'rounded-br-2xl' : '';
 
                 return `
                     <tr class="hover:bg-stone-50/80 transition-colors border-b border-stone-100 last:border-b-0 group">
-                        <!-- Cột 1: Thông tin Đối tác / Creator -->
-                        <td class="py-3.5 px-4 align-middle">
-                            <div class="flex items-center space-x-3 min-w-[220px]">
+                        <!-- Cột 1: Thông tin Đối tác / Creator (23%) -->
+                        <td class="py-3 px-3.5 align-middle ${cornerClassLeft}">
+                            <div class="flex items-center space-x-2.5 min-w-0">
                                 ${avatarHtml}
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-1.5 flex-wrap">
-                                        <h4 onclick="window.openPartnerDetail('${safeId}')" class="font-playfair text-base font-bold ${primaryColor} hover:underline cursor-pointer truncate max-w-[150px]" title="${pName}">${pName}</h4>
-                                        <span class="rounded-full px-2 py-0.5 text-[9px] uppercase font-bold tracking-wider ${isOF ? 'bg-black text-white' : 'bg-cerulean/10 text-cerulean'} shrink-0">${relationBadge}</span>
+                                        <h4 onclick="window.openPartnerDetail('${safeId}')" class="font-playfair text-sm md:text-base font-bold ${primaryColor} hover:underline cursor-pointer truncate max-w-[130px]" title="${pName}">${pName}</h4>
+                                        <span class="rounded-full px-1.5 py-0.5 text-[8.5px] uppercase font-bold tracking-wider ${isOF ? 'bg-black text-white' : 'bg-cerulean/10 text-cerulean'} shrink-0">${relationBadge}</span>
                                     </div>
-                                    ${metaParts ? `<p class="text-[11px] text-ink-light mt-0.5 font-mono">${metaParts}</p>` : ''}
+                                    ${metaParts ? `<p class="text-[10px] text-ink-light mt-0.5 font-mono truncate">${metaParts}</p>` : ''}
                                 </div>
                             </div>
                         </td>
 
-                        <!-- Cột 2: Liên hệ / OnlyFans & MXH -->
-                        <td class="py-3.5 px-4 align-middle">
+                        <!-- Cột 2: Liên hệ / OnlyFans & MXH (20%) -->
+                        <td class="py-3 px-3.5 align-middle">
                             ${col2Html}
                         </td>
 
-                        <!-- Cột 3: Sức Khỏe / Phong Cách & Vai Trò -->
-                        <td class="py-3.5 px-4 align-middle">
+                        <!-- Cột 3: Nghề Nghiệp / Phong Cách & Vai Trò (18%) -->
+                        <td class="py-3 px-3.5 align-middle">
                             ${col3Html}
                         </td>
 
-                        <!-- Cột 4: Thư Viện Media -->
-                        <td class="py-3.5 px-4 align-middle">
+                        <!-- Cột 4: Thư Viện Media (15%) -->
+                        <td class="py-3 px-3.5 align-middle">
                             ${mediaCellHtml}
                         </td>
 
-                        <!-- Cột 5: Ghi Chú -->
-                        <td class="py-3.5 px-4 align-middle">
+                        <!-- Cột 5: Ghi Chú (14%) -->
+                        <td class="py-3 px-3.5 align-middle">
                             ${notesHtml}
                         </td>
 
-                        <!-- Cột 6: Thao Tác -->
-                        <td class="py-3.5 px-4 align-middle text-right">
+                        <!-- Cột 6: Thao Tác (10%) -->
+                        <td class="py-3 px-3.5 align-middle text-right ${cornerClassRight}">
                             <div class="flex items-center justify-end space-x-1 shrink-0">
-                                <button type="button" onclick="event.preventDefault(); event.stopPropagation(); window.openPartnerDetail('${safeId}')" class="px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg bg-stone-100 hover:bg-cerulean hover:text-white text-ink transition-colors cursor-pointer shadow-2xs" title="Xem hồ sơ chi tiết">
+                                <button type="button" onclick="event.preventDefault(); event.stopPropagation(); window.openPartnerDetail('${safeId}')" class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-lg bg-stone-100 hover:${primaryBg} hover:text-white text-ink transition-colors cursor-pointer shadow-2xs shrink-0" title="Xem hồ sơ chi tiết">
                                     Hồ Sơ
                                 </button>
-                                <button type="button" onclick="event.preventDefault(); event.stopPropagation(); window.editPartner('${safeId}')" class="p-1.5 text-stone-400 hover:text-cerulean hover:bg-stone-100 rounded-lg transition-colors cursor-pointer" title="Chỉnh sửa">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path></svg>
+                                <button type="button" onclick="event.preventDefault(); event.stopPropagation(); window.editPartner('${safeId}')" class="p-1 text-stone-400 hover:text-cerulean hover:bg-stone-100 rounded-md transition-colors cursor-pointer" title="Chỉnh sửa">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"></path></svg>
                                 </button>
-                                <button type="button" onclick="event.preventDefault(); event.stopPropagation(); window.deletePartner('${safeId}')" class="p-1.5 text-stone-400 hover:text-jasper hover:bg-rose-50 rounded-lg transition-colors cursor-pointer" title="Xóa hồ sơ">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"></path></svg>
+                                <button type="button" onclick="event.preventDefault(); event.stopPropagation(); window.deletePartner('${safeId}')" class="p-1 text-stone-400 hover:text-jasper hover:bg-rose-50 rounded-md transition-colors cursor-pointer" title="Xóa hồ sơ">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"></path></svg>
                                 </button>
                             </div>
                         </td>
@@ -13606,29 +13615,32 @@
             }).join('');
 
             return `
-                <div class="w-full rounded-2xl border border-stone-200/80 bg-white shadow-xs overflow-hidden">
-                    <div class="px-5 py-3.5 bg-stone-50/70 border-b border-stone-200/70 flex items-center justify-between flex-wrap gap-2">
+                <div class="w-full">
+                    <!-- Thanh trạng thái số lượng hồ sơ -->
+                    <div class="px-2 pb-2.5 flex items-center justify-between flex-wrap gap-2">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full ${primaryBg}"></span>
-                            <span class="text-xs font-bold uppercase tracking-wider text-ink-light">Tổng cộng: <strong class="text-ink font-mono font-semibold">${displayTotal}</strong> ${isOF ? 'Creator Nam' : 'Bạn đồng hành'}</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-ink-light">Tổng cộng: <strong class="text-ink font-mono font-bold">${displayTotal}</strong> ${isOF ? 'Creator Nam' : 'Trai ngon'}</span>
                         </div>
                         <button type="button" onclick="window.openPartnerModal(null, '${mode}')" class="text-xs font-bold ${primaryColor} hover:opacity-80 flex items-center gap-1 cursor-pointer">
                             <span>+ Thêm hồ sơ mới</span>
                         </button>
                     </div>
-                    <div class="overflow-x-auto custom-gallery-scrollbar">
-                        <table class="w-full text-left border-collapse min-w-[850px]">
-                            <thead>
-                                <tr class="border-b border-stone-200/80 bg-stone-50/40 text-[10px] uppercase font-bold tracking-widest text-ink-light/80">
-                                    <th class="py-3 px-4 font-bold">${isOF ? 'Creator' : 'Đối Tác'}</th>
-                                    <th class="py-3 px-4 font-bold">${isOF ? 'OnlyFans & MXH' : 'Liên Hệ & Địa Bàn'}</th>
-                                    <th class="py-3 px-4 font-bold">${isOF ? 'Phong Cách & Vai Trò' : 'Nghề Nghiệp & Vai Trò'}</th>
-                                    <th class="py-3 px-4 font-bold">${isOF ? 'Media Độc Quyền' : 'Kho Kỷ Niệm'}</th>
-                                    <th class="py-3 px-4 font-bold">Ghi Chú</th>
-                                    <th class="py-3 px-4 font-bold text-right">Thao Tác</th>
+
+                    <!-- Khung Bảng Cố Định Header (Sticky Header) & Vừa Vặn 100% Cột -->
+                    <div class="w-full rounded-2xl border border-stone-200/90 bg-white shadow-xs">
+                        <table class="w-full text-left border-separate border-spacing-0 table-fixed">
+                            <thead class="sticky top-0 z-20 shadow-2xs">
+                                <tr>
+                                    <th class="py-3 px-3.5 font-bold sticky top-0 z-20 bg-stone-100 border-b-2 border-stone-200/90 text-[10px] uppercase tracking-wider text-ink rounded-tl-2xl w-[23%]">${isOF ? 'Creator' : 'Đối Tác'}</th>
+                                    <th class="py-3 px-3.5 font-bold sticky top-0 z-20 bg-stone-100 border-b-2 border-stone-200/90 text-[10px] uppercase tracking-wider text-ink w-[20%]">${isOF ? 'OnlyFans & MXH' : 'Liên Hệ & Địa Bàn'}</th>
+                                    <th class="py-3 px-3.5 font-bold sticky top-0 z-20 bg-stone-100 border-b-2 border-stone-200/90 text-[10px] uppercase tracking-wider text-ink w-[18%]">${isOF ? 'Phong Cách & Vai Trò' : 'Nghề Nghiệp & Vai Trò'}</th>
+                                    <th class="py-3 px-3.5 font-bold sticky top-0 z-20 bg-stone-100 border-b-2 border-stone-200/90 text-[10px] uppercase tracking-wider text-ink w-[15%]">${isOF ? 'Media Độc Quyền' : 'Kho Kỷ Niệm'}</th>
+                                    <th class="py-3 px-3.5 font-bold sticky top-0 z-20 bg-stone-100 border-b-2 border-stone-200/90 text-[10px] uppercase tracking-wider text-ink w-[14%]">Ghi Chú</th>
+                                    <th class="py-3 px-3.5 font-bold sticky top-0 z-20 bg-stone-100 border-b-2 border-stone-200/90 text-[10px] uppercase tracking-wider text-ink rounded-tr-2xl text-right w-[10%]">Thao Tác</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-stone-100">
+                            <tbody>
                                 ${rowsHtml}
                             </tbody>
                         </table>
@@ -13679,7 +13691,7 @@
                 updatePartnerViewModeButtons();
                 const paginationRealHtml = renderPaginationControls(currentPartnerPage, totalRealPages, totalReal, 'real');
                 if (currentPartnerViewMode === 'list') {
-                    partnerContainer.className = "w-full pb-4 pt-1 space-y-4";
+                    partnerContainer.className = "w-full pb-4 pt-0 space-y-4";
                     partnerContainer.innerHTML = generatePartnerTableHTML(pagedRealPartners, 'real', totalReal) + paginationRealHtml;
                 } else {
                     partnerContainer.className = "grid grid-cols-1 md:grid-cols-3 gap-8 pb-4 pt-1";
@@ -13700,7 +13712,7 @@
                 updateOfViewModeButtons();
                 const paginationOfHtml = renderPaginationControls(currentOfPage, totalOfPages, totalOf, 'onlyfan');
                 if (currentOfViewMode === 'list') {
-                    ofContainer.className = "w-full pb-4 pt-1 space-y-4";
+                    ofContainer.className = "w-full pb-4 pt-0 space-y-4";
                     ofContainer.innerHTML = generatePartnerTableHTML(pagedOfPartners, 'onlyfan', totalOf) + paginationOfHtml;
                 } else {
                     ofContainer.className = "grid grid-cols-1 md:grid-cols-3 gap-8 pb-4 pt-1";
