@@ -2821,8 +2821,9 @@
                                     <div class="flex flex-col gap-1">
                                         <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-light">Giọng đọc:</span>
                                         <select id="eg-voice-style-select" class="py-1.5 px-2.5 border border-line bg-paper/60 hover:bg-white focus:border-cerulean text-ink text-xs font-semibold editorial-select transition-all">
-                                            <option value="sensual" selected>💕 Người Tình Mê Đắm</option>
-                                            <option value="classic">🔥 Hướng Dẫn Kỹ Thuật</option>
+                                            <option value="tong_tai" selected>👑 Tổng Tài Bá Đạo (Nam Trầm Quyền Lực)</option>
+                                            <option value="sensual">💕 Người Tình Mê Đắm (Nam Trầm Ấm)</option>
+                                            <option value="classic">🔥 Hướng Dẫn Kỹ Thuật (Nam Dứt Khoát)</option>
                                         </select>
                                     </div>
                                     <div class="sm:col-span-2 flex flex-col gap-1">
@@ -20434,19 +20435,24 @@
         }
         window.stopCurrentEdgingVoice = stopCurrentEdgingVoice;
 
+        function isExplicitMaleVoice(v) {
+            if (!v || !v.name) return false;
+            const n = v.name.toLowerCase();
+            // Loại bỏ hoàn toàn các giọng nữ (Google tiếng Việt, Hoài My, Linh,...)
+            if (n.includes('hoaimy') || n.includes('linh') || n.includes('google') || n.includes('female') || n.includes('nữ') || n.includes('nu')) {
+                return false;
+            }
+            return n.includes('namminh') || n.includes('male') || (n.includes('nam') && !n.includes('vietnam') && !n.includes('tiếng việt'));
+        }
+
         function getVietnameseVoice() {
             if (!('speechSynthesis' in window)) return null;
             const voices = window.speechSynthesis.getVoices() || [];
             if (!voices || voices.length === 0) return null;
             const viVoices = voices.filter(v => (v.lang && (v.lang.toLowerCase().includes('vi') || v.lang.toLowerCase().includes('vie'))) || (v.name && v.name.toLowerCase().includes('vietnam')));
-            if (viVoices.length > 0) {
-                const preferred = viVoices.find(v => {
-                    const n = v.name.toLowerCase();
-                    return n.includes('namminh') || n.includes('nam') || n.includes('male') || n.includes('minh') || n.includes('natural');
-                });
-                return preferred || viVoices[0];
-            }
-            return null;
+            // Chỉ trả về nếu thực sự là giọng nam, tuyệt đối không dùng giọng nữ robot
+            const male = viVoices.find(v => isExplicitMaleVoice(v));
+            return male || null;
         }
 
         if ('speechSynthesis' in window) {
@@ -20455,7 +20461,49 @@
             };
         }
 
-        // Phát giọng đọc tiếng Việt bản xứ (ưu tiên file âm thanh MP3 nam trầm ấm, quyến rũ, xưng hô Anh - Em)
+        // Phát giọng đọc Nam Trầm Ấm Tổng Tài (NamMinhNeural AI qua /api/tts & disk cache)
+        function playTongTaiVoice(text) {
+            if (!text) return;
+            // 1. Ưu tiên tuyệt đối: Phát trực tiếp qua API TTS Giọng Nam Tổng Tài (NamMinhNeural via Edge TTS)
+            try {
+                const ttsAudio = new Audio(`/api/tts?text=${encodeURIComponent(text)}&voice=vi-VN-NamMinhNeural`);
+                ttsAudio.playbackRate = 0.94; // Tốc độ trầm ấm, điềm đạm, quyến rũ chuẩn Tổng Tài
+                ttsAudio.volume = 1.0;
+                currentEdgingVoiceAudio = ttsAudio;
+                const playPromise = ttsAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(err => {
+                        if (err && err.name === 'AbortError') return;
+                        console.warn("Lỗi phát /api/tts Tổng Tài:", err);
+                        fallbackToBrowserMaleVoice(text);
+                    });
+                }
+            } catch(e) {
+                console.error("Lỗi khởi tạo Audio Tổng Tài:", e);
+                fallbackToBrowserMaleVoice(text);
+            }
+        }
+        window.playTongTaiVoice = playTongTaiVoice;
+        window.fallbackToBrowserTts = playTongTaiVoice; // Alias tương thích ngược
+
+        function fallbackToBrowserMaleVoice(text) {
+            const maleVoice = getVietnameseVoice();
+            if (maleVoice && ('speechSynthesis' in window)) {
+                try {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'vi-VN';
+                    utterance.voice = maleVoice;
+                    utterance.pitch = 0.80;
+                    utterance.rate = 0.88;
+                    utterance.volume = 1.0;
+                    window.speechSynthesis.speak(utterance);
+                } catch(e) {
+                    console.warn("Lỗi browser male speech:", e);
+                }
+            }
+        }
+
+        // Phát giọng đọc tiếng Việt bản xứ (Ưu tiên giọng Nam Trầm Tổng Tài NamMinhNeural quyến rũ, xưng hô Anh - Em)
         window.speakSexyEdgingVoice = function(keyOrText, forceSpeak = false, dirtyTalkLine = null) {
             if (!keyOrText && !dirtyTalkLine) return;
             if (!window.isEdgingVoiceEnabled && !forceSpeak) return;
@@ -20463,12 +20511,13 @@
             stopCurrentEdgingVoice();
 
             const dirtyTalkSelect = document.getElementById('eg-dirty-talk-select')?.value || 'name_intense';
+            const voiceStyle = document.getElementById('eg-voice-style-select')?.value || 'tong_tai';
 
-            // Nếu bật chế độ khẩu dâm nhắc tên:
-            if (dirtyTalkLine && dirtyTalkSelect === 'name_intense') {
-                fallbackToBrowserTts(dirtyTalkLine);
-                return;
-            }
+            // Danh sách 11 partner đã có bộ âm thanh độc quyền (NamMinhNeural)
+            const KNOWN_PARTNER_VOICE_SLUGS = new Set([
+                'alex_miller', 'anh_khoi', 'duc_minh', 'duc_vuong', 'duy_an',
+                'huy_giau', 'minh_huy', 'phi_hung', 'quoc_tuan', 'tan_dung', 'thai_duong'
+            ]);
 
             // 1. Phân giải xem tham số truyền vào là audio key hay text script
             let audioKey = null;
@@ -20491,18 +20540,8 @@
                 }
             }
 
-            // 2. Phát trực tiếp file âm thanh MP3 tiếng Việt bản địa (ưu tiên file có gọi tên bạn đồng hành / diễn viên OnlyFan)
+            // 2. Nếu có audioKey: Thử tìm file âm thanh MP3 có sẵn (Partner độc quyền hoặc Sensual/Tổng Tài)
             if (audioKey) {
-                const voiceStyle = document.getElementById('eg-voice-style-select')?.value || 'sensual';
-                const dirtyTalkSelect = document.getElementById('eg-dirty-talk-select')?.value || 'name_intense';
-
-                // Danh sách partner đã có bộ âm thanh độc quyền
-                const KNOWN_PARTNER_VOICE_SLUGS = new Set([
-                    'alex_miller', 'anh_khoi', 'duc_minh', 'duc_vuong', 'duy_an',
-                    'huy_giau', 'minh_huy', 'phi_hung', 'quoc_tuan', 'tan_dung', 'thai_duong'
-                ]);
-
-                // Xác định đường dẫn file MP3 có gọi tên Bạn đồng hành / Diễn viên OnlyFan
                 let partnerAudioPath = null;
                 if (dirtyTalkSelect === 'name_intense') {
                     const pName = window.currentActiveEdgingMedia?.partnerName 
@@ -20516,14 +20555,18 @@
                     }
                 }
 
-                const preferredKey = (voiceStyle === 'sensual' && !audioKey.startsWith('sensual_'))
+                const preferredKey = (voiceStyle !== 'classic' && !audioKey.startsWith('sensual_'))
                     ? `sensual_${audioKey}`
                     : audioKey;
                 const standardAudioPath = `media/edging_voice/${preferredKey}.mp3`;
 
+                const fallbackLine = (dirtyTalkLine && dirtyTalkSelect === 'name_intense')
+                    ? dirtyTalkLine
+                    : (textToRead || keyOrText);
+
                 const tryPlayAudio = (targetPath, fallbackPath) => {
                     const audio = new Audio(targetPath);
-                    audio.playbackRate = 0.98;
+                    audio.playbackRate = 0.94; // Nhịp điềm đạm, quyến rũ chuẩn Tổng Tài
                     audio.volume = 1.0;
                     currentEdgingVoiceAudio = audio;
 
@@ -20531,7 +20574,7 @@
                         if (fallbackPath) {
                             tryPlayAudio(fallbackPath, null);
                         } else {
-                            fallbackToBrowserTts(textToRead || keyOrText);
+                            playTongTaiVoice(fallbackLine);
                         }
                     };
 
@@ -20542,7 +20585,7 @@
                             if (fallbackPath) {
                                 tryPlayAudio(fallbackPath, null);
                             } else {
-                                fallbackToBrowserTts(textToRead || keyOrText);
+                                playTongTaiVoice(fallbackLine);
                             }
                         });
                     }
@@ -20556,49 +20599,14 @@
                 return;
             }
 
-            // 3. Fallback dự phòng: Phát TTS khi không có file audio
-            fallbackToBrowserTts(textToRead || keyOrText);
+            // 3. Nếu không có audioKey (chỉ có dirtyTalkLine hoặc câu chữ động ngẫu nhiên)
+            const textToSpeak = dirtyTalkLine || textToRead || keyOrText;
+            playTongTaiVoice(textToSpeak);
         };
-
-        function fallbackToBrowserTts(text) {
-            if (!text) return;
-            // 1. Thử Web Speech API nếu OS có sẵn giọng tiếng Việt (macOS, iOS, Android)
-            const viVoice = getVietnameseVoice();
-            if (viVoice && ('speechSynthesis' in window)) {
-                try {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'vi-VN';
-                    utterance.voice = viVoice;
-                    utterance.pitch = 0.85; // Tông trầm nam tính
-                    utterance.rate = 0.90;
-                    utterance.volume = 1.0;
-                    window.speechSynthesis.speak(utterance);
-                    return;
-                } catch(e) {
-                    console.warn("Lỗi browser TTS:", e);
-                }
-            }
-            // 2. Dự phòng tối thượng cho PC / Windows: Phát trực tiếp qua API TTS Tiếng Việt chuẩn của server (/api/tts)
-            try {
-                const ttsAudio = new Audio(`/api/tts?text=${encodeURIComponent(text)}`);
-                ttsAudio.playbackRate = 0.92;
-                ttsAudio.volume = 1.0;
-                currentEdgingVoiceAudio = ttsAudio;
-                const playPromise = ttsAudio.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(err => {
-                        if (err && err.name === 'AbortError') return;
-                        console.warn("Lỗi phát /api/tts fallback:", err);
-                    });
-                }
-            } catch(e) {
-                console.error("Lỗi khởi tạo Audio fallback:", e);
-            }
-        }
 
         window.speakEdgingGuideVoice = function(key) {
             window.speakSexyEdgingVoice(key, true); // forceSpeak = true khi bấm nghe thử trên thẻ hướng dẫn
-            if (typeof showToast === 'function') showToast("Đang phát giọng nam gợi cảm (Anh - Em)...", "info");
+            if (typeof showToast === 'function') showToast("Đang phát giọng nam Tổng Tài (Nam Minh Neural - Trầm ấm & Quyền lực)...", "info");
         };
 
         window.toggleEdgingVoice = function() {
@@ -20616,7 +20624,7 @@
                 toggle.checked = window.isEdgingVoiceEnabled;
             }
             if (typeof showToast === 'function') {
-                showToast(window.isEdgingVoiceEnabled ? "Đã bật giọng đọc nam quyến rũ (Anh - Em)!" : "Đã tắt giọng đọc nam", "info");
+                showToast(window.isEdgingVoiceEnabled ? "Đã bật giọng đọc nam Tổng Tài (Anh - Em)!" : "Đã tắt giọng đọc nam", "info");
             }
         };
 

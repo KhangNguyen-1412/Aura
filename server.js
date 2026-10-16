@@ -2,10 +2,13 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const crypto = require('crypto');
+const { execFile, spawn } = require('child_process');
 const { pipeline } = require('stream');
 
 const PORT = process.env.PORT || 3000;
 const MEDIA_DIR = path.join(__dirname, 'media');
+const TTS_CACHE_DIR = path.join(MEDIA_DIR, 'tts_cache');
 
 // BẢO VỆ TIẾN TRÌNH: Ngăn ngừa sập server khi trình duyệt hủy kết nối socket stream video hoặc quá tải EMFILE
 process.on('uncaughtException', (err) => {
@@ -21,6 +24,9 @@ process.on('unhandledRejection', (reason, promise) => {
 
 if (!fs.existsSync(MEDIA_DIR)) {
     fs.mkdirSync(MEDIA_DIR, { recursive: true });
+}
+if (!fs.existsSync(TTS_CACHE_DIR)) {
+    fs.mkdirSync(TTS_CACHE_DIR, { recursive: true });
 }
 
 const MIME_TYPES = {
@@ -581,7 +587,7 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    // API: Proxy giọng đọc Tiếng Việt chuẩn bản xứ (Vietnamese TTS Proxy)
+    // API: Giọng đọc Nam Trầm Ấm Tổng Tài (NamMinhNeural via Edge TTS & Disk Cache)
     if (pathname === '/api/tts' && req.method === 'GET') {
         const text = parsedUrl.searchParams.get('text');
         if (!text) {
@@ -589,18 +595,61 @@ const server = http.createServer((req, res) => {
             res.end('Thiếu tham số text');
             return;
         }
-        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=vi&client=tw-ob`;
-        https.get(ttsUrl, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } }, (ttsRes) => {
-            res.writeHead(ttsRes.statusCode || 200, {
-                'Content-Type': 'audio/mpeg',
-                'Cache-Control': 'public, max-age=86400',
-                'Access-Control-Allow-Origin': '*'
-            });
-            ttsRes.pipe(res);
-        }).on('error', (err) => {
-            console.error('[TTS Proxy Error]:', err.message);
+
+        const voice = parsedUrl.searchParams.get('voice') || 'vi-VN-NamMinhNeural';
+
+        // Tính toán hash MD5 theo text + voice để cache trên đĩa (0ms độ trễ cho câu lặp lại)
+        const hash = crypto.createHash('md5').update(`${voice}_${text}`).digest('hex');
+        const cacheFile = path.join(TTS_CACHE_DIR, `${hash}.mp3`);
+
+        const sendAudioFile = (filePath) => {
+            try {
+                const stat = fs.statSync(filePath);
+                res.writeHead(200, {
+                    'Content-Type': 'audio/mpeg',
+                    'Content-Length': stat.size,
+                    'Cache-Control': 'public, max-age=31536000',
+                    'Access-Control-Allow-Origin': '*'
+                });
+                fs.createReadStream(filePath).pipe(res);
+            } catch (err) {
+                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+                res.end('Lỗi đọc file âm thanh cache');
+            }
+        };
+
+        if (fs.existsSync(cacheFile) && fs.statSync(cacheFile).size > 100) {
+            sendAudioFile(cacheFile);
+            return;
+        }
+
+        const scriptPath = path.join(__dirname, 'tts_engine.py');
+        const py = spawn('python', [scriptPath, '--json']);
+
+        let pyErr = '';
+        py.stderr.on('data', (d) => { pyErr += d.toString(); });
+
+        py.stdin.write(JSON.stringify({
+            text: text,
+            output: cacheFile,
+            voice: voice
+        }));
+        py.stdin.end();
+
+        py.on('close', (code) => {
+            if (code === 0 && fs.existsSync(cacheFile) && fs.statSync(cacheFile).size > 100) {
+                sendAudioFile(cacheFile);
+            } else {
+                console.error('[Tổng Tài TTS Error]: Python exited with code', code, pyErr);
+                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+                res.end('Lỗi tổng hợp giọng đọc Tổng Tài: ' + pyErr);
+            }
+        });
+
+        py.on('error', (err) => {
+            console.error('[Tổng Tài TTS Spawn Error]:', err.message);
             res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-            res.end('Lỗi TTS Proxy: ' + err.message);
+            res.end('Lỗi khởi động tiến trình TTS');
         });
         return;
     }
