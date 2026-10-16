@@ -3988,6 +3988,16 @@
                                     <input type="tel" id="input-partner-phone" placeholder="Ví dụ: 0908 123 456" class="w-full py-1.5 px-3 border border-line rounded-lg bg-white focus:outline-none focus:border-cerulean font-mono text-xs">
                                 </div>
                                 <div>
+                                    <label class="block font-bold mb-1 text-[11px] uppercase tracking-wider text-ink-light">Trình độ học vấn</label>
+                                    <select id="select-partner-education" class="w-full py-1.5 px-2.5 border border-line rounded-lg bg-white focus:outline-none focus:border-cerulean editorial-select text-xs font-semibold">
+                                        <option value="">-- Chưa chọn --</option>
+                                        <option value="Cấp 3">Cấp 3</option>
+                                        <option value="Đại học">Đại học</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
                                     <label class="block font-bold mb-1 text-[11px] uppercase tracking-wider text-ink-light">Xu hướng tính dục</label>
                                     <select id="select-partner-orientation" onchange="window.handlePartnerOrientationChange(this.value)" class="w-full py-1.5 px-2.5 border border-line rounded-lg bg-white focus:outline-none focus:border-cerulean editorial-select text-xs font-semibold">
                                         <option value="Đồng tính">Đồng tính</option>
@@ -3995,16 +4005,16 @@
                                         <option value="Song tính">Song tính</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div id="partner-role-container" class="transition-all">
-                                <label class="block font-bold mb-1 text-[11px] uppercase tracking-wider text-ink-light">Vai trò (Role đối với đồng tính)</label>
-                                <select id="input-partner-role" class="w-full py-1.5 px-2.5 border border-line rounded-lg bg-white focus:outline-none focus:border-cerulean editorial-select text-xs">
-                                    <option value="Bottom (Tiếp nhận)">Bottom (Tiếp nhận)</option>
-                                    <option value="Top (Chủ động)">Top (Chủ động)</option>
-                                    <option value="Versatile (Linh hoạt)">Versatile (Linh hoạt)</option>
-                                    <option value="Side (Không thâm nhập)">Side (Thân mật)</option>
-                                    <option value="Riêng tư">Riêng tư</option>
-                                </select>
+                                <div id="partner-role-container" class="transition-all">
+                                    <label class="block font-bold mb-1 text-[11px] uppercase tracking-wider text-ink-light">Vai trò (Role đối với đồng tính)</label>
+                                    <select id="input-partner-role" class="w-full py-1.5 px-2.5 border border-line rounded-lg bg-white focus:outline-none focus:border-cerulean editorial-select text-xs">
+                                        <option value="Bottom (Tiếp nhận)">Bottom (Tiếp nhận)</option>
+                                        <option value="Top (Chủ động)">Top (Chủ động)</option>
+                                        <option value="Versatile (Linh hoạt)">Versatile (Linh hoạt)</option>
+                                        <option value="Side (Không thâm nhập)">Side (Thân mật)</option>
+                                        <option value="Riêng tư">Riêng tư</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -4371,6 +4381,10 @@
                                 <div class="flex justify-between border-b border-stone-200/60 pb-2 mt-2">
                                     <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Nghề nghiệp:</span>
                                     <span id="detail-partner-profession" class="font-medium text-ink text-right">-</span>
+                                </div>
+                                <div class="flex justify-between border-b border-stone-200/60 pb-2">
+                                    <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Trình độ học vấn:</span>
+                                    <span id="detail-partner-education" class="font-semibold text-ink text-right">-</span>
                                 </div>
                                 <div class="flex flex-col border-b border-stone-200/60 pb-2 space-y-1 mt-2">
                                     <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Thường trú:</span>
@@ -7047,6 +7061,7 @@
                 relation: "Bạn trai",
                 dob: "1998-05-14",
                 phone: "0908 123 456",
+                education: "Đại học",
                 permanentAddr: "Quận 1, TP. Hồ Chí Minh",
                 temporaryAddr: "Thảo Điền, TP. Thủ Đức",
                 role: "Versatile (Linh hoạt)",
@@ -7067,6 +7082,7 @@
                 category: "onlyfan",
                 dob: "1999-08-20",
                 phone: "0912 888 999",
+                education: "Đại học",
                 permanentAddr: "Bangkok, Thái Lan",
                 temporaryAddr: "Thảo Điền, TP. Thủ Đức",
                 role: "Top / Dominant",
@@ -9617,6 +9633,7 @@
                         category: 'real',
                         dob: '1998-05-14',
                         phone: '0908 123 456',
+                        education: 'Đại học',
                         permanentAddr: 'Quận 1, TP. Hồ Chí Minh',
                         temporaryAddr: 'Thảo Điền, TP. Thủ Đức',
                         role: 'Versatile (Linh hoạt)',
@@ -9739,6 +9756,15 @@
 
                 const profEl = document.getElementById('detail-partner-profession');
                 if (profEl) profEl.innerText = p.profession || (isOF ? 'Diễn viên Onlyfan' : 'Chưa cập nhật');
+
+                const eduEl = document.getElementById('detail-partner-education');
+                if (eduEl) {
+                    if (p.education) {
+                        eduEl.innerHTML = `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-200/90">${p.education}</span>`;
+                    } else {
+                        eduEl.innerText = '-';
+                    }
+                }
 
                 // Hiển thị mạng xã hội động (kiểm tra an toàn từng liên kết)
                 const detailSocContainer = document.getElementById('detail-partner-socials-container');
@@ -13138,6 +13164,12 @@
                                         <span class="text-ink-light">Nghề nghiệp:</span>
                                         <span class="font-medium text-ink">${p.profession || 'Chưa cập nhật'}</span>
                                     </li>
+                                    ${p.education ? `
+                                    <li class="flex justify-between items-center">
+                                        <span class="text-ink-light">Học vấn:</span>
+                                        <span class="font-semibold text-ink text-xs px-2 py-0.5 rounded-full bg-stone-100 border border-stone-200">${p.education}</span>
+                                    </li>
+                                    ` : ''}
                                     <li class="flex justify-between items-center">
                                         <span class="text-ink-light">Điện thoại:</span>
                                         <span class="font-mono text-ink">${p.phone || 'Chưa cập nhật'}</span>
@@ -13159,6 +13191,12 @@
                                         <span class="text-ink-light">Nghề nghiệp / Nền tảng:</span>
                                         <span class="font-semibold text-ink">${p.profession || 'OnlyFan Creator'}</span>
                                     </li>
+                                    ${p.education ? `
+                                    <li class="flex justify-between items-center">
+                                        <span class="text-ink-light">Học vấn:</span>
+                                        <span class="font-semibold text-ink text-xs px-2 py-0.5 rounded-full bg-stone-100 border border-stone-200">${p.education}</span>
+                                    </li>
+                                    ` : ''}
                                     <li class="flex justify-between items-center">
                                         <span class="text-ink-light">${p.orientation === 'Trai thẳng' ? 'Xu hướng:' : 'Vai trò / Gu:'}</span>
                                         ${p.orientation === 'Trai thẳng'
@@ -13468,7 +13506,8 @@
                             <div class="text-xs font-semibold text-ink truncate" title="${p.profession || 'Chưa cập nhật'}">
                                 ${p.profession || 'Chưa cập nhật'}
                             </div>
-                            <div>
+                            <div class="flex items-center gap-1 flex-wrap">
+                                ${p.education ? `<span class="text-[9px] font-bold px-1.5 py-0.2 text-stone-700 bg-stone-100 border border-stone-200/90 rounded inline-block shadow-2xs">${p.education}</span>` : ''}
                                 ${p.orientation === 'Trai thẳng'
                                     ? '<span class="italic text-emerald-700 font-bold text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 inline-block">Trai thẳng</span>'
                                     : `<span class="italic text-cerulean font-semibold text-[10px] px-1.5 py-0.5 rounded-full bg-cerulean/5 border border-cerulean/15 inline-block">${p.role || 'Bottom (Tiếp nhận)'}</span>`
@@ -13540,7 +13579,8 @@
                     col3Html = `
                         <div class="space-y-1 min-w-0">
                             <div class="text-xs font-semibold text-ink truncate">${p.profession || 'OnlyFan Creator'}</div>
-                            <div>
+                            <div class="flex items-center gap-1 flex-wrap">
+                                ${p.education ? `<span class="text-[9px] font-bold px-1.5 py-0.2 text-stone-700 bg-stone-100 border border-stone-200/90 rounded inline-block shadow-2xs">${p.education}</span>` : ''}
                                 ${p.orientation === 'Trai thẳng'
                                     ? '<span class="italic text-emerald-700 font-bold text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 inline-block">Trai thẳng</span>'
                                     : `<span class="italic text-jasper font-semibold text-[10px] px-1.5 py-0.5 rounded-full bg-jasper/5 border border-jasper/15 inline-block">${p.role || 'Creator'}</span>`
@@ -13994,10 +14034,10 @@
             const roleSelect = document.getElementById('input-partner-role');
             if (!roleContainer) return;
             if (val === 'Trai thẳng') {
-                roleContainer.classList.add('hidden');
+                roleContainer.classList.add('invisible');
                 if (roleSelect) roleSelect.value = '';
             } else {
-                roleContainer.classList.remove('hidden');
+                roleContainer.classList.remove('invisible', 'hidden');
                 if (roleSelect && !roleSelect.value) {
                     roleSelect.value = 'Bottom (Tiếp nhận)';
                 }
@@ -14172,6 +14212,8 @@
 
                     document.getElementById('input-partner-dob').value = p.dob || "";
                     document.getElementById('input-partner-phone').value = p.phone || "";
+                    const eduInput = document.getElementById('select-partner-education');
+                    if (eduInput) eduInput.value = p.education || "";
                     setAddressFields(p.permanentAddr || "", 'permanent');
                     setAddressFields(p.temporaryAddr || "", 'temporary');
                     const pOrientation = p.orientation || (p.role && p.role.includes('Trai thẳng') ? 'Trai thẳng' : 'Đồng tính');
@@ -14202,6 +14244,8 @@
                 currentPartnerMode = type;
 
                 document.getElementById('form-partner').reset();
+                const newEduInput = document.getElementById('select-partner-education');
+                if (newEduInput) newEduInput.value = "";
                 populateProvinceSelect(document.getElementById('select-partner-permanent-province'));
                 populateProvinceSelect(document.getElementById('select-partner-temporary-province'));
                 setAddressFields("", 'permanent');
@@ -14719,6 +14763,7 @@
                 relation: document.getElementById('input-partner-relation')?.value || defaultRel,
                 dob: document.getElementById('input-partner-dob')?.value || "",
                 phone: document.getElementById('input-partner-phone')?.value || "",
+                education: document.getElementById('select-partner-education')?.value || "",
                 permanentAddr: document.getElementById('input-partner-permanent-addr')?.value || "",
                 temporaryAddr: document.getElementById('input-partner-temporary-addr')?.value || "",
                 orientation: document.getElementById('select-partner-orientation')?.value || "Đồng tính",
