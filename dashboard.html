@@ -3958,10 +3958,14 @@
                             <div>
                                 <label class="block font-bold text-[11px] uppercase tracking-wider text-ink-light mb-1">Đường dẫn / Link Avatar</label>
                                 <input type="text" id="input-partner-avatar" oninput="window.updatePartnerAvatarPreview(this.value)" placeholder="https://... hoặc đường dẫn ảnh/clip avatar" class="w-full py-1.5 px-3 border border-line rounded-lg bg-stone-50/60 focus:bg-white focus:outline-none focus:border-cerulean text-xs transition-colors">
+                                <input type="hidden" id="input-partner-avatar-position" value="center">
+                                <input type="hidden" id="input-partner-avatar-zoom" value="1">
                             </div>
                             <div>
                                 <label class="block font-bold text-[11px] uppercase tracking-wider text-ink-light mb-1">Đường dẫn / Link Ảnh &amp; Video Bìa</label>
                                 <input type="text" id="input-partner-cover" oninput="window.updatePartnerCoverPreview(this.value)" placeholder="https://... hoặc đường dẫn ảnh/video bìa" class="w-full py-1.5 px-3 border border-line rounded-lg bg-stone-50/60 focus:bg-white focus:outline-none focus:border-cerulean text-xs transition-colors">
+                                <input type="hidden" id="input-partner-cover-position" value="center">
+                                <input type="hidden" id="input-partner-cover-zoom" value="1">
                             </div>
                         </div>
                     </div>
@@ -4392,18 +4396,65 @@
                 </button>
             </div>
 
-            <!-- Vùng hiển thị Cropper -->
-            <div class="relative w-full h-[320px] sm:h-[400px] bg-stone-950 rounded-xl overflow-hidden flex items-center justify-center select-none shadow-inner">
-                <img id="cropper-image-target" src="" alt="Cropper Target" class="max-w-full max-h-full block opacity-0 transition-opacity">
-                
+            <!-- Vùng hiển thị Cropper & Video Framing Stage -->
+            <div id="cropper-viewport-stage" class="relative w-full h-[320px] sm:h-[400px] bg-stone-950 rounded-xl overflow-hidden flex items-center justify-center select-none shadow-inner">
+                <!-- Cho Ảnh Tĩnh (Cropper.js) -->
+                <div id="cropper-image-wrapper" class="w-full h-full flex items-center justify-center">
+                    <img id="cropper-image-target" src="" alt="Cropper Target" class="max-w-full max-h-full block opacity-0 transition-opacity">
+                </div>
+
+                <!-- Cho Video (Interactive Video Framing Canvas) -->
+                <div id="cropper-video-stage" class="hidden absolute inset-0 flex items-center justify-center overflow-hidden bg-stone-950 select-none">
+                    <!-- Khung mô phỏng Avatar tròn hoặc Cover ngang -->
+                    <div id="cropper-video-mask-wrapper" class="relative overflow-hidden shadow-2xl transition-all cursor-grab active:cursor-grabbing border-2 border-white/90 bg-black flex items-center justify-center">
+                        <video id="cropper-video-target" autoplay loop muted playsinline class="pointer-events-none select-none max-w-none origin-center"></video>
+                        
+                        <!-- Lưới căn chỉnh tâm điểm (3x3 grid & center dot) -->
+                        <div id="cropper-video-grid" class="absolute inset-0 pointer-events-none grid grid-cols-3 grid-rows-3 opacity-30 border border-white/20">
+                            <div class="border-r border-b border-white/20"></div>
+                            <div class="border-r border-b border-white/20"></div>
+                            <div class="border-b border-white/20"></div>
+                            <div class="border-r border-b border-white/20"></div>
+                            <div class="border-r border-b border-white/20 flex items-center justify-center">
+                                <div class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-xs"></div>
+                            </div>
+                            <div class="border-b border-white/20"></div>
+                            <div class="border-r border-white/20"></div>
+                            <div class="border-r border-white/20"></div>
+                            <div></div>
+                        </div>
+
+                        <!-- Gợi ý thao tác kéo chuột -->
+                        <div class="absolute bottom-2 inset-x-0 flex justify-center pointer-events-none z-10">
+                            <span class="px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-xs text-[10px] text-white/90 font-mono tracking-wider flex items-center gap-1 shadow-sm border border-white/10">
+                                <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                                Kéo chuột để dịch chuyển khung
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Thanh điều khiển dòng thời gian video (Timeline scrubber) -->
+                    <div id="cropper-video-controls-bar" class="absolute bottom-3 inset-x-3 sm:inset-x-6 bg-black/85 backdrop-blur-md rounded-xl px-3 py-2 flex items-center gap-2.5 text-white z-20 border border-white/15 shadow-xl">
+                        <button type="button" id="btn-cropper-video-play" onclick="window.cropperToggleVideoPlay()" class="w-7 h-7 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center text-xs transition-colors cursor-pointer" title="Phát / Tạm dừng">
+                            ⏸
+                        </button>
+                        <span id="cropper-video-time" class="font-mono text-[11px] text-stone-300 shrink-0 w-20 text-center">0:00 / 0:00</span>
+                        <input type="range" id="cropper-video-scrubber" min="0" max="100" step="0.1" value="0" oninput="window.cropperSeekVideo(this.value)" class="flex-1 h-1.5 bg-stone-700 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                        <div class="flex items-center gap-1">
+                            <button type="button" onclick="window.cropperStepVideoFrame(-0.1)" class="px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/20 text-[10px] font-mono cursor-pointer" title="Lùi 0.1s">-0.1s</button>
+                            <button type="button" onclick="window.cropperStepVideoFrame(0.1)" class="px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/20 text-[10px] font-mono cursor-pointer" title="Tới 0.1s">+0.1s</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Loading indicator -->
                 <div id="cropper-loading-spinner" class="absolute inset-0 flex flex-col items-center justify-center bg-stone-950/80 text-white z-10">
                     <svg class="animate-spin w-8 h-8 text-cerulean mb-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-                    <span class="text-xs font-medium text-stone-300">Đang chuẩn bị khung căn chỉnh...</span>
+                    <span id="cropper-loading-text" class="text-xs font-medium text-stone-300">Đang chuẩn bị khung căn chỉnh...</span>
                 </div>
 
                 <!-- Preview thu nhỏ ở góc (Mini live preview badge) -->
-                <div class="absolute top-2.5 right-2.5 z-10 flex flex-col items-end gap-1 pointer-events-none">
+                <div id="cropper-preview-badge-wrapper" class="absolute top-2.5 right-2.5 z-10 flex flex-col items-end gap-1 pointer-events-none">
                     <span class="text-[9px] font-bold text-white/70 uppercase tracking-wider bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs">Xem trước</span>
                     <div id="cropper-preview-container" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white/80 shadow-lg overflow-hidden bg-stone-900"></div>
                 </div>
@@ -4438,9 +4489,9 @@
                     </button>
                 </div>
 
-                <!-- Tùy chọn Tỉ lệ Khung Hình -->
+                <!-- Tùy chọn Tỉ lệ & Căn chỉnh Vị trí -->
                 <div id="cropper-aspect-buttons" class="flex items-center gap-1 bg-stone-100 rounded-lg p-1 text-xs">
-                    <!-- Sẽ render động nút 1:1, 16:6, Tự do tùy avatar hay cover -->
+                    <!-- Sẽ render động tùy avatar/cover/video -->
                 </div>
             </div>
 
@@ -4451,9 +4502,13 @@
                 </button>
                 <div class="flex items-center gap-2">
                     <span id="cropper-status-text" class="text-xs text-stone-500 italic hidden sm:inline"></span>
-                    <button type="button" id="btn-cropper-apply" onclick="window.applyCroppedImage()" class="px-5 py-2 rounded-xl bg-cerulean hover:bg-cerulean-dark text-white font-bold transition-all shadow-sm hover:shadow cursor-pointer flex items-center gap-1.5">
+                    <button type="button" id="btn-cropper-capture-still" onclick="window.applyVideoAsStillImage()" class="hidden px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold transition-all shadow-sm hover:shadow cursor-pointer flex items-center gap-1.5" title="Trích xuất khung hình hiện tại thành ảnh tĩnh và lưu làm avatar/bìa">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <span>Cắt Ảnh Từ Video</span>
+                    </button>
+                    <button type="button" id="btn-cropper-apply" onclick="window.applyCroppedMedia()" class="px-5 py-2 rounded-xl bg-cerulean hover:bg-cerulean-dark text-white font-bold transition-all shadow-sm hover:shadow cursor-pointer flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        <span>Áp Dụng &amp; Hoàn Tất</span>
+                        <span id="btn-cropper-apply-text">Áp Dụng &amp; Hoàn Tất</span>
                     </button>
                 </div>
             </div>
@@ -4495,8 +4550,10 @@
                         <div class="md:w-1/3 shrink-0">
                             <div class="sticky top-0 space-y-6">
                                 <div class="text-center">
-                                    <img id="detail-partner-avatar" src="" class="w-44 h-44 md:w-48 md:h-48 mx-auto rounded-full object-cover border-4 border-white shadow-2xl mb-4 bg-paper" alt="Avatar">
-                                    <video id="detail-partner-avatar-video" autoplay loop muted playsinline class="w-44 h-44 md:w-48 md:h-48 mx-auto rounded-full object-cover border-4 border-cerulean shadow-2xl mb-4 hidden bg-paper"></video>
+                                    <div class="w-44 h-44 md:w-48 md:h-48 mx-auto rounded-full border-4 border-cerulean shadow-2xl mb-4 bg-paper overflow-hidden relative">
+                                        <img id="detail-partner-avatar" src="" class="w-full h-full object-cover" alt="Avatar">
+                                        <video id="detail-partner-avatar-video" autoplay loop muted playsinline class="w-full h-full object-cover hidden"></video>
+                                    </div>
                                     <h2 id="detail-partner-name" class="font-playfair text-3xl md:text-4xl font-bold text-cerulean mb-1">Tên</h2>
                                     <span id="detail-partner-relation" class="inline-block bg-cerulean text-white text-[10px] uppercase tracking-widest px-3 py-1 font-bold rounded-full">Mối quan hệ</span>
                                 </div>
@@ -9808,10 +9865,15 @@
                 const detailCoverEl = document.getElementById('detail-partner-cover');
                 const detailCoverVidEl = document.getElementById('detail-partner-cover-video');
 
+                const covPos = p.coverPosition || 'center';
+                const covZm = (p.coverZoom && p.coverZoom != 1) ? `scale(${p.coverZoom})` : '';
+
                 if (isVidCover) {
                     if (detailCoverEl) detailCoverEl.classList.add('hidden');
                     if (detailCoverVidEl) {
                         detailCoverVidEl.src = rawCoverUrl;
+                        detailCoverVidEl.style.objectPosition = covPos;
+                        detailCoverVidEl.style.transform = covZm;
                         detailCoverVidEl.classList.remove('hidden');
                         detailCoverVidEl.play().catch(() => {});
                     }
@@ -9822,6 +9884,8 @@
                     }
                     if (detailCoverEl) {
                         detailCoverEl.src = rawCoverUrl;
+                        detailCoverEl.style.objectPosition = covPos;
+                        detailCoverEl.style.transform = covZm;
                         detailCoverEl.classList.remove('hidden');
                     }
                 }
@@ -9833,11 +9897,16 @@
                 const avatarEl = document.getElementById('detail-partner-avatar');
                 const avatarVidEl = document.getElementById('detail-partner-avatar-video');
                 const isVidAvatar = (typeof window.isMediaVideo === 'function') && window.isMediaVideo(p.avatar);
+                const avPos = p.avatarPosition || 'center';
+                const avZm = (p.avatarZoom && p.avatarZoom != 1) ? `scale(${p.avatarZoom})` : '';
+
                 if (isVidAvatar && p.avatar) {
                     if (avatarEl) avatarEl.classList.add('hidden');
                     if (avatarVidEl) {
                         avatarVidEl.src = p.avatar;
-                        avatarVidEl.className = 'w-48 h-48 md:w-52 md:h-52 mx-auto rounded-full object-cover border-4 border-cerulean shadow-xl mb-4 block';
+                        avatarVidEl.className = 'w-full h-full object-cover block';
+                        avatarVidEl.style.objectPosition = avPos;
+                        avatarVidEl.style.transform = avZm;
                         avatarVidEl.classList.remove('hidden');
                         avatarVidEl.play().catch(() => {});
                     }
@@ -9848,7 +9917,9 @@
                     }
                     if (avatarEl) {
                         avatarEl.src = p.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80';
-                        avatarEl.className = 'w-48 h-48 md:w-52 md:h-52 mx-auto rounded-full object-cover border-4 border-cerulean shadow-xl mb-4 block';
+                        avatarEl.className = 'w-full h-full object-cover block';
+                        avatarEl.style.objectPosition = avPos;
+                        avatarEl.style.transform = avZm;
                         avatarEl.classList.remove('hidden');
                     }
                 }
@@ -11402,18 +11473,20 @@
         }
         window.updatePartnerAgeDisplay = updatePartnerAgeDisplay;
 
-        function updatePartnerAvatarPreview(url) {
+        function updatePartnerAvatarPreview(url, position, zoom) {
             const preview = document.getElementById('partner-avatar-preview');
             const videoPreview = document.getElementById('partner-avatar-video-preview');
             const typeBadge = document.getElementById('partner-avatar-type-badge');
             if (!preview) return;
+
+            const pos = position || document.getElementById('input-partner-avatar-position')?.value || 'center';
+            const zm = (zoom !== undefined && zoom !== null) ? zoom : (parseFloat(document.getElementById('input-partner-avatar-zoom')?.value || '1') || 1);
 
             // Tự chuyển đổi link Google Drive thành URL nhúng được
             if (url) {
                 const gInfo = parseGoogleUrl(url);
                 if (gInfo && gInfo.source === 'drive' && gInfo.type === 'file') {
                     url = driveFileIdToEmbedUrl(gInfo.fileId, 'w400');
-                    // Cập nhật luôn input field với URL đã chuyển đổi
                     const avatarInput = document.getElementById('input-partner-avatar');
                     if (avatarInput) avatarInput.value = url;
                 }
@@ -11426,6 +11499,8 @@
                 preview.style.display = 'none';
                 if (videoPreview) {
                     videoPreview.src = url;
+                    videoPreview.style.objectPosition = pos;
+                    videoPreview.style.transform = (zm && zm !== 1) ? `scale(${zm})` : '';
                     videoPreview.classList.remove('hidden');
                     videoPreview.style.display = 'block';
                     videoPreview.play().catch(() => {});
@@ -11445,6 +11520,8 @@
                 preview.classList.remove('hidden');
                 preview.style.display = 'block';
                 preview.src = url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80';
+                preview.style.objectPosition = pos;
+                preview.style.transform = (zm && zm !== 1) ? `scale(${zm})` : '';
                 if (typeBadge) {
                     typeBadge.classList.add('hidden');
                 }
@@ -11453,74 +11530,90 @@
         window.updatePartnerAvatarPreview = updatePartnerAvatarPreview;
 
         // ==========================================
-        // MODULE CĂN CHỈNH KHUNG HIỂN THỊ (IMAGE CROPPER)
+        // MODULE CĂN CHỈNH KHUNG HIỂN THỊ (IMAGE & VIDEO CROPPER)
         // ==========================================
         let cropperInstance = null;
         let cropperActiveMode = 'avatar'; // 'avatar' | 'cover'
+        let cropperActiveIsVideo = false;
+        let cropperActiveSource = null;
         let cropperActiveFileName = '';
         let cropperObjectURL = null;
+
+        let videoFramingState = {
+            posX: 50,
+            posY: 50,
+            zoom: 1.0,
+            rotation: 0,
+            flipped: false,
+            aspect: 'circle',
+            isDragging: false,
+            dragStartX: 0,
+            dragStartY: 0,
+            initialPosX: 50,
+            initialPosY: 50
+        };
+
+        function updateVideoFramingStyles() {
+            const videoEl = document.getElementById('cropper-video-target');
+            if (!videoEl) return;
+
+            videoEl.style.width = '100%';
+            videoEl.style.height = '100%';
+            videoEl.style.objectFit = 'cover';
+            videoEl.style.objectPosition = `${videoFramingState.posX}% ${videoFramingState.posY}%`;
+
+            let transformStr = `scale(${videoFramingState.zoom})`;
+            if (videoFramingState.rotation) {
+                transformStr += ` rotate(${videoFramingState.rotation}deg)`;
+            }
+            if (videoFramingState.flipped) {
+                transformStr += ` scaleX(-1)`;
+            }
+            videoEl.style.transform = transformStr;
+
+            const slider = document.getElementById('cropper-zoom-slider');
+            if (slider) slider.value = videoFramingState.zoom;
+        }
 
         window.openImageCropperModal = function(options = {}) {
             const mode = options.mode || 'avatar';
             const source = options.source;
             if (!source) {
-                showToast("Không tìm thấy hình ảnh để căn chỉnh!", "error");
+                showToast("Không tìm thấy hình ảnh hoặc video để căn chỉnh!", "error");
                 return;
             }
 
+            let isVideo = options.isVideo || false;
+            if (!isVideo && (source instanceof File || source instanceof Blob)) {
+                isVideo = source.type ? source.type.startsWith('video') : /\.(mp4|m4v|webm|mov|ogg)$/i.test(source.name || '');
+            }
+            if (!isVideo && typeof source === 'string') {
+                isVideo = (typeof window.isMediaVideo === 'function' && window.isMediaVideo(source)) || /\.(mp4|webm|mov|m4v|ogg)(\?.*)?$/i.test(source);
+            }
+
             cropperActiveMode = mode;
+            cropperActiveIsVideo = isVideo;
+            cropperActiveSource = source;
             cropperActiveFileName = options.fileName || '';
 
             const modal = document.getElementById('modal-image-cropper');
             const titleEl = document.getElementById('cropper-modal-title');
             const descEl = document.getElementById('cropper-modal-desc');
             const badgeIcon = document.getElementById('cropper-badge-icon');
-            const previewBox = document.getElementById('cropper-preview-container');
+            const previewBoxWrapper = document.getElementById('cropper-preview-badge-wrapper');
             const aspectBtnsContainer = document.getElementById('cropper-aspect-buttons');
             const targetImg = document.getElementById('cropper-image-target');
+            const imageWrapper = document.getElementById('cropper-image-wrapper');
+            const videoStage = document.getElementById('cropper-video-stage');
+            const videoTarget = document.getElementById('cropper-video-target');
+            const videoMask = document.getElementById('cropper-video-mask-wrapper');
             const spinner = document.getElementById('cropper-loading-spinner');
+            const stillBtn = document.getElementById('btn-cropper-capture-still');
+            const applyBtnText = document.getElementById('btn-cropper-apply-text');
 
-            if (!modal || !targetImg) return;
+            if (!modal) return;
 
-            // Thiết lập giao diện theo Avatar vs Cover
-            const isAvatar = (mode === 'avatar');
-            if (isAvatar) {
-                if (titleEl) titleEl.innerText = "Căn Chỉnh Khung Hiển Thị - Ảnh Đại Diện";
-                if (descEl) descEl.innerText = "Kéo để căn chỉnh tâm điểm khuôn mặt trong vòng tròn, dùng thanh trượt hoặc con lăn để thu phóng.";
-                if (badgeIcon) {
-                    badgeIcon.className = "w-8 h-8 rounded-full bg-cerulean/10 text-cerulean flex items-center justify-center shrink-0";
-                }
-                if (previewBox) {
-                    previewBox.className = "w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white/90 shadow-lg overflow-hidden bg-stone-900";
-                }
-                if (aspectBtnsContainer) {
-                    aspectBtnsContainer.innerHTML = `
-                        <button type="button" onclick="window.cropperSetAspect(1, 'circle')" id="btn-aspect-circle" class="px-2.5 py-1 rounded bg-white text-cerulean font-bold shadow-2xs text-[11px] transition-all">Tròn 1:1</button>
-                        <button type="button" onclick="window.cropperSetAspect(NaN, 'free')" id="btn-aspect-free" class="px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all">Tự do</button>
-                    `;
-                }
-            } else {
-                if (titleEl) titleEl.innerText = "Căn Chỉnh Khung Hiển Thị - Ảnh Bìa (Cover Banner)";
-                if (descEl) descEl.innerText = "Kéo ảnh để chọn góc nhìn đại cảnh đẹp nhất, căn chuẩn tỉ lệ bìa ngang rộng.";
-                if (badgeIcon) {
-                    badgeIcon.className = "w-8 h-8 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0";
-                }
-                if (previewBox) {
-                    previewBox.className = "w-28 h-11 sm:w-36 sm:h-14 rounded-lg border-2 border-white/90 shadow-lg overflow-hidden bg-stone-900";
-                }
-                if (aspectBtnsContainer) {
-                    aspectBtnsContainer.innerHTML = `
-                        <button type="button" onclick="window.cropperSetAspect(16/6, 'cover')" id="btn-aspect-cover" class="px-2.5 py-1 rounded bg-white text-amber-600 font-bold shadow-2xs text-[11px] transition-all">Bìa chuẩn (16:6)</button>
-                        <button type="button" onclick="window.cropperSetAspect(16/9, '16-9')" id="btn-aspect-16-9" class="px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all">16:9</button>
-                        <button type="button" onclick="window.cropperSetAspect(3/1, '3-1')" id="btn-aspect-3-1" class="px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all">3:1</button>
-                        <button type="button" onclick="window.cropperSetAspect(NaN, 'free')" id="btn-aspect-free" class="px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all">Tự do</button>
-                    `;
-                }
-            }
-
-            if (spinner) spinner.classList.remove('hidden');
-            targetImg.classList.add('opacity-0');
-
+            // Xóa state cũ
             if (cropperInstance) {
                 cropperInstance.destroy();
                 cropperInstance = null;
@@ -11530,90 +11623,309 @@
                 cropperObjectURL = null;
             }
 
+            const isAvatar = (mode === 'avatar');
+
+            // Tạo ObjectURL nếu source là File/Blob
+            let mediaSrc = '';
+            if (source instanceof Blob || source instanceof File) {
+                cropperObjectURL = URL.createObjectURL(source);
+                mediaSrc = cropperObjectURL;
+            } else if (typeof source === 'string') {
+                mediaSrc = source;
+            }
+
+            if (isVideo) {
+                // GIAO DIỆN VIDEO FRAMING
+                if (imageWrapper) imageWrapper.classList.add('hidden');
+                if (videoStage) videoStage.classList.remove('hidden');
+                if (previewBoxWrapper) previewBoxWrapper.classList.add('hidden');
+                if (stillBtn) stillBtn.classList.remove('hidden');
+                if (applyBtnText) applyBtnText.innerText = "Áp Dụng Khung Video";
+
+                if (isAvatar) {
+                    if (titleEl) titleEl.innerText = "Căn Chỉnh Khung Hiển Thị - Video Đại Diện";
+                    if (descEl) descEl.innerText = "Kéo để căn chỉnh tâm điểm video trong avatar tròn, dùng thanh trượt zoom và tua chọn giây đẹp nhất.";
+                    if (badgeIcon) badgeIcon.className = "w-8 h-8 rounded-full bg-cerulean/10 text-cerulean flex items-center justify-center shrink-0";
+                    if (videoMask) {
+                        videoMask.className = "relative overflow-hidden shadow-2xl transition-all cursor-grab active:cursor-grabbing border-4 border-cerulean w-52 h-52 sm:w-64 sm:h-64 rounded-full bg-black flex items-center justify-center";
+                    }
+                    if (aspectBtnsContainer) {
+                        aspectBtnsContainer.innerHTML = `
+                            <button type="button" onclick="window.cropperSetVideoAspect('circle')" id="btn-aspect-circle" class="px-2.5 py-1 rounded bg-white text-cerulean font-bold shadow-2xs text-[11px] transition-all">Tròn Avatar</button>
+                            <button type="button" onclick="window.cropperSetVideoAspect('square')" id="btn-aspect-square" class="px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all">Vuông 1:1</button>
+                            <div class="h-4 w-[1px] bg-stone-300 mx-1"></div>
+                            <button type="button" onclick="window.cropperSetVideoPos(50, 50)" class="px-2 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all" title="Canh giữa">Giữa</button>
+                            <button type="button" onclick="window.cropperSetVideoPos(50, 15)" class="px-2 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all" title="Canh trên">Trên</button>
+                            <button type="button" onclick="window.cropperSetVideoPos(50, 85)" class="px-2 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all" title="Canh dưới">Dưới</button>
+                        `;
+                    }
+                } else {
+                    if (titleEl) titleEl.innerText = "Căn Chỉnh Khung Hiển Thị - Video Bìa (Cover Banner)";
+                    if (descEl) descEl.innerText = "Kéo video để dịch chuyển khung nhìn ngang đại cảnh, chỉnh zoom và căn góc chuyển động.";
+                    if (badgeIcon) badgeIcon.className = "w-8 h-8 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0";
+                    if (videoMask) {
+                        videoMask.className = "relative overflow-hidden shadow-2xl transition-all cursor-grab active:cursor-grabbing border-2 border-amber-400 w-[94%] max-w-[560px] h-44 sm:h-56 rounded-xl bg-black flex items-center justify-center";
+                    }
+                    if (aspectBtnsContainer) {
+                        aspectBtnsContainer.innerHTML = `
+                            <button type="button" onclick="window.cropperSetVideoAspect('cover')" id="btn-aspect-cover" class="px-2.5 py-1 rounded bg-white text-amber-600 font-bold shadow-2xs text-[11px] transition-all">Bìa (16:6)</button>
+                            <button type="button" onclick="window.cropperSetVideoAspect('16-9')" id="btn-aspect-16-9" class="px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all">16:9</button>
+                            <div class="h-4 w-[1px] bg-stone-300 mx-1"></div>
+                            <button type="button" onclick="window.cropperSetVideoPos(50, 50)" class="px-2 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all" title="Canh giữa">Giữa</button>
+                            <button type="button" onclick="window.cropperSetVideoPos(50, 20)" class="px-2 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all" title="Canh trên">Trên</button>
+                            <button type="button" onclick="window.cropperSetVideoPos(50, 80)" class="px-2 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all" title="Canh dưới">Dưới</button>
+                        `;
+                    }
+                }
+
+                // Đọc lại vị trí đã lưu trước đó nếu có
+                const savedPos = isAvatar 
+                    ? document.getElementById('input-partner-avatar-position')?.value 
+                    : document.getElementById('input-partner-cover-position')?.value;
+                const savedZoom = isAvatar 
+                    ? parseFloat(document.getElementById('input-partner-avatar-zoom')?.value || '1') 
+                    : parseFloat(document.getElementById('input-partner-cover-zoom')?.value || '1');
+
+                let initX = 50, initY = 50;
+                if (savedPos && savedPos.includes('%')) {
+                    const parts = savedPos.split(/\s+/);
+                    if (parts.length >= 2) {
+                        initX = parseFloat(parts[0]) || 50;
+                        initY = parseFloat(parts[1]) || 50;
+                    }
+                }
+
+                videoFramingState = {
+                    posX: initX,
+                    posY: initY,
+                    zoom: savedZoom || 1.0,
+                    rotation: 0,
+                    flipped: false,
+                    aspect: isAvatar ? 'circle' : 'cover',
+                    isDragging: false,
+                    dragStartX: 0,
+                    dragStartY: 0,
+                    initialPosX: initX,
+                    initialPosY: initY
+                };
+
+                if (spinner) spinner.classList.remove('hidden');
+
+                if (videoTarget) {
+                    videoTarget.crossOrigin = "anonymous";
+                    videoTarget.onloadedmetadata = () => {
+                        if (spinner) spinner.classList.add('hidden');
+                        updateVideoFramingStyles();
+                        videoTarget.play().catch(() => {});
+                    };
+                    videoTarget.onerror = () => {
+                        if (spinner) spinner.classList.add('hidden');
+                        showToast("Không thể tải video để căn chỉnh khung!", "error");
+                    };
+                    videoTarget.ontimeupdate = () => {
+                        const scrubber = document.getElementById('cropper-video-scrubber');
+                        const timeEl = document.getElementById('cropper-video-time');
+                        if (scrubber && videoTarget.duration) {
+                            scrubber.value = ((videoTarget.currentTime / videoTarget.duration) * 100).toFixed(1);
+                        }
+                        if (timeEl) {
+                            const curM = Math.floor(videoTarget.currentTime / 60);
+                            const curS = Math.floor(videoTarget.currentTime % 60);
+                            const durM = Math.floor((videoTarget.duration || 0) / 60);
+                            const durS = Math.floor((videoTarget.duration || 0) % 60);
+                            timeEl.innerText = `${curM}:${curS < 10 ? '0' : ''}${curS} / ${durM}:${durS < 10 ? '0' : ''}${durS}`;
+                        }
+                    };
+                    videoTarget.src = mediaSrc;
+                }
+
+                setupVideoDragHandlers();
+            } else {
+                // GIAO DIỆN HÌNH ẢNH (CROPPER.JS)
+                if (imageWrapper) imageWrapper.classList.remove('hidden');
+                if (videoStage) videoStage.classList.add('hidden');
+                if (previewBoxWrapper) previewBoxWrapper.classList.remove('hidden');
+                if (stillBtn) stillBtn.classList.add('hidden');
+                if (applyBtnText) applyBtnText.innerText = "Áp Dụng & Hoàn Tất";
+
+                const previewBox = document.getElementById('cropper-preview-container');
+
+                if (isAvatar) {
+                    if (titleEl) titleEl.innerText = "Căn Chỉnh Khung Hiển Thị - Ảnh Đại Diện";
+                    if (descEl) descEl.innerText = "Kéo để căn chỉnh tâm điểm khuôn mặt trong vòng tròn, dùng thanh trượt hoặc con lăn để thu phóng.";
+                    if (badgeIcon) badgeIcon.className = "w-8 h-8 rounded-full bg-cerulean/10 text-cerulean flex items-center justify-center shrink-0";
+                    if (previewBox) {
+                        previewBox.className = "w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white/90 shadow-lg overflow-hidden bg-stone-900";
+                    }
+                    if (aspectBtnsContainer) {
+                        aspectBtnsContainer.innerHTML = `
+                            <button type="button" onclick="window.cropperSetAspect(1, 'circle')" id="btn-aspect-circle" class="px-2.5 py-1 rounded bg-white text-cerulean font-bold shadow-2xs text-[11px] transition-all">Tròn 1:1</button>
+                            <button type="button" onclick="window.cropperSetAspect(NaN, 'free')" id="btn-aspect-free" class="px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all">Tự do</button>
+                        `;
+                    }
+                } else {
+                    if (titleEl) titleEl.innerText = "Căn Chỉnh Khung Hiển Thị - Ảnh Bìa (Cover Banner)";
+                    if (descEl) descEl.innerText = "Kéo ảnh để chọn góc nhìn đại cảnh đẹp nhất, căn chuẩn tỉ lệ bìa ngang rộng.";
+                    if (badgeIcon) badgeIcon.className = "w-8 h-8 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0";
+                    if (previewBox) {
+                        previewBox.className = "w-28 h-11 sm:w-36 sm:h-14 rounded-lg border-2 border-white/90 shadow-lg overflow-hidden bg-stone-900";
+                    }
+                    if (aspectBtnsContainer) {
+                        aspectBtnsContainer.innerHTML = `
+                            <button type="button" onclick="window.cropperSetAspect(16/6, 'cover')" id="btn-aspect-cover" class="px-2.5 py-1 rounded bg-white text-amber-600 font-bold shadow-2xs text-[11px] transition-all">Bìa chuẩn (16:6)</button>
+                            <button type="button" onclick="window.cropperSetAspect(16/9, '16-9')" id="btn-aspect-16-9" class="px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all">16:9</button>
+                            <button type="button" onclick="window.cropperSetAspect(3/1, '3-1')" id="btn-aspect-3-1" class="px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all">3:1</button>
+                            <button type="button" onclick="window.cropperSetAspect(NaN, 'free')" id="btn-aspect-free" class="px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all">Tự do</button>
+                        `;
+                    }
+                }
+
+                if (spinner) spinner.classList.remove('hidden');
+                if (targetImg) targetImg.classList.add('opacity-0');
+
+                const cropperWrapper = targetImg?.parentElement;
+                if (cropperWrapper) {
+                    if (isAvatar) {
+                        cropperWrapper.classList.add('cropper-avatar-circle');
+                        cropperWrapper.classList.remove('cropper-cover-frame');
+                    } else {
+                        cropperWrapper.classList.remove('cropper-avatar-circle');
+                        cropperWrapper.classList.add('cropper-cover-frame');
+                    }
+                }
+
+                const initCropperAfterLoad = () => {
+                    if (spinner) spinner.classList.add('hidden');
+                    if (targetImg) targetImg.classList.remove('opacity-0');
+
+                    if (typeof Cropper === 'undefined') {
+                        console.warn("Thư viện Cropper.js chưa sẵn sàng!");
+                        showToast("Đang kết nối thư viện căn chỉnh khung hình...", "info");
+                        return;
+                    }
+
+                    if (cropperInstance) {
+                        cropperInstance.destroy();
+                        cropperInstance = null;
+                    }
+
+                    const initialAspect = isAvatar ? 1 : (16 / 6);
+                    cropperInstance = new Cropper(targetImg, {
+                        aspectRatio: initialAspect,
+                        viewMode: 1,
+                        dragMode: 'move',
+                        autoCropArea: 0.92,
+                        restore: false,
+                        guides: true,
+                        center: true,
+                        highlight: false,
+                        cropBoxMovable: true,
+                        cropBoxResizable: true,
+                        toggleDragModeOnDblclick: false,
+                        preview: '#cropper-preview-container',
+                        ready() {
+                            const slider = document.getElementById('cropper-zoom-slider');
+                            if (slider) slider.value = 1;
+                        },
+                        zoom(e) {
+                            const slider = document.getElementById('cropper-zoom-slider');
+                            if (slider && e.detail && e.detail.ratio) {
+                                slider.value = Math.min(3, Math.max(0.1, e.detail.ratio));
+                            }
+                        }
+                    });
+                };
+
+                if (targetImg) {
+                    targetImg.crossOrigin = "anonymous";
+                    targetImg.onload = initCropperAfterLoad;
+                    targetImg.onerror = () => {
+                        if (spinner) spinner.classList.add('hidden');
+                        showToast("Không thể tải hình ảnh để căn chỉnh khung!", "error");
+                    };
+                    targetImg.src = mediaSrc;
+                    if (targetImg.complete && targetImg.naturalWidth > 0) {
+                        initCropperAfterLoad();
+                    }
+                }
+            }
+
             // Mở modal
             if (typeof window.openModalAnimated === 'function') {
                 window.openModalAnimated('modal-image-cropper');
             } else {
                 modal.classList.remove('hidden');
             }
-
-            // Xác định URL của ảnh
-            let imageSrc = '';
-            if (source instanceof Blob || source instanceof File) {
-                cropperObjectURL = URL.createObjectURL(source);
-                imageSrc = cropperObjectURL;
-            } else if (typeof source === 'string') {
-                imageSrc = source;
-            }
-
-            const cropperWrapper = targetImg.parentElement;
-            if (isAvatar) {
-                cropperWrapper.classList.add('cropper-avatar-circle');
-                cropperWrapper.classList.remove('cropper-cover-frame');
-            } else {
-                cropperWrapper.classList.remove('cropper-avatar-circle');
-                cropperWrapper.classList.add('cropper-cover-frame');
-            }
-
-            const initCropperAfterLoad = () => {
-                if (spinner) spinner.classList.add('hidden');
-                targetImg.classList.remove('opacity-0');
-
-                if (typeof Cropper === 'undefined') {
-                    console.warn("Thư viện Cropper.js chưa sẵn sàng!");
-                    showToast("Đang kết nối thư viện căn chỉnh khung hình...", "info");
-                    return;
-                }
-
-                if (cropperInstance) {
-                    cropperInstance.destroy();
-                    cropperInstance = null;
-                }
-
-                const initialAspect = isAvatar ? 1 : (16 / 6);
-                cropperInstance = new Cropper(targetImg, {
-                    aspectRatio: initialAspect,
-                    viewMode: 1,
-                    dragMode: 'move',
-                    autoCropArea: 0.92,
-                    restore: false,
-                    guides: true,
-                    center: true,
-                    highlight: false,
-                    cropBoxMovable: true,
-                    cropBoxResizable: true,
-                    toggleDragModeOnDblclick: false,
-                    preview: '#cropper-preview-container',
-                    ready() {
-                        const slider = document.getElementById('cropper-zoom-slider');
-                        if (slider) slider.value = 1;
-                    },
-                    zoom(e) {
-                        const slider = document.getElementById('cropper-zoom-slider');
-                        if (slider && e.detail && e.detail.ratio) {
-                            slider.value = Math.min(3, Math.max(0.1, e.detail.ratio));
-                        }
-                    }
-                });
-            };
-
-            targetImg.crossOrigin = "anonymous";
-            targetImg.onload = initCropperAfterLoad;
-            targetImg.onerror = () => {
-                if (spinner) spinner.classList.add('hidden');
-                showToast("Không thể tải hình ảnh để căn chỉnh khung!", "error");
-            };
-
-            targetImg.src = imageSrc;
-            if (targetImg.complete && targetImg.naturalWidth > 0) {
-                initCropperAfterLoad();
-            }
         };
+
+        let videoDragInitialized = false;
+        function setupVideoDragHandlers() {
+            if (videoDragInitialized) return;
+            videoDragInitialized = true;
+
+            const maskWrapper = document.getElementById('cropper-video-mask-wrapper');
+            if (!maskWrapper) return;
+
+            const startDrag = (clientX, clientY) => {
+                if (!cropperActiveIsVideo) return;
+                videoFramingState.isDragging = true;
+                videoFramingState.dragStartX = clientX;
+                videoFramingState.dragStartY = clientY;
+                videoFramingState.initialPosX = videoFramingState.posX;
+                videoFramingState.initialPosY = videoFramingState.posY;
+                maskWrapper.style.cursor = 'grabbing';
+            };
+
+            const moveDrag = (clientX, clientY) => {
+                if (!videoFramingState.isDragging || !cropperActiveIsVideo) return;
+                const dx = clientX - videoFramingState.dragStartX;
+                const dy = clientY - videoFramingState.dragStartY;
+                const rect = maskWrapper.getBoundingClientRect();
+                const sens = 0.35 / (videoFramingState.zoom || 1);
+                const percentDx = (dx / (rect.width || 300)) * 100 * sens;
+                const percentDy = (dy / (rect.height || 300)) * 100 * sens;
+
+                videoFramingState.posX = Math.max(0, Math.min(100, videoFramingState.initialPosX - percentDx));
+                videoFramingState.posY = Math.max(0, Math.min(100, videoFramingState.initialPosY - percentDy));
+
+                updateVideoFramingStyles();
+            };
+
+            const endDrag = () => {
+                videoFramingState.isDragging = false;
+                if (maskWrapper) maskWrapper.style.cursor = 'grab';
+            };
+
+            maskWrapper.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+            window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
+            window.addEventListener('mouseup', endDrag);
+
+            maskWrapper.addEventListener('touchstart', (e) => {
+                if (e.touches && e.touches[0]) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches && e.touches[0]) moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+            window.addEventListener('touchend', endDrag);
+
+            maskWrapper.addEventListener('wheel', (e) => {
+                if (!cropperActiveIsVideo) return;
+                e.preventDefault();
+                const delta = e.deltaY < 0 ? 0.08 : -0.08;
+                window.cropperZoom(delta);
+            }, { passive: false });
+        }
 
         window.closeImageCropperModal = function() {
             if (cropperInstance) {
                 cropperInstance.destroy();
                 cropperInstance = null;
+            }
+            const videoEl = document.getElementById('cropper-video-target');
+            if (videoEl) {
+                videoEl.pause();
+                videoEl.removeAttribute('src');
+                videoEl.load();
             }
             if (cropperObjectURL) {
                 URL.revokeObjectURL(cropperObjectURL);
@@ -11628,34 +11940,89 @@
         };
 
         window.cropperZoom = function(delta) {
-            if (cropperInstance) cropperInstance.zoom(delta);
+            if (cropperActiveIsVideo) {
+                videoFramingState.zoom = Math.max(1.0, Math.min(3.0, videoFramingState.zoom + delta));
+                updateVideoFramingStyles();
+            } else if (cropperInstance) {
+                cropperInstance.zoom(delta);
+            }
         };
 
         window.cropperSetZoom = function(val) {
-            if (cropperInstance) {
-                const num = parseFloat(val);
-                if (!isNaN(num)) cropperInstance.zoomTo(num);
+            const num = parseFloat(val);
+            if (isNaN(num)) return;
+            if (cropperActiveIsVideo) {
+                videoFramingState.zoom = Math.max(1.0, Math.min(3.0, num));
+                updateVideoFramingStyles();
+            } else if (cropperInstance) {
+                cropperInstance.zoomTo(num);
             }
         };
 
         window.cropperRotate = function(degree) {
-            if (cropperInstance) cropperInstance.rotate(degree);
+            if (cropperActiveIsVideo) {
+                videoFramingState.rotation = (videoFramingState.rotation + degree) % 360;
+                updateVideoFramingStyles();
+            } else if (cropperInstance) {
+                cropperInstance.rotate(degree);
+            }
         };
 
         let cropperFlipped = false;
         window.cropperFlipX = function() {
-            if (cropperInstance) {
+            if (cropperActiveIsVideo) {
+                videoFramingState.flipped = !videoFramingState.flipped;
+                updateVideoFramingStyles();
+            } else if (cropperInstance) {
                 cropperFlipped = !cropperFlipped;
                 cropperInstance.scaleX(cropperFlipped ? -1 : 1);
             }
         };
 
         window.cropperReset = function() {
-            if (cropperInstance) {
+            if (cropperActiveIsVideo) {
+                videoFramingState.posX = 50;
+                videoFramingState.posY = 50;
+                videoFramingState.zoom = 1.0;
+                videoFramingState.rotation = 0;
+                videoFramingState.flipped = false;
+                updateVideoFramingStyles();
+            } else if (cropperInstance) {
                 cropperInstance.reset();
                 cropperFlipped = false;
                 const slider = document.getElementById('cropper-zoom-slider');
                 if (slider) slider.value = 1;
+            }
+        };
+
+        window.cropperSetVideoPos = function(x, y) {
+            videoFramingState.posX = x;
+            videoFramingState.posY = y;
+            updateVideoFramingStyles();
+        };
+
+        window.cropperSetVideoAspect = function(aspectKey) {
+            videoFramingState.aspect = aspectKey;
+            const videoMask = document.getElementById('cropper-video-mask-wrapper');
+            if (!videoMask) return;
+
+            if (aspectKey === 'circle') {
+                videoMask.className = "relative overflow-hidden shadow-2xl transition-all cursor-grab active:cursor-grabbing border-4 border-cerulean w-52 h-52 sm:w-64 sm:h-64 rounded-full bg-black flex items-center justify-center";
+            } else if (aspectKey === 'square') {
+                videoMask.className = "relative overflow-hidden shadow-2xl transition-all cursor-grab active:cursor-grabbing border-4 border-cerulean w-52 h-52 sm:w-64 sm:h-64 rounded-2xl bg-black flex items-center justify-center";
+            } else if (aspectKey === 'cover') {
+                videoMask.className = "relative overflow-hidden shadow-2xl transition-all cursor-grab active:cursor-grabbing border-2 border-amber-400 w-[94%] max-w-[560px] h-44 sm:h-56 rounded-xl bg-black flex items-center justify-center";
+            } else if (aspectKey === '16-9') {
+                videoMask.className = "relative overflow-hidden shadow-2xl transition-all cursor-grab active:cursor-grabbing border-2 border-amber-400 w-[94%] max-w-[560px] aspect-video rounded-xl bg-black flex items-center justify-center";
+            }
+
+            const buttons = document.querySelectorAll('#cropper-aspect-buttons button');
+            buttons.forEach(b => {
+                b.className = "px-2.5 py-1 rounded text-stone-600 hover:bg-white text-[11px] transition-all";
+            });
+            const activeBtn = document.getElementById(`btn-aspect-${aspectKey}`);
+            if (activeBtn) {
+                activeBtn.className = "px-2.5 py-1 rounded bg-white text-cerulean font-bold shadow-2xs text-[11px] transition-all";
             }
         };
 
@@ -11677,6 +12044,220 @@
             const activeBtn = document.getElementById(`btn-aspect-${btnKey}`);
             if (activeBtn) {
                 activeBtn.className = "px-2.5 py-1 rounded bg-white text-cerulean font-bold shadow-2xs text-[11px] transition-all";
+            }
+        };
+
+        window.cropperToggleVideoPlay = function() {
+            const video = document.getElementById('cropper-video-target');
+            const playBtn = document.getElementById('btn-cropper-video-play');
+            if (!video) return;
+            if (video.paused) {
+                video.play().catch(() => {});
+                if (playBtn) playBtn.innerText = '⏸';
+            } else {
+                video.pause();
+                if (playBtn) playBtn.innerText = '▶';
+            }
+        };
+
+        window.cropperSeekVideo = function(val) {
+            const video = document.getElementById('cropper-video-target');
+            if (!video || !video.duration) return;
+            video.currentTime = (parseFloat(val) / 100) * video.duration;
+        };
+
+        window.cropperStepVideoFrame = function(delta) {
+            const video = document.getElementById('cropper-video-target');
+            if (!video) return;
+            video.currentTime = Math.max(0, Math.min(video.duration || 10, video.currentTime + delta));
+        };
+
+        window.applyCroppedMedia = function() {
+            if (cropperActiveIsVideo) {
+                window.applyCroppedVideo();
+            } else {
+                window.applyCroppedImage();
+            }
+        };
+
+        window.applyCroppedVideo = async function() {
+            const applyBtn = document.getElementById('btn-cropper-apply');
+            const statusText = document.getElementById('cropper-status-text');
+            if (applyBtn) {
+                applyBtn.disabled = true;
+                applyBtn.classList.add('opacity-70', 'pointer-events-none');
+            }
+            if (statusText) statusText.innerText = "Đang lưu video...";
+
+            try {
+                const isAvatar = (cropperActiveMode === 'avatar');
+                let finalUrl = '';
+
+                if (cropperActiveSource instanceof Blob || cropperActiveSource instanceof File) {
+                    const safeBase = (cropperActiveFileName || 'video').replace(/[^a-zA-Z0-9._-]/g, '_');
+                    const vidName = isAvatar ? `avatar_${Date.now()}_${safeBase}` : `cover_${Date.now()}_${safeBase}`;
+                    const vidFile = new File([cropperActiveSource], vidName, { type: cropperActiveSource.type || 'video/mp4' });
+                    const uploadRes = await saveFileToProjectMedia(vidFile);
+                    finalUrl = (uploadRes && uploadRes.url) ? uploadRes.url : URL.createObjectURL(cropperActiveSource);
+                } else if (typeof cropperActiveSource === 'string') {
+                    finalUrl = cropperActiveSource;
+                }
+
+                const posStr = `${videoFramingState.posX.toFixed(1)}% ${videoFramingState.posY.toFixed(1)}%`;
+                const zoomVal = videoFramingState.zoom || 1;
+
+                if (isAvatar) {
+                    const avatarInput = document.getElementById('input-partner-avatar');
+                    if (avatarInput) avatarInput.value = finalUrl;
+                    const posInput = document.getElementById('input-partner-avatar-position');
+                    if (posInput) posInput.value = posStr;
+                    const zoomInput = document.getElementById('input-partner-avatar-zoom');
+                    if (zoomInput) zoomInput.value = zoomVal;
+
+                    updatePartnerAvatarPreview(finalUrl, posStr, zoomVal);
+                    showToast("Đã căn chỉnh và cập nhật khung video đại diện thành công!", "success");
+                    const avatarCard = document.getElementById('partner-avatar-card');
+                    if (avatarCard) {
+                        avatarCard.classList.add('ring-2', 'ring-emerald-500');
+                        setTimeout(() => avatarCard.classList.remove('ring-2', 'ring-emerald-500'), 1500);
+                    }
+                } else {
+                    const coverInput = document.getElementById('input-partner-cover');
+                    if (coverInput) coverInput.value = finalUrl;
+                    const posInput = document.getElementById('input-partner-cover-position');
+                    if (posInput) posInput.value = posStr;
+                    const zoomInput = document.getElementById('input-partner-cover-zoom');
+                    if (zoomInput) zoomInput.value = zoomVal;
+
+                    updatePartnerCoverPreview(finalUrl, posStr, zoomVal);
+                    showToast("Đã căn chỉnh và cập nhật khung video bìa thành công!", "success");
+                    const coverCard = document.getElementById('partner-cover-card');
+                    if (coverCard) {
+                        coverCard.classList.add('ring-2', 'ring-amber-500');
+                        setTimeout(() => coverCard.classList.remove('ring-2', 'ring-amber-500'), 1500);
+                    }
+                }
+
+                window.closeImageCropperModal();
+            } catch (err) {
+                console.error("Lỗi áp dụng khung video:", err);
+                showToast("Lỗi áp dụng video: " + (err.message || err), "error");
+            } finally {
+                if (applyBtn) {
+                    applyBtn.disabled = false;
+                    applyBtn.classList.remove('opacity-70', 'pointer-events-none');
+                }
+                if (statusText) statusText.innerText = "";
+            }
+        };
+
+        window.applyVideoAsStillImage = async function() {
+            const stillBtn = document.getElementById('btn-cropper-capture-still');
+            const statusText = document.getElementById('cropper-status-text');
+            const video = document.getElementById('cropper-video-target');
+            if (!video || !video.videoWidth) {
+                showToast("Video chưa tải xong khung hình để trích xuất!", "error");
+                return;
+            }
+
+            if (stillBtn) {
+                stillBtn.disabled = true;
+                stillBtn.classList.add('opacity-70', 'pointer-events-none');
+            }
+            if (statusText) statusText.innerText = "Đang trích xuất ảnh tĩnh...";
+
+            try {
+                const isAvatar = (cropperActiveMode === 'avatar');
+                const outW = isAvatar ? 800 : 1600;
+                const outH = isAvatar ? 800 : 600;
+
+                const canvas = document.createElement('canvas');
+                canvas.width = outW;
+                canvas.height = outH;
+                const ctx = canvas.getContext('2d');
+
+                const targetAspect = outW / outH;
+                const vidAspect = video.videoWidth / video.videoHeight;
+                const z = Math.max(1.0, videoFramingState.zoom || 1.0);
+
+                let cropW, cropH;
+                if (vidAspect > targetAspect) {
+                    cropH = video.videoHeight / z;
+                    cropW = cropH * targetAspect;
+                } else {
+                    cropW = video.videoWidth / z;
+                    cropH = cropW / targetAspect;
+                }
+
+                const maxSx = Math.max(0, video.videoWidth - cropW);
+                const maxSy = Math.max(0, video.videoHeight - cropH);
+                const sx = Math.max(0, Math.min(maxSx, (videoFramingState.posX / 100) * maxSx));
+                const sy = Math.max(0, Math.min(maxSy, (videoFramingState.posY / 100) * maxSy));
+
+                ctx.save();
+                if (videoFramingState.flipped) {
+                    ctx.translate(outW, 0);
+                    ctx.scale(-1, 1);
+                }
+                if (videoFramingState.rotation) {
+                    ctx.translate(outW / 2, outH / 2);
+                    ctx.rotate((videoFramingState.rotation * Math.PI) / 180);
+                    ctx.translate(-outW / 2, -outH / 2);
+                }
+
+                ctx.drawImage(video, sx, sy, cropW, cropH, 0, 0, outW, outH);
+                ctx.restore();
+
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+                let finalUrl = dataUrl;
+
+                try {
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.92));
+                    if (blob) {
+                        const safeBase = (cropperActiveFileName || 'video_frame').replace(/[^a-zA-Z0-9._-]/g, '_');
+                        const fileName = isAvatar ? `avatar_still_${Date.now()}_${safeBase}.jpg` : `cover_still_${Date.now()}_${safeBase}.jpg`;
+                        const imgFile = new File([blob], fileName, { type: 'image/jpeg' });
+                        const uploadRes = await saveFileToProjectMedia(imgFile);
+                        if (uploadRes && uploadRes.url) {
+                            finalUrl = uploadRes.url;
+                        }
+                    }
+                } catch (saveErr) {
+                    console.warn("Lưu media cục bộ thất bại, dùng dataUrl dự phòng:", saveErr);
+                }
+
+                if (isAvatar) {
+                    const avatarInput = document.getElementById('input-partner-avatar');
+                    if (avatarInput) avatarInput.value = finalUrl;
+                    const posInput = document.getElementById('input-partner-avatar-position');
+                    if (posInput) posInput.value = 'center';
+                    const zoomInput = document.getElementById('input-partner-avatar-zoom');
+                    if (zoomInput) zoomInput.value = '1';
+
+                    updatePartnerAvatarPreview(finalUrl, 'center', 1);
+                    showToast("Đã trích xuất và cắt ảnh đại diện từ video thành công!", "success");
+                } else {
+                    const coverInput = document.getElementById('input-partner-cover');
+                    if (coverInput) coverInput.value = finalUrl;
+                    const posInput = document.getElementById('input-partner-cover-position');
+                    if (posInput) posInput.value = 'center';
+                    const zoomInput = document.getElementById('input-partner-cover-zoom');
+                    if (zoomInput) zoomInput.value = '1';
+
+                    updatePartnerCoverPreview(finalUrl, 'center', 1);
+                    showToast("Đã trích xuất và cắt ảnh bìa từ video thành công!", "success");
+                }
+
+                window.closeImageCropperModal();
+            } catch (err) {
+                console.error("Lỗi trích xuất ảnh từ video:", err);
+                showToast("Không thể trích xuất ảnh tĩnh từ video này (có thể do giới hạn bảo mật). Bạn hãy dùng nút 'Áp Dụng Khung Video'!", "error");
+            } finally {
+                if (stillBtn) {
+                    stillBtn.disabled = false;
+                    stillBtn.classList.remove('opacity-70', 'pointer-events-none');
+                }
+                if (statusText) statusText.innerText = "";
             }
         };
 
@@ -11711,7 +12292,6 @@
                 const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
                 let finalUrl = dataUrl;
 
-                // Thử lưu thành file media cục bộ thông qua server Aura
                 try {
                     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.92));
                     if (blob) {
@@ -11732,7 +12312,12 @@
                 if (isAvatar) {
                     const avatarInput = document.getElementById('input-partner-avatar');
                     if (avatarInput) avatarInput.value = finalUrl;
-                    updatePartnerAvatarPreview(finalUrl);
+                    const posInput = document.getElementById('input-partner-avatar-position');
+                    if (posInput) posInput.value = 'center';
+                    const zoomInput = document.getElementById('input-partner-avatar-zoom');
+                    if (zoomInput) zoomInput.value = '1';
+
+                    updatePartnerAvatarPreview(finalUrl, 'center', 1);
                     showToast("Đã căn chỉnh và cập nhật ảnh đại diện thành công!", "success");
                     const avatarCard = document.getElementById('partner-avatar-card');
                     if (avatarCard) {
@@ -11742,7 +12327,12 @@
                 } else {
                     const coverInput = document.getElementById('input-partner-cover');
                     if (coverInput) coverInput.value = finalUrl;
-                    updatePartnerCoverPreview(finalUrl);
+                    const posInput = document.getElementById('input-partner-cover-position');
+                    if (posInput) posInput.value = 'center';
+                    const zoomInput = document.getElementById('input-partner-cover-zoom');
+                    if (zoomInput) zoomInput.value = '1';
+
+                    updatePartnerCoverPreview(finalUrl, 'center', 1);
                     showToast("Đã căn chỉnh và cập nhật ảnh bìa thành công!", "success");
                     const coverCard = document.getElementById('partner-cover-card');
                     if (coverCard) {
@@ -11767,36 +12357,34 @@
         window.cropCurrentPartnerAvatar = function() {
             const avatarInput = document.getElementById('input-partner-avatar');
             const preview = document.getElementById('partner-avatar-preview');
-            const targetUrl = (avatarInput?.value?.trim()) || (preview?.src);
+            const vidPreview = document.getElementById('partner-avatar-video-preview');
+            const targetUrl = (avatarInput?.value?.trim()) || (vidPreview?.src) || (preview?.src);
             if (!targetUrl || targetUrl.includes('data:image/svg')) {
-                showToast("Chưa có ảnh đại diện nào để căn chỉnh!", "info");
+                showToast("Chưa có ảnh hoặc video đại diện nào để căn chỉnh!", "info");
                 return;
             }
-            if (typeof window.isMediaVideo === 'function' && window.isMediaVideo(targetUrl)) {
-                showToast("Đại diện hiện tại là video, không thể căn chỉnh cắt khung tĩnh.", "info");
-                return;
-            }
+            const isVid = (typeof window.isMediaVideo === 'function' && window.isMediaVideo(targetUrl)) || /\.(mp4|webm|mov|m4v|ogg)(\?.*)?$/i.test(targetUrl);
             window.openImageCropperModal({
                 mode: 'avatar',
-                source: targetUrl
+                source: targetUrl,
+                isVideo: isVid
             });
         };
 
         window.cropCurrentPartnerCover = function() {
             const coverInput = document.getElementById('input-partner-cover');
             const preview = document.getElementById('partner-cover-preview');
-            const targetUrl = (coverInput?.value?.trim()) || (preview?.src);
+            const vidPreview = document.getElementById('partner-cover-preview-video');
+            const targetUrl = (coverInput?.value?.trim()) || (vidPreview?.src) || (preview?.src);
             if (!targetUrl) {
-                showToast("Chưa có ảnh bìa nào để căn chỉnh!", "info");
+                showToast("Chưa có ảnh hoặc video bìa nào để căn chỉnh!", "info");
                 return;
             }
-            if (typeof window.isMediaVideo === 'function' && window.isMediaVideo(targetUrl)) {
-                showToast("Ảnh bìa hiện tại là video, không thể căn chỉnh cắt khung tĩnh.", "info");
-                return;
-            }
+            const isVid = (typeof window.isMediaVideo === 'function' && window.isMediaVideo(targetUrl)) || /\.(mp4|webm|mov|m4v|ogg)(\?.*)?$/i.test(targetUrl);
             window.openImageCropperModal({
                 mode: 'cover',
-                source: targetUrl
+                source: targetUrl,
+                isVideo: isVid
             });
         };
 
@@ -11808,45 +12396,12 @@
                 return;
             }
             const isVid = file.type ? file.type.startsWith('video') : /\.(mp4|m4v|webm|mov|ogg)$/i.test(file.name);
-            const avatarInput = document.getElementById('input-partner-avatar');
-
-            if (isVid) {
-                // Hiển thị trước tệp tạm thời
-                const tempUrl = URL.createObjectURL(file);
-                updatePartnerAvatarPreview(tempUrl);
-
-                showToast("Đang lưu video đại diện vào thư mục media...", "info");
-                try {
-                    const safeBase = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-                    const avatarName = `avatar_${Date.now()}_${safeBase}`;
-                    const avatarFile = new File([file], avatarName, { type: file.type });
-                    const res = await saveFileToProjectMedia(avatarFile);
-                    if (avatarInput) avatarInput.value = res.url;
-                    updatePartnerAvatarPreview(res.url);
-                } catch (err) {
-                    console.warn("Lưu media cục bộ thất bại, lưu dự phòng DataURL:", err);
-                    if (file.size < 15 * 1024 * 1024) {
-                        const reader = new FileReader();
-                        reader.onload = (evt) => {
-                            const dataUrl = evt.target.result;
-                            if (avatarInput) avatarInput.value = dataUrl;
-                            updatePartnerAvatarPreview(dataUrl);
-                            showToast("Đã nạp video đại diện từ máy tính!", "success");
-                        };
-                        reader.readAsDataURL(file);
-                    } else {
-                        if (avatarInput) avatarInput.value = tempUrl;
-                        showToast("Đã nạp video đại diện từ máy tính (phiên tạm thời)!", "info");
-                    }
-                }
-            } else {
-                // Ảnh đại diện: mở bước căn chỉnh khung hiển thị trước khi hoàn tất!
-                window.openImageCropperModal({
-                    mode: 'avatar',
-                    source: file,
-                    fileName: file.name
-                });
-            }
+            window.openImageCropperModal({
+                mode: 'avatar',
+                source: file,
+                fileName: file.name,
+                isVideo: isVid
+            });
             e.target.value = '';
         }
         window.handlePartnerAvatarUpload = handlePartnerAvatarUpload;
@@ -11884,14 +12439,11 @@
                 return;
             }
             const isVid = (item.type === 'video') || (window.isMediaVideo ? window.isMediaVideo(item.url) : false);
-            if (isVid) {
-                window.setAvatarFromUrl(item.url, item.type);
-            } else {
-                window.openImageCropperModal({
-                    mode: 'avatar',
-                    source: item.url
-                });
-            }
+            window.openImageCropperModal({
+                mode: 'avatar',
+                source: item.url,
+                isVideo: isVid
+            });
         };
 
         window.handleAvatarDragOver = function(e) {
@@ -12063,19 +12615,20 @@
             const url = decodeURIComponent(encodedUrl);
             window.closeAvatarPickerModal();
             const isVid = (type === 'video') || (window.isMediaVideo ? window.isMediaVideo(url) : false);
-            if (isVid) {
-                window.setAvatarFromUrl(url, type);
-            } else {
-                window.openImageCropperModal({
-                    mode: 'avatar',
-                    source: url
-                });
-            }
+            window.openImageCropperModal({
+                mode: 'avatar',
+                source: url,
+                isVideo: isVid
+            });
         };
 
-        function updatePartnerCoverPreview(url) {
+        function updatePartnerCoverPreview(url, position, zoom) {
             const preview = document.getElementById('partner-cover-preview');
             if (!preview) return;
+
+            const pos = position || document.getElementById('input-partner-cover-position')?.value || 'center';
+            const zm = (zoom !== undefined && zoom !== null) ? zoom : (parseFloat(document.getElementById('input-partner-cover-zoom')?.value || '1') || 1);
+
             const isOF = (typeof window.currentPartnerType !== 'undefined' && window.currentPartnerType === 'onlyfan') ||
                           (typeof currentPartnerType !== 'undefined' && currentPartnerType === 'onlyfan');
             const defaultCover = isOF
@@ -12088,6 +12641,8 @@
             if (isVid && previewVid) {
                 preview.classList.add('hidden');
                 previewVid.src = targetUrl;
+                previewVid.style.objectPosition = pos;
+                previewVid.style.transform = (zm && zm !== 1) ? `scale(${zm})` : '';
                 previewVid.classList.remove('hidden');
                 previewVid.play().catch(() => {});
             } else {
@@ -12096,6 +12651,8 @@
                     previewVid.pause();
                 }
                 preview.src = targetUrl;
+                preview.style.objectPosition = pos;
+                preview.style.transform = (zm && zm !== 1) ? `scale(${zm})` : '';
                 preview.classList.remove('hidden');
             }
         }
@@ -12109,44 +12666,12 @@
                 return;
             }
             const isVid = file.type.startsWith('video/') || /\.(mp4|webm|mov|m4v)$/i.test(file.name);
-            const coverInput = document.getElementById('input-partner-cover');
-
-            if (isVid) {
-                const tempUrl = URL.createObjectURL(file);
-                updatePartnerCoverPreview(tempUrl);
-                showToast("Đang lưu video bìa vào thư mục media...", "info");
-                try {
-                    const safeBase = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-                    const coverName = `cover_${Date.now()}_${safeBase}`;
-                    const coverFile = new File([file], coverName, { type: file.type });
-                    const res = await saveFileToProjectMedia(coverFile);
-                    if (coverInput) coverInput.value = res.url;
-                    updatePartnerCoverPreview(res.url);
-                    showToast(`Đã lưu video bìa vào thư mục ${res.url}!`, "success");
-                } catch (err) {
-                    console.warn("Lưu media cục bộ thất bại, lưu dự phòng DataURL:", err);
-                    if (file.size < 15 * 1024 * 1024) {
-                        const reader = new FileReader();
-                        reader.onload = (evt) => {
-                            const dataUrl = evt.target.result;
-                            if (coverInput) coverInput.value = dataUrl;
-                            updatePartnerCoverPreview(dataUrl);
-                            showToast("Đã nạp video bìa từ máy tính!", "success");
-                        };
-                        reader.readAsDataURL(file);
-                    } else {
-                        if (coverInput) coverInput.value = tempUrl;
-                        showToast("Đã nạp video bìa từ máy tính (phiên tạm thời)!", "info");
-                    }
-                }
-            } else {
-                // Ảnh bìa: mở bước căn chỉnh khung hiển thị trước khi hoàn tất!
-                window.openImageCropperModal({
-                    mode: 'cover',
-                    source: file,
-                    fileName: file.name
-                });
-            }
+            window.openImageCropperModal({
+                mode: 'cover',
+                source: file,
+                fileName: file.name,
+                isVideo: isVid
+            });
             e.target.value = '';
         }
         window.handlePartnerCoverUpload = handlePartnerCoverUpload;
@@ -12180,18 +12705,15 @@
                 item = currentPartnerVideoCalls[idx];
             }
             if (!item || !item.url) {
-                showToast("Không tìm thấy đường dẫn ảnh!", "error");
+                showToast("Không tìm thấy đường dẫn ảnh hoặc video!", "error");
                 return;
             }
             const isVid = (typeof window.isMediaVideo === 'function') && window.isMediaVideo(item.url);
-            if (isVid) {
-                window.setCoverFromUrl(item.url);
-            } else {
-                window.openImageCropperModal({
-                    mode: 'cover',
-                    source: item.url
-                });
-            }
+            window.openImageCropperModal({
+                mode: 'cover',
+                source: item.url,
+                isVideo: isVid
+            });
         };
 
         let coverPickerActiveCategory = 'all';
@@ -12308,14 +12830,11 @@
             const url = decodeURIComponent(encodedUrl);
             window.closeCoverPickerModal();
             const isVid = (type === 'video') || (typeof window.isMediaVideo === 'function' ? window.isMediaVideo(url) : false) || /\.(mp4|webm|mov|m4v|ogg)(\?.*)?$/i.test(url);
-            if (isVid) {
-                window.setCoverFromUrl(url);
-            } else {
-                window.openImageCropperModal({
-                    mode: 'cover',
-                    source: url
-                });
-            }
+            window.openImageCropperModal({
+                mode: 'cover',
+                source: url,
+                isVideo: isVid
+            });
         };
 
         // Thêm hàm helper global để mở media từ form Edit
@@ -13640,15 +14159,20 @@
                 </li>
             ` : '';
 
+            const covPos = p.coverPosition || 'center';
+            const covZm = (p.coverZoom && p.coverZoom != 1) ? `scale(${p.coverZoom})` : '';
+            const avPos = p.avatarPosition || 'center';
+            const avZm = (p.avatarZoom && p.avatarZoom != 1) ? `scale(${p.avatarZoom})` : '';
+
             return `
                 <div class="rounded-2xl border border-stone-200/80 bg-white relative shadow-[0_2px_12px_-3px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_28px_-6px_rgba(2,132,199,0.08)] hover:border-cerulean/40 transition-all duration-300 flex flex-col justify-between group overflow-hidden">
                     <div>
                         <!-- Ảnh & Video Bìa (Cover Banner Đối Tác / Creator) -->
                         <div class="relative w-full h-32 sm:h-36 bg-gradient-to-r from-stone-200 via-stone-100 to-stone-300 overflow-hidden cursor-pointer" onclick="window.openPartnerDetail('${safeId}')" title="Xem hồ sơ chi tiết của ${p.name || defaultName}">
                             ${(window.isMediaVideo && window.isMediaVideo(coverUrl)) ? `
-                                <video src="${coverUrl}#t=0.001" autoplay loop muted playsinline class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"></video>
+                                <video src="${coverUrl}#t=0.001" autoplay loop muted playsinline class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none" style="object-position: ${covPos}; ${covZm ? `transform: ${covZm};` : ''}"></video>
                             ` : `
-                                <img src="${coverUrl}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Cover">
+                                <img src="${coverUrl}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" style="object-position: ${covPos}; ${covZm ? `transform: ${covZm};` : ''}" alt="Cover">
                             `}
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
                             <div class="absolute top-2.5 right-2.5 flex items-center gap-1.5">
@@ -13663,11 +14187,15 @@
                             <div class="flex items-start space-x-3.5 -mt-12 relative z-10">
                                 ${(window.isMediaVideo && window.isMediaVideo(p.avatar)) ? `
                                     <div class="relative w-24 h-24 shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="window.openPartnerDetail('${safeId}')">
-                                        <video src="${p.avatar}#t=0.001" autoplay loop muted playsinline class="w-24 h-24 rounded-full object-cover ring-4 ring-white shadow-md bg-stone-900"></video>
-                                        <span class="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-cerulean text-white flex items-center justify-center text-[9px] shadow-xs ring-2 ring-white">▶</span>
+                                        <div class="w-24 h-24 rounded-full ring-4 ring-white shadow-md bg-stone-900 overflow-hidden">
+                                            <video src="${p.avatar}#t=0.001" autoplay loop muted playsinline class="w-full h-full object-cover pointer-events-none" style="object-position: ${avPos}; ${avZm ? `transform: ${avZm};` : ''}"></video>
+                                        </div>
+                                        <span class="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-cerulean text-white flex items-center justify-center text-[9px] shadow-xs ring-2 ring-white z-10 pointer-events-none font-bold">▶</span>
                                     </div>
                                 ` : `
-                                    <img src="${p.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80'}" loading="lazy" decoding="async" class="w-24 h-24 rounded-full object-cover ring-4 ring-white shadow-md shrink-0 cursor-pointer hover:scale-105 transition-transform bg-stone-100" onclick="window.openPartnerDetail('${safeId}')" alt="Avatar">
+                                    <div class="w-24 h-24 rounded-full ring-4 ring-white shadow-md shrink-0 cursor-pointer hover:scale-105 transition-transform bg-stone-100 overflow-hidden" onclick="window.openPartnerDetail('${safeId}')">
+                                        <img src="${p.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80'}" loading="lazy" decoding="async" class="w-full h-full object-cover" style="object-position: ${avPos}; ${avZm ? `transform: ${avZm};` : ''}" alt="Avatar">
+                                    </div>
                                 `}
                                 <div class="flex-1 min-w-0 pt-5">
                                     <div class="flex items-center gap-1.5 min-w-0">
@@ -13970,12 +14498,18 @@
 
                 // Avatar
                 const hasVideoAvatar = (window.isMediaVideo && window.isMediaVideo(p.avatar));
+                const avPos = p.avatarPosition || 'center';
+                const avZm = (p.avatarZoom && p.avatarZoom != 1) ? `scale(${p.avatarZoom})` : '';
                 const avatarHtml = hasVideoAvatar
                     ? `<div class="relative w-11 h-11 shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="window.openPartnerDetail('${safeId}')">
-                         <video src="${p.avatar}#t=0.001" autoplay loop muted playsinline class="w-11 h-11 rounded-full object-cover ring-2 ring-stone-200 shadow-2xs bg-stone-900"></video>
-                         <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full ${primaryBg} text-white flex items-center justify-center text-[7px] ring-1 ring-white">▶</span>
+                         <div class="w-11 h-11 rounded-full ring-2 ring-stone-200 shadow-2xs bg-stone-900 overflow-hidden">
+                           <video src="${p.avatar}#t=0.001" autoplay loop muted playsinline class="w-full h-full object-cover pointer-events-none" style="object-position: ${avPos}; ${avZm ? `transform: ${avZm};` : ''}"></video>
+                         </div>
+                         <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full ${primaryBg} text-white flex items-center justify-center text-[7px] ring-1 ring-white z-10 pointer-events-none font-bold">▶</span>
                        </div>`
-                    : `<img src="${p.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80'}" loading="lazy" decoding="async" class="w-11 h-11 rounded-full object-cover ring-2 ring-stone-200 shadow-2xs shrink-0 cursor-pointer hover:scale-105 transition-transform bg-stone-100" onclick="window.openPartnerDetail('${safeId}')" alt="Avatar">`;
+                    : `<div class="w-11 h-11 rounded-full ring-2 ring-stone-200 shadow-2xs shrink-0 cursor-pointer hover:scale-105 transition-transform bg-stone-100 overflow-hidden" onclick="window.openPartnerDetail('${safeId}')">
+                         <img src="${p.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80'}" loading="lazy" decoding="async" class="w-full h-full object-cover" style="object-position: ${avPos}; ${avZm ? `transform: ${avZm};` : ''}" alt="Avatar">
+                       </div>`;
 
                 // Badge Quan hệ / Thể loại
                 const relationBadge = p.relation || (isOF ? 'Creator OnlyFan' : 'Bạn trai');
@@ -14758,13 +15292,21 @@
                 if (p) {
                     if (nameInput) nameInput.value = p.name || "";
                     document.getElementById('input-partner-avatar').value = p.avatar || "";
-                    window.updatePartnerAvatarPreview(p.avatar);
+                    const avPosInput = document.getElementById('input-partner-avatar-position');
+                    if (avPosInput) avPosInput.value = p.avatarPosition || 'center';
+                    const avZoomInput = document.getElementById('input-partner-avatar-zoom');
+                    if (avZoomInput) avZoomInput.value = p.avatarZoom || '1';
+                    window.updatePartnerAvatarPreview(p.avatar, p.avatarPosition, p.avatarZoom);
 
                     const coverInput = document.getElementById('input-partner-cover');
                     if (coverInput) {
                         coverInput.value = p.cover || p.coverUrl || "";
                     }
-                    window.updatePartnerCoverPreview(p.cover || p.coverUrl);
+                    const covPosInput = document.getElementById('input-partner-cover-position');
+                    if (covPosInput) covPosInput.value = p.coverPosition || 'center';
+                    const covZoomInput = document.getElementById('input-partner-cover-zoom');
+                    if (covZoomInput) covZoomInput.value = p.coverZoom || '1';
+                    window.updatePartnerCoverPreview(p.cover || p.coverUrl, p.coverPosition, p.coverZoom);
                     
                     // Nghề nghiệp: nếu là OnlyFan mà trống thì mặc định 'Diễn viên Onlyfan'
                     if (professionInput) {
@@ -14823,7 +15365,11 @@
                 populateProvinceSelect(document.getElementById('select-partner-temporary-province'));
                 setAddressFields("", 'permanent');
                 setAddressFields("", 'temporary');
-                window.updatePartnerAvatarPreview("");
+                const avPosInput = document.getElementById('input-partner-avatar-position');
+                if (avPosInput) avPosInput.value = 'center';
+                const avZoomInput = document.getElementById('input-partner-avatar-zoom');
+                if (avZoomInput) avZoomInput.value = '1';
+                window.updatePartnerAvatarPreview("", 'center', 1);
                 const newOrient = isItemOF ? 'Trai thẳng' : 'Đồng tính';
                 const orientInput = document.getElementById('select-partner-orientation');
                 if (orientInput) orientInput.value = newOrient;
@@ -14832,7 +15378,11 @@
                 }
                 const coverInput = document.getElementById('input-partner-cover');
                 if (coverInput) coverInput.value = "";
-                window.updatePartnerCoverPreview("");
+                const covPosInput = document.getElementById('input-partner-cover-position');
+                if (covPosInput) covPosInput.value = 'center';
+                const covZoomInput = document.getElementById('input-partner-cover-zoom');
+                if (covZoomInput) covZoomInput.value = '1';
+                window.updatePartnerCoverPreview("", 'center', 1);
                 
                 // Mặc định nghề nghiệp khi thêm mới: OnlyFan có sẵn 'Diễn viên Onlyfan'
                 if (professionInput) {
@@ -15339,7 +15889,11 @@
             const partnerData = {
                 name: document.getElementById('input-partner-name')?.value || "",
                 avatar: document.getElementById('input-partner-avatar')?.value || "",
+                avatarPosition: document.getElementById('input-partner-avatar-position')?.value || "center",
+                avatarZoom: parseFloat(document.getElementById('input-partner-avatar-zoom')?.value || '1') || 1,
                 cover: document.getElementById('input-partner-cover')?.value || "",
+                coverPosition: document.getElementById('input-partner-cover-position')?.value || "center",
+                coverZoom: parseFloat(document.getElementById('input-partner-cover-zoom')?.value || '1') || 1,
                 profession: document.getElementById('input-partner-profession')?.value || defaultProf,
                 relation: document.getElementById('input-partner-relation')?.value || defaultRel,
                 dob: document.getElementById('input-partner-dob')?.value || "",
