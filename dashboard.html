@@ -3989,11 +3989,21 @@
                                 </div>
                                 <div>
                                     <label class="block font-bold mb-1 text-[11px] uppercase tracking-wider text-ink-light">Trình độ học vấn</label>
-                                    <select id="select-partner-education" class="w-full py-1.5 px-2.5 border border-line rounded-lg bg-white focus:outline-none focus:border-cerulean editorial-select text-xs font-semibold">
+                                    <select id="select-partner-education" onchange="window.handlePartnerEducationChange(this.value)" class="w-full py-1.5 px-2.5 border border-line rounded-lg bg-white focus:outline-none focus:border-cerulean editorial-select text-xs font-semibold">
                                         <option value="">-- Chưa chọn --</option>
                                         <option value="Cấp 3">Cấp 3</option>
                                         <option value="Đại học">Đại học</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div id="partner-highschool-box">
+                                    <label class="block font-bold mb-1 text-[11px] uppercase tracking-wider text-ink-light">Trường Cấp 3 (THPT)</label>
+                                    <input type="text" id="input-partner-highschool" oninput="window.handlePartnerSchoolInput()" placeholder="Ví dụ: THPT Lê Hồng Phong..." class="w-full py-1.5 px-3 border border-line rounded-lg bg-white focus:outline-none focus:border-cerulean text-xs">
+                                </div>
+                                <div id="partner-university-box">
+                                    <label class="block font-bold mb-1 text-[11px] uppercase tracking-wider text-ink-light">Trường Đại học</label>
+                                    <input type="text" id="input-partner-university" oninput="window.handlePartnerSchoolInput()" placeholder="Ví dụ: ĐH Bách Khoa, RMIT..." class="w-full py-1.5 px-3 border border-line rounded-lg bg-white focus:outline-none focus:border-cerulean text-xs">
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-3">
@@ -4382,9 +4392,9 @@
                                     <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Nghề nghiệp:</span>
                                     <span id="detail-partner-profession" class="font-medium text-ink text-right">-</span>
                                 </div>
-                                <div class="flex justify-between border-b border-stone-200/60 pb-2">
-                                    <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Trình độ học vấn:</span>
-                                    <span id="detail-partner-education" class="font-semibold text-ink text-right">-</span>
+                                <div class="flex flex-col border-b border-stone-200/60 pb-2 space-y-1">
+                                    <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Học vấn &amp; Trường học:</span>
+                                    <div id="detail-partner-education" class="text-right text-xs font-semibold text-ink">-</div>
                                 </div>
                                 <div class="flex flex-col border-b border-stone-200/60 pb-2 space-y-1 mt-2">
                                     <span class="text-ink-light font-bold text-xs uppercase tracking-wider">Thường trú:</span>
@@ -7062,6 +7072,8 @@
                 dob: "1998-05-14",
                 phone: "0908 123 456",
                 education: "Đại học",
+                highSchool: "THPT Chuyên Lê Hồng Phong",
+                university: "ĐH Kinh Tế TP.HCM (UEH)",
                 permanentAddr: "Quận 1, TP. Hồ Chí Minh",
                 temporaryAddr: "Thảo Điền, TP. Thủ Đức",
                 role: "Versatile (Linh hoạt)",
@@ -7083,6 +7095,8 @@
                 dob: "1999-08-20",
                 phone: "0912 888 999",
                 education: "Đại học",
+                highSchool: "Bangkok Christian College",
+                university: "Bangkok University",
                 permanentAddr: "Bangkok, Thái Lan",
                 temporaryAddr: "Thảo Điền, TP. Thủ Đức",
                 role: "Top / Dominant",
@@ -9634,6 +9648,8 @@
                         dob: '1998-05-14',
                         phone: '0908 123 456',
                         education: 'Đại học',
+                        highSchool: 'THPT Chuyên Lê Hồng Phong',
+                        university: 'ĐH Kinh Tế TP.HCM (UEH)',
                         permanentAddr: 'Quận 1, TP. Hồ Chí Minh',
                         temporaryAddr: 'Thảo Điền, TP. Thủ Đức',
                         role: 'Versatile (Linh hoạt)',
@@ -9759,8 +9775,21 @@
 
                 const eduEl = document.getElementById('detail-partner-education');
                 if (eduEl) {
-                    if (p.education) {
-                        eduEl.innerHTML = `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-200/90">${p.education}</span>`;
+                    const uni = p.university || (p.education === 'Đại học' ? p.school : '');
+                    const hs = p.highSchool || (p.education === 'Cấp 3' ? p.school : '');
+                    if (uni && hs) {
+                        eduEl.innerHTML = `
+                            <div class="space-y-1 text-right">
+                                <div><span class="text-stone-400 font-normal">Đại học:</span> <strong class="text-ink">${uni}</strong></div>
+                                <div class="text-[11px]"><span class="text-stone-400 font-normal">Cấp 3:</span> <span class="text-stone-600">${hs}</span></div>
+                            </div>
+                        `;
+                    } else if (uni) {
+                        eduEl.innerHTML = `<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-200/90 inline-block"><span class="text-stone-400 font-normal">Đại học:</span> ${uni}</span>`;
+                    } else if (hs) {
+                        eduEl.innerHTML = `<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-200/90 inline-block"><span class="text-stone-400 font-normal">Cấp 3:</span> ${hs}</span>`;
+                    } else if (p.education) {
+                        eduEl.innerHTML = `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-stone-100 text-stone-700 border border-stone-200/90 inline-block">${p.education}</span>`;
                     } else {
                         eduEl.innerText = '-';
                     }
@@ -13100,6 +13129,21 @@
                 : 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&auto=format&fit=crop&q=80';
             const coverUrl = p.cover || p.coverUrl || defaultCover;
 
+            const uni = p.university || (p.education === 'Đại học' ? p.school : '');
+            const hs = p.highSchool || (p.education === 'Cấp 3' ? p.school : '');
+            let eduCardLabel = '';
+            if (uni && hs) eduCardLabel = `ĐH: ${uni} • C3: ${hs}`;
+            else if (uni) eduCardLabel = `ĐH: ${uni}`;
+            else if (hs) eduCardLabel = `C3: ${hs}`;
+            else if (p.education) eduCardLabel = p.education;
+
+            const eduCardItemHtml = eduCardLabel ? `
+                <li class="flex justify-between items-center gap-2">
+                    <span class="text-ink-light shrink-0">Học vấn:</span>
+                    <span class="font-semibold text-ink text-xs px-2 py-0.5 rounded-full bg-stone-100 border border-stone-200 truncate max-w-[200px]" title="${eduCardLabel}">${eduCardLabel}</span>
+                </li>
+            ` : '';
+
             return `
                 <div class="rounded-2xl border border-stone-200/80 bg-white relative shadow-[0_2px_12px_-3px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_28px_-6px_rgba(2,132,199,0.08)] hover:border-cerulean/40 transition-all duration-300 flex flex-col justify-between group overflow-hidden">
                     <div>
@@ -13164,12 +13208,7 @@
                                         <span class="text-ink-light">Nghề nghiệp:</span>
                                         <span class="font-medium text-ink">${p.profession || 'Chưa cập nhật'}</span>
                                     </li>
-                                    ${p.education ? `
-                                    <li class="flex justify-between items-center">
-                                        <span class="text-ink-light">Học vấn:</span>
-                                        <span class="font-semibold text-ink text-xs px-2 py-0.5 rounded-full bg-stone-100 border border-stone-200">${p.education}</span>
-                                    </li>
-                                    ` : ''}
+                                    ${eduCardItemHtml}
                                     <li class="flex justify-between items-center">
                                         <span class="text-ink-light">Điện thoại:</span>
                                         <span class="font-mono text-ink">${p.phone || 'Chưa cập nhật'}</span>
@@ -13191,12 +13230,7 @@
                                         <span class="text-ink-light">Nghề nghiệp / Nền tảng:</span>
                                         <span class="font-semibold text-ink">${p.profession || 'OnlyFan Creator'}</span>
                                     </li>
-                                    ${p.education ? `
-                                    <li class="flex justify-between items-center">
-                                        <span class="text-ink-light">Học vấn:</span>
-                                        <span class="font-semibold text-ink text-xs px-2 py-0.5 rounded-full bg-stone-100 border border-stone-200">${p.education}</span>
-                                    </li>
-                                    ` : ''}
+                                    ${eduCardItemHtml}
                                     <li class="flex justify-between items-center">
                                         <span class="text-ink-light">${p.orientation === 'Trai thẳng' ? 'Xu hướng:' : 'Vai trò / Gu:'}</span>
                                         ${p.orientation === 'Trai thẳng'
@@ -13486,6 +13520,20 @@
                     mediaCellHtml = `<span class="text-xs text-stone-400 italic">0 tệp media</span>`;
                 }
 
+                // Xử lý huy hiệu học vấn & trường học
+                const uni = p.university || (p.education === 'Đại học' ? p.school : '');
+                const hs = p.highSchool || (p.education === 'Cấp 3' ? p.school : '');
+                let eduTableBadge = '';
+                if (uni && hs) {
+                    eduTableBadge = `<span class="text-[9px] font-bold px-1.5 py-0.5 text-stone-700 bg-stone-100 border border-stone-200/90 rounded inline-block shadow-2xs max-w-[130px] truncate" title="ĐH: ${uni} | C3: ${hs}">🎓 ${uni}</span>`;
+                } else if (uni) {
+                    eduTableBadge = `<span class="text-[9px] font-bold px-1.5 py-0.5 text-stone-700 bg-stone-100 border border-stone-200/90 rounded inline-block shadow-2xs max-w-[130px] truncate" title="Đại học: ${uni}">🎓 ${uni}</span>`;
+                } else if (hs) {
+                    eduTableBadge = `<span class="text-[9px] font-bold px-1.5 py-0.5 text-stone-700 bg-stone-100 border border-stone-200/90 rounded inline-block shadow-2xs max-w-[130px] truncate" title="Cấp 3: ${hs}">🏫 ${hs}</span>`;
+                } else if (p.education) {
+                    eduTableBadge = `<span class="text-[9px] font-bold px-1.5 py-0.5 text-stone-700 bg-stone-100 border border-stone-200/90 rounded inline-block shadow-2xs">${p.education}</span>`;
+                }
+
                 // Cột đặc thù Trai Ngon vs Trai OnlyFan
                 let col2Html = '';
                 let col3Html = '';
@@ -13507,7 +13555,7 @@
                                 ${p.profession || 'Chưa cập nhật'}
                             </div>
                             <div class="flex items-center gap-1 flex-wrap">
-                                ${p.education ? `<span class="text-[9px] font-bold px-1.5 py-0.2 text-stone-700 bg-stone-100 border border-stone-200/90 rounded inline-block shadow-2xs">${p.education}</span>` : ''}
+                                ${eduTableBadge}
                                 ${p.orientation === 'Trai thẳng'
                                     ? '<span class="italic text-emerald-700 font-bold text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 inline-block">Trai thẳng</span>'
                                     : `<span class="italic text-cerulean font-semibold text-[10px] px-1.5 py-0.5 rounded-full bg-cerulean/5 border border-cerulean/15 inline-block">${p.role || 'Bottom (Tiếp nhận)'}</span>`
@@ -13580,7 +13628,7 @@
                         <div class="space-y-1 min-w-0">
                             <div class="text-xs font-semibold text-ink truncate">${p.profession || 'OnlyFan Creator'}</div>
                             <div class="flex items-center gap-1 flex-wrap">
-                                ${p.education ? `<span class="text-[9px] font-bold px-1.5 py-0.2 text-stone-700 bg-stone-100 border border-stone-200/90 rounded inline-block shadow-2xs">${p.education}</span>` : ''}
+                                ${eduTableBadge}
                                 ${p.orientation === 'Trai thẳng'
                                     ? '<span class="italic text-emerald-700 font-bold text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 inline-block">Trai thẳng</span>'
                                     : `<span class="italic text-jasper font-semibold text-[10px] px-1.5 py-0.5 rounded-full bg-jasper/5 border border-jasper/15 inline-block">${p.role || 'Creator'}</span>`
@@ -14028,6 +14076,27 @@
             wardSelectEl.innerHTML = html;
         }
 
+        window.handlePartnerEducationChange = function(val) {
+            const hsInput = document.getElementById('input-partner-highschool');
+            const uniInput = document.getElementById('input-partner-university');
+            if (val === 'Đại học' && uniInput && !uniInput.value) {
+                uniInput.focus();
+            } else if (val === 'Cấp 3' && hsInput && !hsInput.value) {
+                hsInput.focus();
+            }
+        };
+
+        window.handlePartnerSchoolInput = function() {
+            const uniVal = document.getElementById('input-partner-university')?.value?.trim();
+            const hsVal = document.getElementById('input-partner-highschool')?.value?.trim();
+            const eduSelect = document.getElementById('select-partner-education');
+            if (!eduSelect) return;
+            if (uniVal && eduSelect.value !== 'Đại học') {
+                eduSelect.value = 'Đại học';
+            } else if (!uniVal && hsVal && (!eduSelect.value || eduSelect.value === 'Đại học')) {
+                eduSelect.value = 'Cấp 3';
+            }
+        };
         
         window.handlePartnerOrientationChange = function(val) {
             const roleContainer = document.getElementById('partner-role-container');
@@ -14214,6 +14283,10 @@
                     document.getElementById('input-partner-phone').value = p.phone || "";
                     const eduInput = document.getElementById('select-partner-education');
                     if (eduInput) eduInput.value = p.education || "";
+                    const hsInput = document.getElementById('input-partner-highschool');
+                    if (hsInput) hsInput.value = p.highSchool || (p.education === 'Cấp 3' ? (p.school || '') : '');
+                    const uniInput = document.getElementById('input-partner-university');
+                    if (uniInput) uniInput.value = p.university || (p.education === 'Đại học' ? (p.school || '') : '');
                     setAddressFields(p.permanentAddr || "", 'permanent');
                     setAddressFields(p.temporaryAddr || "", 'temporary');
                     const pOrientation = p.orientation || (p.role && p.role.includes('Trai thẳng') ? 'Trai thẳng' : 'Đồng tính');
@@ -14246,6 +14319,10 @@
                 document.getElementById('form-partner').reset();
                 const newEduInput = document.getElementById('select-partner-education');
                 if (newEduInput) newEduInput.value = "";
+                const newHsInput = document.getElementById('input-partner-highschool');
+                if (newHsInput) newHsInput.value = "";
+                const newUniInput = document.getElementById('input-partner-university');
+                if (newUniInput) newUniInput.value = "";
                 populateProvinceSelect(document.getElementById('select-partner-permanent-province'));
                 populateProvinceSelect(document.getElementById('select-partner-temporary-province'));
                 setAddressFields("", 'permanent');
@@ -14755,6 +14832,14 @@
                 }
             });
 
+            const highSchoolVal = document.getElementById('input-partner-highschool')?.value?.trim() || "";
+            const universityVal = document.getElementById('input-partner-university')?.value?.trim() || "";
+            let educationVal = document.getElementById('select-partner-education')?.value || "";
+            if (!educationVal) {
+                if (universityVal) educationVal = "Đại học";
+                else if (highSchoolVal) educationVal = "Cấp 3";
+            }
+
             const partnerData = {
                 name: document.getElementById('input-partner-name')?.value || "",
                 avatar: document.getElementById('input-partner-avatar')?.value || "",
@@ -14763,7 +14848,10 @@
                 relation: document.getElementById('input-partner-relation')?.value || defaultRel,
                 dob: document.getElementById('input-partner-dob')?.value || "",
                 phone: document.getElementById('input-partner-phone')?.value || "",
-                education: document.getElementById('select-partner-education')?.value || "",
+                education: educationVal,
+                highSchool: highSchoolVal,
+                university: universityVal,
+                school: universityVal || highSchoolVal,
                 permanentAddr: document.getElementById('input-partner-permanent-addr')?.value || "",
                 temporaryAddr: document.getElementById('input-partner-temporary-addr')?.value || "",
                 orientation: document.getElementById('select-partner-orientation')?.value || "Đồng tính",
