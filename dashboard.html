@@ -5118,6 +5118,32 @@
                         2. Đẩy mông ra sau, hạ đùi song song sàn.<br>
                         3. Đạp mạnh đứng lên, thở ra ở 2/3 hành trình.
                     </div>
+
+                    <!-- Visual Form-Check Guide (Video & Hình Ảnh Đồng Hành) -->
+                    <div class="bg-stone-900 border border-stone-800 rounded-xl overflow-hidden">
+                        <div class="flex items-center justify-between px-3 py-2 bg-stone-950/80 border-b border-stone-800 text-xs">
+                            <span class="font-mono text-[10px] uppercase font-bold text-stone-300 flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-cerulean" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Thị Giác Form-Check (Video / Ảnh)</span>
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" id="btn-live-media-video" onclick="window.switchLiveMediaMode('video')" class="px-2 py-0.5 rounded text-[10px] font-mono bg-cerulean text-white font-bold cursor-pointer transition-colors">
+                                    Video Form
+                                </button>
+                                <button type="button" id="btn-live-media-image" onclick="window.switchLiveMediaMode('image')" class="px-2 py-0.5 rounded text-[10px] font-mono bg-stone-800 text-stone-300 hover:text-white cursor-pointer transition-colors">
+                                    Hình Ảnh
+                                </button>
+                                <button type="button" id="btn-live-media-collapse" onclick="window.toggleLiveMediaCollapse()" class="ml-1 text-stone-400 hover:text-white text-[11px] font-mono cursor-pointer px-1.5 py-0.5">
+                                    Ẩn ▼
+                                </button>
+                            </div>
+                        </div>
+                        <div id="live-media-stage-wrapper" class="transition-all duration-300">
+                            <div id="live-media-stage" class="relative w-full aspect-video sm:h-52 bg-black flex items-center justify-center overflow-hidden">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Khu Vực Ghi Log Trực Tiếp (Live Set Logger) & Smart Rest Timer -->
@@ -5211,6 +5237,73 @@
 
             <!-- Scrollable Content -->
             <div class="p-6 md:p-8 space-y-6 overflow-y-auto max-h-[calc(92vh-160px)] custom-scrollbar">
+                <!-- Khu Vực Media Hướng Dẫn: Video & Hình Ảnh Trực Quan Chuẩn Editorial -->
+                <div class="bg-stone-900 border border-stone-800 rounded-2xl overflow-hidden shadow-lg space-y-0">
+                    <!-- Media Switcher Header Bar -->
+                    <div class="p-3 bg-stone-950/80 border-b border-stone-800 flex items-center justify-between flex-wrap gap-2">
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" id="btn-pt-media-tab-video" onclick="window.switchPtModalMediaTab('video')" class="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all bg-cerulean text-white shadow-xs cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Video Kỹ Thuật</span>
+                            </button>
+                            <button type="button" id="btn-pt-media-tab-image" onclick="window.switchPtModalMediaTab('image')" class="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all text-stone-400 hover:text-white hover:bg-stone-800 cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span>Hình Ảnh Minh Họa</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="window.togglePtCustomMediaForm()" class="px-2.5 py-1 text-[11px] font-mono text-stone-300 hover:text-cerulean bg-stone-800/80 hover:bg-stone-800 rounded-lg border border-stone-700/80 flex items-center gap-1 transition-colors cursor-pointer" title="Tùy chỉnh link Video / Ảnh bài tập theo ý bạn">
+                                <svg class="w-3 h-3 text-cerulean" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                <span>Đổi Media</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Media Display Viewport -->
+                    <div class="relative w-full aspect-video sm:h-72 md:h-80 bg-black flex items-center justify-center overflow-hidden">
+                        <!-- Video Container -->
+                        <div id="pt-modal-media-video-wrap" class="w-full h-full relative">
+                            <!-- Populated with iframe or video tag -->
+                        </div>
+
+                        <!-- Image Container -->
+                        <div id="pt-modal-media-image-wrap" class="w-full h-full relative hidden">
+                            <img id="pt-modal-media-img" src="" alt="Exercise form" class="w-full h-full object-cover cursor-pointer" onclick="window.viewCurrentExerciseImageFull()">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 pointer-events-none"></div>
+                            <div class="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white text-xs">
+                                <span id="pt-modal-media-img-caption" class="font-bold drop-shadow-md truncate">Form Kỹ Thuật Chuẩn Y Khoa</span>
+                                <span class="text-[10px] bg-black/60 px-2 py-0.5 rounded-full border border-white/20 backdrop-blur-xs font-mono">Bấm để xem ảnh to</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Đổi Media Tùy Chỉnh (Collapsible) -->
+                    <div id="pt-modal-custom-media-form" class="hidden p-4 bg-stone-950 border-t border-stone-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider font-mono">Cài Đặt Video &amp; Hình Ảnh Riêng Cho Bài Này</span>
+                            <button type="button" onclick="window.togglePtCustomMediaForm()" class="text-stone-400 hover:text-white text-xs cursor-pointer">Đóng ✕</button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div>
+                                <label class="block text-[10px] font-mono uppercase text-stone-400 mb-1">Link Video (YouTube, MP4, WebM):</label>
+                                <input type="text" id="pt-input-custom-video" placeholder="https://www.youtube.com/watch?v=... hoặc link mp4" class="w-full px-3 py-1.5 bg-stone-900 border border-stone-700 text-stone-200 rounded-lg text-xs focus:border-cerulean focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-mono uppercase text-stone-400 mb-1">Link Hình Ảnh (JPG, PNG, WebP):</label>
+                                <input type="text" id="pt-input-custom-image" placeholder="https://... link ảnh minh họa" class="w-full px-3 py-1.5 bg-stone-900 border border-stone-700 text-stone-200 rounded-lg text-xs focus:border-cerulean focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end gap-2 pt-1">
+                            <button type="button" onclick="window.resetCurrentExerciseMediaDefault()" class="px-3 py-1.5 text-stone-400 hover:text-white text-xs rounded-lg border border-stone-700 cursor-pointer">
+                                Khôi Phục Mặc Định
+                            </button>
+                            <button type="button" onclick="window.saveCurrentExerciseCustomMedia()" class="px-4 py-1.5 bg-cerulean hover:bg-cerulean-dark text-white text-xs font-bold uppercase rounded-lg shadow-xs cursor-pointer">
+                                Lưu Cài Đặt Media
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Cơ bắp tác động & Lợi ích sinh lý -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="p-4 bg-white editorial-border shadow-xs rounded-xl">
@@ -7328,7 +7421,7 @@
 
         // ==================== HUẤN LUYỆN VIÊN CÁ NHÂN ẢO (VIRTUAL PT ENGINE) ====================
 
-        // 1. Thư Viện Bài Tập Thể Lực & Sinh Lý Chuyên Sâu
+        // 1. Thư Viện Bài Tập Thể Lực & Sinh Lý Chuyên Sâu (Kèm Video & Hình Ảnh Chuẩn Y Khoa)
         const PT_EXERCISE_DATABASE = {
             'squat': {
                 id: 'squat',
@@ -7342,7 +7435,10 @@
                 defaultReps: 8,
                 defaultWeight: 60,
                 defaultRest: 90,
-                instruction: '1. Đặt thanh đòn trên cơ cầu vai, chân mở rộng bằng vai, mũi chân mở 20 độ.\n2. Gồng chặt cơ bụng (Valsalva), đẩy mông ra sau và hạ đùi song song mặt sàn.\n3. Đạp mạnh từ gót chân đứng lên, thở ra ở 2/3 hành trình.'
+                instruction: '1. Đặt thanh đòn trên cơ cầu vai, chân mở rộng bằng vai, mũi chân mở 20 độ.\n2. Gồng chặt cơ bụng (Valsalva), đẩy mông ra sau và hạ đùi song song mặt sàn.\n3. Đạp mạnh từ gót chân đứng lên, thở ra ở 2/3 hành trình.',
+                image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=bEv6CCg2BC8',
+                videoType: 'youtube'
             },
             'deadlift': {
                 id: 'deadlift',
@@ -7356,7 +7452,10 @@
                 defaultReps: 10,
                 defaultWeight: 70,
                 defaultRest: 75,
-                instruction: '1. Cầm tạ trước đùi, lưng thẳng tự nhiên, ngực ưỡn.\n2. Đẩy mông ra sau, gập nhẹ gối, hạ tạ dọc ống chân đến khi đùi sau căng hết cỡ.\n3. Siết chặt cơ mông đẩy hông về phía trước để trở về tư thế ban đầu.'
+                instruction: '1. Cầm tạ trước đùi, lưng thẳng tự nhiên, ngực ưỡn.\n2. Đẩy mông ra sau, gập nhẹ gối, hạ tạ dọc ống chân đến khi đùi sau căng hết cỡ.\n3. Siết chặt cơ mông đẩy hông về phía trước để trở về tư thế ban đầu.',
+                image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=JCXUYuzwNrM',
+                videoType: 'youtube'
             },
             'hip_thrust': {
                 id: 'hip_thrust',
@@ -7370,7 +7469,10 @@
                 defaultReps: 10,
                 defaultWeight: 50,
                 defaultRest: 60,
-                instruction: '1. Tựa lưng trên mép ghế, tạ đặt ngay ngang khớp háng (có đệm lót).\n2. Gập gối 90 độ, đạp gót nâng hông lên cao cho đến khi đùi và thân người thẳng hàng.\n3. Siết chặt mông và đáy chậu ở đỉnh 2 giây trước khi hạ xuống từ từ.'
+                instruction: '1. Tựa lưng trên mép ghế, tạ đặt ngay ngang khớp háng (có đệm lót).\n2. Gập gối 90 độ, đạp gót nâng hông lên cao cho đến khi đùi và thân người thẳng hàng.\n3. Siết chặt mông và đáy chậu ở đỉnh 2 giây trước khi hạ xuống từ từ.',
+                image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=y2BloeX5Ebs',
+                videoType: 'youtube'
             },
             'lunges': {
                 id: 'lunges',
@@ -7384,7 +7486,10 @@
                 defaultReps: 10,
                 defaultWeight: 20,
                 defaultRest: 60,
-                instruction: '1. Bước một chân lên trước, hạ thân người thẳng đứng đến khi cả hai gối vuông góc 90 độ.\n2. Không để gối trước vượt quá mũi chân, giữ ngực cao.\n3. Đạp mạnh chân trước đứng dậy và đổi chân.'
+                instruction: '1. Bước một chân lên trước, hạ thân người thẳng đứng đến khi cả hai gối vuông góc 90 độ.\n2. Không để gối trước vượt quá mũi chân, giữ ngực cao.\n3. Đạp mạnh chân trước đứng dậy và đổi chân.',
+                image: 'https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=L8fvypPrzzs',
+                videoType: 'youtube'
             },
             'leg_raises': {
                 id: 'leg_raises',
@@ -7398,7 +7503,10 @@
                 defaultReps: 12,
                 defaultWeight: 0,
                 defaultRest: 60,
-                instruction: '1. Nằm ngửa hoặc treo xà đơn, giữ lưng dưới áp sát sàn/thẳng trục.\n2. Siết cơ bụng dưới nâng chân lên cao vuông góc với thân người mà không đung đưa.\n3. Hạ chân xuống từ từ có kiểm soát, hít sâu.'
+                instruction: '1. Nằm ngửa hoặc treo xà đơn, giữ lưng dưới áp sát sàn/thẳng trục.\n2. Siết cơ bụng dưới nâng chân lên cao vuông góc với thân người mà không đung đưa.\n3. Hạ chân xuống từ từ có kiểm soát, hít sâu.',
+                image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=Pr1ieGZ5atk',
+                videoType: 'youtube'
             },
             'plank': {
                 id: 'plank',
@@ -7412,7 +7520,10 @@
                 defaultReps: 45,
                 defaultWeight: 0,
                 defaultRest: 45,
-                instruction: '1. Chống khuỷu tay vuông góc dưới vai, mũi chân chạm sàn.\n2. Giữ thân người thẳng tắp từ đầu đến gót chân, siết chặt bụng và mông.\n3. Thở đều bằng mũi, không võng lưng hay nhô mông.'
+                instruction: '1. Chống khuỷu tay vuông góc dưới vai, mũi chân chạm sàn.\n2. Giữ thân người thẳng tắp từ đầu đến gót chân, siết chặt bụng và mông.\n3. Thở đều bằng mũi, không võng lưng hay nhô mông.',
+                image: 'https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=ASdvN_XEl_c',
+                videoType: 'youtube'
             },
             'hiit_sprint': {
                 id: 'hiit_sprint',
@@ -7426,7 +7537,10 @@
                 defaultReps: 30,
                 defaultWeight: 0,
                 defaultRest: 30,
-                instruction: '1. Chạy nước rút tối đa tốc độ (90-100% công suất) trong 30 giây.\n2. Đi bộ nhẹ nhàng hồi phục trong 30 giây.\n3. Lặp lại 5 chu kỳ liên tiếp.'
+                instruction: '1. Chạy nước rút tối đa tốc độ (90-100% công suất) trong 30 giây.\n2. Đi bộ nhẹ nhàng hồi phục trong 30 giây.\n3. Lặp lại 5 chu kỳ liên tiếp.',
+                image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=cZnsLVArIt8',
+                videoType: 'youtube'
             },
             'russian_twist': {
                 id: 'russian_twist',
@@ -7440,7 +7554,10 @@
                 defaultReps: 20,
                 defaultWeight: 5,
                 defaultRest: 45,
-                instruction: '1. Ngồi trên sàn, ngả thân trên ra sau 45 độ, nhấc nhẹ hai bàn chân khỏi sàn.\n2. Cầm tạ hoặc đan tay, xoay thân trên từ trái qua phải có kiểm soát.\n3. Giữ gối cố định, thở nhịp nhàng theo từng nhịp xoay.'
+                instruction: '1. Ngồi trên sàn, ngả thân trên ra sau 45 độ, nhấc nhẹ hai bàn chân khỏi sàn.\n2. Cầm tạ hoặc đan tay, xoay thân trên từ trái qua phải có kiểm soát.\n3. Giữ gối cố định, thở nhịp nhàng theo từng nhịp xoay.',
+                image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=wkD8rjkodUI',
+                videoType: 'youtube'
             },
             'butterfly': {
                 id: 'butterfly',
@@ -7454,7 +7571,10 @@
                 defaultReps: 60,
                 defaultWeight: 0,
                 defaultRest: 30,
-                instruction: '1. Ngồi thẳng lưng, hai lòng bàn chân áp sát vào nhau, kéo gót chân sát về phía háng.\n2. Hai tay giữ bàn chân, nhẹ nhàng ấn gối hướng xuống mặt sàn.\n3. Hít thở sâu và gập nhẹ người về trước nếu có thể.'
+                instruction: '1. Ngồi thẳng lưng, hai lòng bàn chân áp sát vào nhau, kéo gót chân sát về phía háng.\n2. Hai tay giữ bàn chân, nhẹ nhàng ấn gối hướng xuống mặt sàn.\n3. Hít thở sâu và gập nhẹ người về trước nếu có thể.',
+                image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=v4OLkxi5-Q0',
+                videoType: 'youtube'
             },
             'pigeon': {
                 id: 'pigeon',
@@ -7468,7 +7588,10 @@
                 defaultReps: 45,
                 defaultWeight: 0,
                 defaultRest: 30,
-                instruction: '1. Chân trước gập vuông góc hoặc chữ V, chân sau duỗi thẳng ra phía sau.\n2. Giữ hông vuông góc với sàn, từ từ hạ ngực áp sát sàn.\n3. Hít thở sâu và giữ yên trong 45 giây mỗi bên.'
+                instruction: '1. Chân trước gập vuông góc hoặc chữ V, chân sau duỗi thẳng ra phía sau.\n2. Giữ hông vuông góc với sàn, từ từ hạ ngực áp sát sàn.\n3. Hít thở sâu và giữ yên trong 45 giây mỗi bên.',
+                image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=0_zPqA65Nok',
+                videoType: 'youtube'
             },
             'frog_pose': {
                 id: 'frog_pose',
@@ -7482,7 +7605,10 @@
                 defaultReps: 60,
                 defaultWeight: 0,
                 defaultRest: 30,
-                instruction: '1. Quỳ hai gối trên thảm, từ từ tách hai gối rộng sang hai bên hết mức dễ chịu.\n2. Hạ cẳng tay xuống sàn, giữ góc gối 90 độ, mũi chân hướng ra ngoài.\n3. Nhẹ nhàng đẩy hông ra sau và hít thở sâu thả lỏng.'
+                instruction: '1. Quỳ hai gối trên thảm, từ từ tách hai gối rộng sang hai bên hết mức dễ chịu.\n2. Hạ cẳng tay xuống sàn, giữ góc gối 90 độ, mũi chân hướng ra ngoài.\n3. Nhẹ nhàng đẩy hông ra sau và hít thở sâu thả lỏng.',
+                image: 'https://images.unsplash.com/photo-1599447421416-3414500d18a5?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/shorts/20ZWXZPQbpI',
+                videoType: 'youtube'
             },
             'glute_bridge_kegel': {
                 id: 'glute_bridge_kegel',
@@ -7496,7 +7622,10 @@
                 defaultReps: 12,
                 defaultWeight: 0,
                 defaultRest: 45,
-                instruction: '1. Nằm ngửa, gập gối, hai bàn chân đặt trên sàn cách mông một gang tay.\n2. Đạp gót nâng hông lên cao; tại đỉnh cao nhất, siết chặt cơ PC (như nhịn tiểu) trong 3 giây.\n3. Thả lỏng cơ PC khi hạ mông xuống chạm nhẹ sàn.'
+                instruction: '1. Nằm ngửa, gập gối, hai bàn chân đặt trên sàn cách mông một gang tay.\n2. Đạp gót nâng hông lên cao; tại đỉnh cao nhất, siết chặt cơ PC (như nhịn tiểu) trong 3 giây.\n3. Thả lỏng cơ PC khi hạ mông xuống chạm nhẹ sàn.',
+                image: 'https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=wPM8icPu6H8',
+                videoType: 'youtube'
             },
             'deep_squat_hold': {
                 id: 'deep_squat_hold',
@@ -7510,7 +7639,10 @@
                 defaultReps: 30,
                 defaultWeight: 0,
                 defaultRest: 45,
-                instruction: '1. Đứng chân rộng hơn vai một chút, hạ mông ngồi xổm sâu xuống hết cỡ.\n2. Chắp hai tay trước ngực, dùng hai cùi chỏ nhẹ nhàng tỳ đẩy hai đầu gối mở rộng.\n3. Giữ lưng thẳng, hít thở sâu vào đáy bụng trong 30 giây.'
+                instruction: '1. Đứng chân rộng hơn vai một chút, hạ mông ngồi xổm sâu xuống hết cỡ.\n2. Chắp hai tay trước ngực, dùng hai cùi chỏ nhẹ nhàng tỳ đẩy hai đầu gối mở rộng.\n3. Giữ lưng thẳng, hít thở sâu vào đáy bụng trong 30 giây.',
+                image: 'https://images.unsplash.com/photo-1567013127542-490d757e51fc?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=z0G3QQ4RoEw',
+                videoType: 'youtube'
             },
             'reverse_kegel': {
                 id: 'reverse_kegel',
@@ -7524,7 +7656,10 @@
                 defaultReps: 10,
                 defaultWeight: 0,
                 defaultRest: 30,
-                instruction: '1. Nằm ngửa thả lỏng toàn thân, một tay đặt lên ngực, một tay đặt lên bụng.\n2. Hít sâu bằng mũi đẩy bụng căng phồng, đồng thời cảm nhận cơ sàn chậu mở rộng nhẹ ra ngoài.\n3. Thở ra nhẹ nhàng tự nhiên và giữ đáy chậu thư giãn hoàn toàn.'
+                instruction: '1. Nằm ngửa thả lỏng toàn thân, một tay đặt lên ngực, một tay đặt lên bụng.\n2. Hít sâu bằng mũi đẩy bụng căng phồng, đồng thời cảm nhận cơ sàn chậu mở rộng nhẹ ra ngoài.\n3. Thở ra nhẹ nhàng tự nhiên và giữ đáy chậu thư giãn hoàn toàn.',
+                image: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&auto=format&fit=crop&q=80',
+                video: 'https://www.youtube.com/watch?v=yeljw5lhPyw',
+                videoType: 'youtube'
             }
         };
 
@@ -8159,7 +8294,7 @@
             let completedCount = 0;
 
             const html = exIds.map(exId => {
-                const ex = PT_EXERCISE_DATABASE[exId];
+                const ex = (typeof getPtExerciseWithMedia === 'function' ? getPtExerciseWithMedia(exId) : PT_EXERCISE_DATABASE[exId]);
                 if (!ex) return '';
 
                 const itemState = items[exId] || {};
@@ -8173,7 +8308,17 @@
                 return `
                     <div class="p-4 rounded-xl border transition-all ${isDone ? 'bg-emerald-50/50 border-emerald-300' : 'bg-stone-50 border-line hover:border-cerulean/50'} flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex items-start sm:items-center gap-3.5 flex-1 min-w-0">
-                            <input type="checkbox" id="pt-pad-check-${ex.id}" ${isDone ? 'checked' : ''} onchange="window.toggleExercisePadCheck('${ex.id}')" class="w-5 h-5 accent-cerulean cursor-pointer mt-0.5 sm:mt-0 shrink-0 rounded">
+                            <input type="checkbox" id="pt-pad-check-${ex.id}" ${isDone ? 'checked' : ''} onchange="window.toggleExercisePadCheck('${ex.id}')" class="w-5 h-5 accent-cerulean cursor-pointer mt-1 sm:mt-0 shrink-0 rounded">
+                            
+                            <!-- Thumbnail Preview with Video Badge -->
+                            <div class="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden shrink-0 border border-stone-200/80 shadow-2xs group cursor-pointer" onclick="window.openPtExerciseDetailModal('${ex.id}', 'video')" title="Bấm để xem video hướng dẫn ${ex.name}">
+                                <img src="${ex.image}" alt="${ex.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                                <div class="absolute inset-0 bg-black/35 group-hover:bg-black/15 transition-colors flex items-center justify-center">
+                                    <span class="w-6 h-6 rounded-full bg-cerulean/90 text-white flex items-center justify-center text-[10px] pl-0.5 shadow-md group-hover:scale-110 transition-transform">▶</span>
+                                </div>
+                                <span class="absolute bottom-0.5 right-0.5 px-1 py-0.2 rounded bg-black/75 text-white font-mono text-[8px] font-bold">HD</span>
+                            </div>
+
                             <div class="min-w-0 cursor-pointer flex-1" onclick="window.openPtExerciseDetailModal('${ex.id}')">
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <span class="font-playfair font-bold text-base ${isDone ? 'line-through text-stone-500' : 'text-ink'} hover:text-cerulean transition-colors">${ex.name}</span>
@@ -8274,8 +8419,9 @@
             showToast(status ? "Đã đánh dấu hoàn thành tất cả bài tập!" : "Đã bỏ chọn các bài tập", "info");
         };
 
-        // 7C. Modal Chi Tiết Bài Tập, PR & Focus Timer
+        // 7C. Modal Chi Tiết Bài Tập, PR, Media Hướng Dẫn & Focus Timer
         let currentModalExerciseId = null;
+        let ptModalActiveMediaTab = 'video';
         let exModalTimer = {
             duration: 90,
             secondsLeft: 90,
@@ -8283,8 +8429,192 @@
             interval: null
         };
 
-        window.openPtExerciseDetailModal = function(exId) {
-            const ex = PT_EXERCISE_DATABASE[exId];
+        // Trích xuất YouTube Video ID từ link linh hoạt (watch, share, shorts, embed)
+        function extractYouTubeVideoId(url) {
+            if (!url || typeof url !== 'string') return null;
+            const trimmed = url.trim();
+            const match = trimmed.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?\/\s]{11})/i);
+            return match ? match[1] : null;
+        }
+
+        // Quản lý lưu trữ Media tùy chỉnh người dùng (Custom Media URLs)
+        const PT_CUSTOM_MEDIA_KEY = 'aura_pt_custom_media_v1';
+        function getPtCustomMediaMap() {
+            try {
+                return JSON.parse(localStorage.getItem(PT_CUSTOM_MEDIA_KEY)) || {};
+            } catch(e) {
+                return {};
+            }
+        }
+
+        function savePtCustomMedia(exId, data) {
+            try {
+                const map = getPtCustomMediaMap();
+                if (!data) {
+                    delete map[exId];
+                } else {
+                    map[exId] = { ...map[exId], ...data };
+                }
+                localStorage.setItem(PT_CUSTOM_MEDIA_KEY, JSON.stringify(map));
+            } catch(e) {
+                console.error("Lỗi lưu custom media PT:", e);
+            }
+        }
+
+        function getPtExerciseWithMedia(exId) {
+            const base = PT_EXERCISE_DATABASE[exId];
+            if (!base) return null;
+            const custom = getPtCustomMediaMap()[exId] || {};
+            const video = custom.video || base.video;
+            const image = custom.image || base.image;
+            let videoType = base.videoType || 'youtube';
+            if (custom.video) {
+                videoType = extractYouTubeVideoId(custom.video) ? 'youtube' : 'direct';
+            }
+            return {
+                ...base,
+                video,
+                image,
+                videoType
+            };
+        }
+        window.getPtExerciseWithMedia = getPtExerciseWithMedia;
+
+        window.switchPtModalMediaTab = function(tab) {
+            ptModalActiveMediaTab = tab;
+            const btnVideo = document.getElementById('btn-pt-media-tab-video');
+            const btnImage = document.getElementById('btn-pt-media-tab-image');
+            const videoWrap = document.getElementById('pt-modal-media-video-wrap');
+            const imageWrap = document.getElementById('pt-modal-media-image-wrap');
+
+            if (tab === 'video') {
+                if (btnVideo) btnVideo.className = "px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all bg-cerulean text-white shadow-xs cursor-pointer";
+                if (btnImage) btnImage.className = "px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all text-stone-400 hover:text-white hover:bg-stone-800 cursor-pointer";
+                if (videoWrap) videoWrap.classList.remove('hidden');
+                if (imageWrap) imageWrap.classList.add('hidden');
+            } else {
+                if (btnImage) btnImage.className = "px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all bg-cerulean text-white shadow-xs cursor-pointer";
+                if (btnVideo) btnVideo.className = "px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all text-stone-400 hover:text-white hover:bg-stone-800 cursor-pointer";
+                if (imageWrap) imageWrap.classList.remove('hidden');
+                if (videoWrap) videoWrap.classList.add('hidden');
+            }
+        };
+
+        window.renderPtModalMedia = function(ex, initialTab = 'video') {
+            if (!ex) return;
+            const videoWrap = document.getElementById('pt-modal-media-video-wrap');
+            const imgEl = document.getElementById('pt-modal-media-img');
+            const captionEl = document.getElementById('pt-modal-media-img-caption');
+            const inputVid = document.getElementById('pt-input-custom-video');
+            const inputImg = document.getElementById('pt-input-custom-image');
+
+            if (inputVid) inputVid.value = ex.video || '';
+            if (inputImg) inputImg.value = ex.image || '';
+
+            if (imgEl) {
+                imgEl.src = ex.image || 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&auto=format&fit=crop&q=80';
+                imgEl.alt = `${ex.name} - Form Kỹ Thuật Chuẩn`;
+            }
+            if (captionEl) {
+                captionEl.innerText = `${ex.name} • ${ex.badge}`;
+            }
+
+            if (videoWrap) {
+                const ytId = extractYouTubeVideoId(ex.video);
+                if (ytId) {
+                    videoWrap.innerHTML = `
+                        <iframe 
+                            class="w-full h-full border-0" 
+                            src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=0&rel=0&modestbranding=1&playsinline=1" 
+                            title="${ex.name} Video Hướng Dẫn" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    `;
+                } else if (ex.video && (ex.video.endsWith('.mp4') || ex.video.endsWith('.webm') || ex.video.includes('video'))) {
+                    videoWrap.innerHTML = `
+                        <video class="w-full h-full object-cover" controls playsinline preload="metadata" poster="${ex.image || ''}">
+                            <source src="${ex.video}" type="video/mp4">
+                            Trình duyệt không hỗ trợ thẻ video HTML5.
+                        </video>
+                    `;
+                } else if (ex.video) {
+                    videoWrap.innerHTML = `
+                        <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-stone-950 space-y-3">
+                            <span class="w-12 h-12 rounded-full bg-cerulean/20 text-cerulean flex items-center justify-center text-xl">▶</span>
+                            <div>
+                                <p class="text-sm font-bold text-white mb-1">Video Kỹ Thuật Ngoại Tuyến</p>
+                                <p class="text-xs text-stone-400">Xem trực tiếp trên nền tảng lưu trữ gốc</p>
+                            </div>
+                            <a href="${ex.video}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-cerulean hover:bg-cerulean-dark text-white text-xs font-bold uppercase rounded-lg shadow-xs flex items-center gap-1.5 transition-colors">
+                                <span>Mở Video Hướng Dẫn</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    videoWrap.innerHTML = `
+                        <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-stone-950 text-stone-400 space-y-2">
+                            <svg class="w-10 h-10 text-stone-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <p class="text-xs">Chưa có video cho bài tập này. Bạn có thể bấm "Đổi Media" để thêm link.</p>
+                        </div>
+                    `;
+                }
+            }
+
+            window.switchPtModalMediaTab(initialTab || 'video');
+        };
+
+        window.togglePtCustomMediaForm = function() {
+            const form = document.getElementById('pt-modal-custom-media-form');
+            if (!form) return;
+            form.classList.toggle('hidden');
+        };
+
+        window.saveCurrentExerciseCustomMedia = function() {
+            if (!currentModalExerciseId) return;
+            const vidInput = document.getElementById('pt-input-custom-video');
+            const imgInput = document.getElementById('pt-input-custom-image');
+            const videoUrl = vidInput ? vidInput.value.trim() : '';
+            const imageUrl = imgInput ? imgInput.value.trim() : '';
+
+            savePtCustomMedia(currentModalExerciseId, {
+                video: videoUrl || undefined,
+                image: imageUrl || undefined
+            });
+
+            const exWithMedia = getPtExerciseWithMedia(currentModalExerciseId);
+            window.renderPtModalMedia(exWithMedia, ptModalActiveMediaTab);
+            const form = document.getElementById('pt-modal-custom-media-form');
+            if (form) form.classList.add('hidden');
+            if (typeof window.renderPtTodayExercisesPad === 'function') window.renderPtTodayExercisesPad();
+            if (typeof window.renderPtRoutinesGrid === 'function') window.renderPtRoutinesGrid();
+            showToast("Đã lưu media tùy chỉnh cho bài tập thành công!", "success");
+        };
+
+        window.resetCurrentExerciseMediaDefault = function() {
+            if (!currentModalExerciseId) return;
+            savePtCustomMedia(currentModalExerciseId, null);
+            const exWithMedia = getPtExerciseWithMedia(currentModalExerciseId);
+            window.renderPtModalMedia(exWithMedia, ptModalActiveMediaTab);
+            const form = document.getElementById('pt-modal-custom-media-form');
+            if (form) form.classList.add('hidden');
+            if (typeof window.renderPtTodayExercisesPad === 'function') window.renderPtTodayExercisesPad();
+            if (typeof window.renderPtRoutinesGrid === 'function') window.renderPtRoutinesGrid();
+            showToast("Đã khôi phục video và ảnh mặc định!", "info");
+        };
+
+        window.viewCurrentExerciseImageFull = function() {
+            if (!currentModalExerciseId) return;
+            const ex = getPtExerciseWithMedia(currentModalExerciseId);
+            if (ex && ex.image) {
+                window.open(ex.image, '_blank', 'noopener,noreferrer');
+            }
+        };
+
+        window.openPtExerciseDetailModal = function(exId, initialTab = 'video') {
+            const ex = getPtExerciseWithMedia(exId);
             if (!ex) return;
             currentModalExerciseId = exId;
 
@@ -8312,6 +8642,9 @@
             if (repsEl) repsEl.innerText = `${ex.defaultReps} ${ex.category === 'flexibility' ? 'giây' : 'reps'}`;
             if (restEl) restEl.innerText = `${ex.defaultRest} giây`;
             if (instrEl) instrEl.innerText = ex.instruction;
+
+            // Render Media (Video & Image)
+            window.renderPtModalMedia(ex, initialTab);
 
             // Load PR
             const prs = getPtExercisePrs();
@@ -8348,6 +8681,10 @@
 
         window.closePtExerciseDetailModal = function() {
             window.resetExModalTimer();
+            const videoWrap = document.getElementById('pt-modal-media-video-wrap');
+            if (videoWrap) videoWrap.innerHTML = '';
+            const form = document.getElementById('pt-modal-custom-media-form');
+            if (form) form.classList.add('hidden');
             window.closeModalAnimated('modal-pt-exercise-detail');
         };
 
@@ -8496,16 +8833,22 @@
 
             grid.innerHTML = Object.values(PT_ROUTINE_PRESETS).map(routine => {
                 const exerciseListHTML = routine.exerciseIds.map(exId => {
-                    const ex = PT_EXERCISE_DATABASE[exId];
+                    const ex = (typeof getPtExerciseWithMedia === 'function' ? getPtExerciseWithMedia(exId) : PT_EXERCISE_DATABASE[exId]);
                     if (!ex) return '';
                     return `
-                        <div onclick="window.openPtExerciseDetailModal('${ex.id}')" class="p-3 bg-stone-50 hover:bg-stone-100/90 border border-stone-200/80 hover:border-cerulean/50 rounded-xl flex items-center justify-between text-xs cursor-pointer transition-colors group">
-                            <div class="min-w-0 pr-2">
-                                <span class="font-bold text-ink group-hover:text-cerulean transition-colors flex items-center gap-1.5 truncate">
-                                    ${ex.name}
-                                    <svg class="w-3.5 h-3.5 text-cerulean shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                </span>
-                                <span class="text-[10px] text-ink-light italic truncate block">${ex.targetMuscles} • ${ex.defaultSets} hiệp x ${ex.defaultReps} reps</span>
+                        <div onclick="window.openPtExerciseDetailModal('${ex.id}', 'video')" class="p-2.5 sm:p-3 bg-stone-50 hover:bg-stone-100/90 border border-stone-200/80 hover:border-cerulean/50 rounded-xl flex items-center justify-between text-xs cursor-pointer transition-colors group">
+                            <div class="flex items-center gap-2.5 min-w-0 pr-2">
+                                <div class="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-stone-200/80 shadow-2xs">
+                                    <img src="${ex.image}" alt="${ex.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">
+                                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center text-[9px] text-white">▶</div>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="font-bold text-ink group-hover:text-cerulean transition-colors flex items-center gap-1.5 truncate">
+                                        ${ex.name}
+                                        <svg class="w-3.5 h-3.5 text-cerulean shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    </span>
+                                    <span class="text-[10px] text-ink-light italic truncate block">${ex.targetMuscles} • ${ex.defaultSets} hiệp x ${ex.defaultReps} reps</span>
+                                </div>
                             </div>
                             <div class="flex items-center gap-1.5 shrink-0">
                                 <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-cerulean/10 text-cerulean font-mono font-bold">${ex.badge}</span>
@@ -8741,12 +9084,89 @@
             showToast(`Bắt đầu buổi tập: ${routine.title}!`, "info");
         };
 
+        let liveMediaMode = 'video';
+        let liveMediaCollapsed = false;
+
+        window.switchLiveMediaMode = function(mode) {
+            liveMediaMode = mode;
+            const btnVid = document.getElementById('btn-live-media-video');
+            const btnImg = document.getElementById('btn-live-media-image');
+            if (mode === 'video') {
+                if (btnVid) btnVid.className = "px-2 py-0.5 rounded text-[10px] font-mono bg-cerulean text-white font-bold cursor-pointer transition-colors";
+                if (btnImg) btnImg.className = "px-2 py-0.5 rounded text-[10px] font-mono bg-stone-800 text-stone-300 hover:text-white cursor-pointer transition-colors";
+            } else {
+                if (btnImg) btnImg.className = "px-2 py-0.5 rounded text-[10px] font-mono bg-cerulean text-white font-bold cursor-pointer transition-colors";
+                if (btnVid) btnVid.className = "px-2 py-0.5 rounded text-[10px] font-mono bg-stone-800 text-stone-300 hover:text-white cursor-pointer transition-colors";
+            }
+            renderLiveMediaContent();
+        };
+
+        window.toggleLiveMediaCollapse = function() {
+            liveMediaCollapsed = !liveMediaCollapsed;
+            const wrap = document.getElementById('live-media-stage-wrapper');
+            const btn = document.getElementById('btn-live-media-collapse');
+            if (wrap) {
+                if (liveMediaCollapsed) {
+                    wrap.classList.add('hidden');
+                    if (btn) btn.innerText = "Hiện ▲";
+                    const stage = document.getElementById('live-media-stage');
+                    if (stage) stage.innerHTML = '';
+                } else {
+                    wrap.classList.remove('hidden');
+                    if (btn) btn.innerText = "Ẩn ▼";
+                    renderLiveMediaContent();
+                }
+            }
+        };
+
+        function renderLiveMediaContent() {
+            if (liveMediaCollapsed) return;
+            const stage = document.getElementById('live-media-stage');
+            if (!stage || !liveWorkoutState.activeRoutine) return;
+            const exId = liveWorkoutState.activeRoutine.exerciseIds[liveWorkoutState.exerciseIndex];
+            const ex = (typeof getPtExerciseWithMedia === 'function' ? getPtExerciseWithMedia(exId) : PT_EXERCISE_DATABASE[exId]);
+            if (!ex) return;
+
+            if (liveMediaMode === 'video') {
+                const ytId = extractYouTubeVideoId(ex.video);
+                if (ytId) {
+                    stage.innerHTML = `
+                        <iframe 
+                            class="w-full h-full border-0" 
+                            src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=0&rel=0&modestbranding=1&playsinline=1" 
+                            title="${ex.name} Live Guide" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    `;
+                } else if (ex.video && (ex.video.endsWith('.mp4') || ex.video.endsWith('.webm') || ex.video.includes('video'))) {
+                    stage.innerHTML = `
+                        <video class="w-full h-full object-cover" controls playsinline preload="metadata" poster="${ex.image || ''}">
+                            <source src="${ex.video}" type="video/mp4">
+                        </video>
+                    `;
+                } else {
+                    stage.innerHTML = `<img src="${ex.image}" alt="${ex.name}" class="w-full h-full object-cover">`;
+                }
+            } else {
+                stage.innerHTML = `
+                    <div class="relative w-full h-full">
+                        <img src="${ex.image}" alt="${ex.name}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                            <span class="text-white text-xs font-bold">${ex.name} • ${ex.badge}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
         function renderLiveWorkoutStep() {
             const routine = liveWorkoutState.activeRoutine;
             if (!routine) return;
 
             const exId = routine.exerciseIds[liveWorkoutState.exerciseIndex];
-            const ex = PT_EXERCISE_DATABASE[exId] || PT_EXERCISE_DATABASE['squat'];
+            const ex = (typeof getPtExerciseWithMedia === 'function' ? getPtExerciseWithMedia(exId) : PT_EXERCISE_DATABASE[exId]) || PT_EXERCISE_DATABASE['squat'];
             liveWorkoutState.totalExerciseSets = ex.defaultSets || 4;
 
             // Cập nhật Header & Tiến trình
@@ -8775,6 +9195,9 @@
             if (setInd) setInd.innerText = `${liveWorkoutState.setIndex} / ${liveWorkoutState.totalExerciseSets}`;
             if (benefitEl) benefitEl.innerText = ex.benefit;
             if (instEl) instEl.innerHTML = ex.instruction.replace(/\n/g, '<br>');
+
+            // Render visual media guide
+            renderLiveMediaContent();
 
             // Điền giá trị tạ & reps mặc định
             const weightInput = document.getElementById('live-input-weight');
@@ -8940,6 +9363,8 @@
             if (confirm("Bạn có chắc chắn muốn dừng buổi tập trước khi hoàn thành?")) {
                 if (liveWorkoutState.sessionTimerInterval) clearInterval(liveWorkoutState.sessionTimerInterval);
                 if (liveWorkoutState.restTimerInterval) clearInterval(liveWorkoutState.restTimerInterval);
+                const stage = document.getElementById('live-media-stage');
+                if (stage) stage.innerHTML = '';
                 window.closeModalAnimated('modal-pt-live-workout');
             }
         };
@@ -8947,6 +9372,8 @@
         window.finishLiveWorkout = function() {
             if (liveWorkoutState.sessionTimerInterval) clearInterval(liveWorkoutState.sessionTimerInterval);
             if (liveWorkoutState.restTimerInterval) clearInterval(liveWorkoutState.restTimerInterval);
+            const stage = document.getElementById('live-media-stage');
+            if (stage) stage.innerHTML = '';
 
             const routine = liveWorkoutState.activeRoutine || PT_ROUTINE_PRESETS['routine_testo'];
             const durationMins = Math.max(1, Math.round(liveWorkoutState.sessionSeconds / 60));
@@ -20111,6 +20538,7 @@
                     const playPromise = audio.play();
                     if (playPromise !== undefined) {
                         playPromise.catch(err => {
+                            if (err && err.name === 'AbortError') return;
                             if (fallbackPath) {
                                 tryPlayAudio(fallbackPath, null);
                             } else {
@@ -20158,7 +20586,10 @@
                 currentEdgingVoiceAudio = ttsAudio;
                 const playPromise = ttsAudio.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(err => console.warn("Lỗi phát /api/tts fallback:", err));
+                    playPromise.catch(err => {
+                        if (err && err.name === 'AbortError') return;
+                        console.warn("Lỗi phát /api/tts fallback:", err);
+                    });
                 }
             } catch(e) {
                 console.error("Lỗi khởi tạo Audio fallback:", e);
