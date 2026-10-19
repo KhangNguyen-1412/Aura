@@ -1488,16 +1488,16 @@ server.keepAliveTimeout = 120000;
 server.headersTimeout = 125000;
 
 function startServer(portToTry) {
-    server.listen(portToTry, () => {
+    server.listen(portToTry, '0.0.0.0', () => {
         console.log(`====================================================`);
         console.log(`  🌟 Aura Media Server đang chạy tại:`);
-        console.log(`  👉 http://localhost:${portToTry}`);
+        console.log(`  👉 http://0.0.0.0:${portToTry}`);
         console.log(`  📁 Thư mục lưu trữ media: ${MEDIA_DIR}`);
         console.log(`====================================================`);
     });
 
     server.on('error', (err) => {
-        if (err.code === 'EADDRINUSE') {
+        if (err.code === 'EADDRINUSE' && !process.env.PORT) {
             console.warn(`Cổng ${portToTry} đang bận, thử cổng tiếp theo ${portToTry + 1}...`);
             startServer(portToTry + 1);
         } else {
