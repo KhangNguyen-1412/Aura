@@ -1,0 +1,8 @@
+node_modules
+.git
+.github
+scratch
+media/*
+!media/.gitkeep
+functions/node_modules
+*.log
