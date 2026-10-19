@@ -10,7 +10,8 @@
     <meta name="author" content="Aura Health System">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="http://localhost:3000/ca-nhan">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
 
     <!-- Open Graph / Facebook / Zalo -->
     <meta property="og:type" content="profile">
@@ -39,9 +40,13 @@
     </script>
 
     
-    <!-- Google Fonts: Editorial Typography -->
+    <!-- Google Fonts & Resource Hints: Khởi tạo bắt tay TLS song song -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+    <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS (Aura Config) -->
@@ -60,6 +65,9 @@
                         'ink-light': '#4A4A4A',
                         line: '#D1CCC5'
                     },
+                    spacing: {
+                        '4.5': '1.125rem',
+                    },
                     fontFamily: {
                         playfair: ['"Playfair Display"', 'serif'],
                         newsreader: ['"Newsreader"', 'serif']
@@ -69,6 +77,15 @@
         }
     </script>
     <style>
+        /* Khống chế kích thước SVG icon trong toàn bộ tiêu đề & form chống tràn vỡ giao diện */
+        .w-4\.5 { width: 1.125rem !important; }
+        .h-4\.5 { height: 1.125rem !important; }
+        h1 svg, h2 svg, h3 svg, h4 svg, h5 svg, h6 svg {
+            max-width: 1.5rem !important;
+            max-height: 1.5rem !important;
+            flex-shrink: 0 !important;
+        }
+
         :root {
             --cerulean: #007BA7;
             --cerulean-dark: #005b7a;
@@ -161,12 +178,185 @@
         .modal-active .modal-dialog {
             transform: scale(1) translateY(0);
         }
+
+        /* Header Cố Định & Triệt Tiêu Giật Layout (Anti-Layout-Shift / Zero-CLS) */
+        #aura-global-header {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 100 !important;
+            width: 100% !important;
+            min-height: 80px;
+            background-color: rgba(249, 246, 240, 0.95) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border-bottom: 1px solid #D1CCC5 !important;
+            view-transition-name: aura-global-header;
+        }
+        @media (min-width: 1024px) {
+            #aura-global-header .aura-mobile-subbar {
+                display: none !important;
+            }
+            #aura-global-header .aura-desktop-nav {
+                display: flex !important;
+            }
+        }
+        @media (max-width: 1023px) {
+            #aura-global-header .aura-desktop-nav {
+                display: none !important;
+            }
+            #aura-global-header .aura-mobile-subbar {
+                display: flex !important;
+            }
+        }
+        #header-auth-corner {
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        /* Hỗ trợ Native View Transitions cho trình duyệt hiện đại (Chrome/Edge 126+) */
+        @view-transition {
+            navigation: auto;
+        }
+        ::view-transition-old(root) {
+            animation: auraFadeOut 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+        ::view-transition-new(root) {
+            animation: auraFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes auraFadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-8px); }
+        }
+        @keyframes auraFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hiệu ứng trang chuyển vào mượt mà */
+        main {
+            animation: auraPageEnter 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes auraPageEnter {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hiệu ứng trang lướt ra khi bấm chuyển trang */
+        body.aura-page-exiting main {
+            opacity: 0 !important;
+            transform: translateY(-8px) !important;
+            transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1), transform 0.18s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* Khung chứa các nút điều hướng Header */
+        .aura-nav-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(239, 236, 228, 0.7);
+            border: 1px solid rgba(209, 204, 197, 0.85);
+            border-radius: 9999px;
+            padding: 3px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Con trỏ trượt mượt mà (Sliding Active Indicator) */
+        .aura-nav-indicator {
+            position: absolute;
+            background-color: #007BA7;
+            border-radius: 9999px;
+            box-shadow: 0 2px 10px rgba(0, 123, 167, 0.35);
+            transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        width 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.2s ease,
+                        transform 0.15s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Con trỏ bóng mờ khi di chuột (Hover Pill) */
+        .aura-nav-hover-pill {
+            position: absolute;
+            background-color: rgba(0, 123, 167, 0.08);
+            border-radius: 9999px;
+            transition: left 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        width 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        height 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.2s ease;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+        }
+
+        /* Từng nút điều hướng */
+        .aura-nav-item {
+            position: relative;
+            z-index: 2;
+            transition: color 0.25s ease, transform 0.12s ease;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .aura-nav-item.is-active {
+            color: #FFFFFF !important;
+            font-weight: 800;
+        }
+        .aura-nav-item:not(.is-active) {
+            color: #4A4A4A;
+        }
+        .aura-nav-item:not(.is-active):hover {
+            color: #007BA7;
+        }
+        .aura-nav-item:active {
+            transform: scale(0.96);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-[#007BA7] selection:text-white bg-[#F9F6F0] antialiased">
 
-    <!-- GLOBAL EDITORIAL HEADER -->
-    <div id="aura-global-header"></div>
+    <!-- GLOBAL HEADER (Cố Định & Chuyển Đổi Mượt Chuẩn Studio) -->
+    <header id="aura-global-header" class="sticky top-0 z-50 w-full bg-[#F9F6F0]/95 backdrop-blur-md border-b border-[#D1CCC5] shadow-xs font-newsreader">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="index.html" data-nav-id="home" class="flex items-center gap-3.5 group cursor-pointer" title="Trang Chủ Aura">
+                    <div class="w-10 h-10 md:w-11 md:h-11 rounded-full shadow-2xs group-hover:scale-105 transition-all duration-300 shrink-0 overflow-hidden">
+                        <img src="favicon.svg" alt="Aura Logo" class="w-full h-full object-contain pointer-events-none">
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-playfair text-2xl md:text-3xl font-black text-[#007BA7] tracking-tight uppercase group-hover:text-[#005b7a] transition-colors leading-none">Aura.</span>
+                        <span class="text-[8.5px] md:text-[9px] uppercase tracking-[0.22em] text-[#D73B3E] font-mono font-bold mt-1">Y Học & Sức Khỏe Tối Ưu</span>
+                    </div>
+                </a>
+
+                <nav class="aura-desktop-nav hidden lg:flex items-center">
+                    <div class="aura-nav-container flex items-center relative">
+                        <div id="aura-nav-hover-pill" class="aura-nav-hover-pill"></div>
+                        <div id="aura-nav-active-pill" class="aura-nav-indicator" style="opacity: 0;"></div>
+
+                        <a href="index.html" data-nav-id="home" class="aura-nav-item px-4 py-2 text-xs uppercase tracking-wider font-bold rounded-full cursor-pointer">Trang Chủ</a>
+                        <a href="khao-sat.html" data-nav-id="khao-sat" class="aura-nav-item px-4 py-2 text-xs uppercase tracking-wider font-bold rounded-full cursor-pointer">Khảo Sát & Nam Học</a>
+                        <a href="ban-dong-hanh.html" data-nav-id="ban-dong-hanh" class="aura-nav-item px-4 py-2 text-xs uppercase tracking-wider font-bold rounded-full cursor-pointer">Bạn Đồng Hành</a>
+                        <a href="huan-luyen-pt.html" data-nav-id="pt" class="aura-nav-item px-4 py-2 text-xs uppercase tracking-wider font-bold rounded-full cursor-pointer">Huấn Luyện PT</a>
+                        <a href="gioi-thieu.html" data-nav-id="gioi-thieu" class="aura-nav-item px-4 py-2 text-xs uppercase tracking-wider font-bold rounded-full cursor-pointer">Về Aura</a>
+                    </div>
+                </nav>
+            </div>
+
+            <div id="header-auth-corner" class="flex items-center space-x-3">
+                <!-- Đồng bộ tức thì bởi auth.js -->
+            </div>
+        </div>
+
+        <div class="aura-mobile-subbar lg:hidden border-t border-[#D1CCC5] bg-[#F9F6F0] overflow-x-auto py-2.5 px-4 flex items-center space-x-2 scrollbar-none">
+            <a href="index.html" data-nav-id="home" class="aura-mobile-nav-item px-3.5 py-1.5 text-[11px] uppercase tracking-wider whitespace-nowrap font-bold transition-all rounded-full text-[#4A4A4A] hover:text-[#007BA7] bg-white border border-[#D1CCC5] cursor-pointer">Trang Chủ</a>
+            <a href="khao-sat.html" data-nav-id="khao-sat" class="aura-mobile-nav-item px-3.5 py-1.5 text-[11px] uppercase tracking-wider whitespace-nowrap font-bold transition-all rounded-full text-[#4A4A4A] hover:text-[#007BA7] bg-white border border-[#D1CCC5] cursor-pointer">Khảo Sát & Nam Học</a>
+            <a href="ban-dong-hanh.html" data-nav-id="ban-dong-hanh" class="aura-mobile-nav-item px-3.5 py-1.5 text-[11px] uppercase tracking-wider whitespace-nowrap font-bold transition-all rounded-full text-[#4A4A4A] hover:text-[#007BA7] bg-white border border-[#D1CCC5] cursor-pointer">Bạn Đồng Hành</a>
+            <a href="huan-luyen-pt.html" data-nav-id="pt" class="aura-mobile-nav-item px-3.5 py-1.5 text-[11px] uppercase tracking-wider whitespace-nowrap font-bold transition-all rounded-full text-[#4A4A4A] hover:text-[#007BA7] bg-white border border-[#D1CCC5] cursor-pointer">Huấn Luyện PT</a>
+            <a href="gioi-thieu.html" data-nav-id="gioi-thieu" class="aura-mobile-nav-item px-3.5 py-1.5 text-[11px] uppercase tracking-wider whitespace-nowrap font-bold transition-all rounded-full text-[#4A4A4A] hover:text-[#007BA7] bg-white border border-[#D1CCC5] cursor-pointer">Về Aura</a>
+        </div>
+    </header>
 
     <!-- MAIN EDITORIAL CONTENT: LANDSCAPE WIDESCREEN FOR LAPTOP -->
     <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
@@ -193,6 +383,7 @@
                     <span>Chỉnh Sửa Hồ Sơ</span>
                 </button>
                 <a href="dashboard.html" 
+                   onclick="try{localStorage.setItem('aura_active_module','module1');}catch(e){}"
                    class="px-5 py-2.5 rounded-full border border-[#D1CCC5] bg-white hover:border-[#007BA7] hover:text-[#007BA7] text-xs font-bold uppercase tracking-wider transition-all shadow-2xs">
                     <span>Bảng Điều Khiển</span> <span>→</span>
                 </a>
@@ -250,14 +441,14 @@
         <div class="bg-white p-3 rounded-2xl border border-[#D1CCC5] mb-8 shadow-xs flex flex-wrap items-center justify-between gap-3">
             <div class="flex flex-wrap items-center gap-2">
                 <a href="#section-profile" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#F9F6F0] hover:bg-[#007BA7]/10 text-[#1A1A1A] hover:text-[#007BA7] transition-all flex items-center gap-2 border border-[#D1CCC5]/60">
-                    <span>📊</span> <span>I. Chỉ Số Thể Chất &amp; Y Tế</span>
+                    <span>📊</span> <span>Chỉ Số Thể Chất &amp; Y Tế</span>
                 </a>
                 <a href="#section-hot-media" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white transition-all flex items-center gap-2 shadow-xs hover:scale-105" style="background-color: #D73B3E !important; color: #FFFFFF !important;">
-                    <span>🔞</span> <span>II. Kho Ảnh &amp; Clip Nóng (18+)</span>
+                    <span>🔞</span> <span>Kho Ảnh &amp; Clip Nóng (18+)</span>
                     <span id="quick-badge-hot-count" class="px-2 py-0.5 rounded-full bg-black/20 text-[10px] font-mono font-bold">0</span>
                 </a>
                 <a href="#section-daily-media" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-white transition-all flex items-center gap-2 shadow-xs hover:scale-105" style="background-color: #007BA7 !important; color: #FFFFFF !important;">
-                    <span>📸</span> <span>III. Ảnh &amp; Clip Thường Ngày / Gym</span>
+                    <span>📸</span> <span>Ảnh &amp; Clip Thường Ngày / Gym</span>
                     <span id="quick-badge-daily-count" class="px-2 py-0.5 rounded-full bg-black/20 text-[10px] font-mono font-bold">0</span>
                 </a>
             </div>
@@ -290,14 +481,14 @@
                         <div class="px-6 pb-6 pt-0">
                             <div class="flex flex-col items-center text-center pb-6 border-b border-[#D1CCC5]/60">
                                 <div class="-mt-14 relative w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-xl bg-stone-100 mb-3 group cursor-pointer z-10" onclick="window.toggleEditMode(true)" title="Bấm để chỉnh sửa hồ sơ">
-                                    <img id="view-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80" class="w-full h-full object-cover" alt="User Avatar">
+                                    <img id="view-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23CBD5E1'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" class="w-full h-full object-cover" alt="User Avatar">
                                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition-opacity">
                                         Sửa Ảnh
                                     </div>
                                 </div>
-                                <h2 id="view-name" class="font-playfair text-2xl font-bold text-[#1A1A1A]">Đang tải...</h2>
-                                <p id="view-nickname" class="text-xs italic text-[#007BA7] font-semibold">@nickname</p>
-                                <p id="view-email" class="text-xs text-[#4A4A4A] font-mono mt-1">email@example.com</p>
+                                <h2 id="view-name" class="font-playfair text-2xl font-bold text-[#1A1A1A]"><span class="inline-block h-6 w-36 bg-stone-200/80 rounded animate-pulse"></span></h2>
+                                <p id="view-nickname" class="text-xs italic text-[#007BA7] font-semibold">--</p>
+                                <p id="view-email" class="text-xs text-[#4A4A4A] font-mono mt-1">--</p>
                                 
                                 <div class="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold">
                                     <span>✓</span>
@@ -386,8 +577,8 @@
                             <div class="p-4 rounded-xl border border-[#D1CCC5] bg-[#F9F6F0] text-center">
                                 <span class="text-[11px] uppercase tracking-wider text-[#4A4A4A] font-bold block mb-1">BMI (Thể Trọng)</span>
                                 <div id="view-bmi" class="text-3xl font-playfair font-black text-[#007BA7]">--</div>
-                                <span id="view-bmi-badge" class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                                    Bình thường
+                                <span id="view-bmi-badge" class="hidden inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                    --
                                 </span>
                             </div>
 
@@ -457,11 +648,11 @@
                                     <div class="grid grid-cols-2 gap-3 text-center">
                                         <div class="p-3.5 rounded-xl bg-white border border-[#D1CCC5] shadow-xs">
                                             <span class="text-[10px] uppercase font-mono text-[#4A4A4A] block mb-0.5">Chiều Dài Cương</span>
-                                            <span class="text-2xl font-playfair font-black text-[#D73B3E]"><span id="view-penis-length-sec2">15.5</span> <span class="text-xs font-normal text-stone-500">cm</span></span>
+                                            <span class="text-2xl font-playfair font-black text-[#D73B3E]"><span id="view-penis-length-sec2">--</span> <span class="text-xs font-normal text-stone-500">cm</span></span>
                                         </div>
                                         <div class="p-3.5 rounded-xl bg-white border border-[#D1CCC5] shadow-xs">
                                             <span class="text-[10px] uppercase font-mono text-[#4A4A4A] block mb-0.5">Chu Vi Thể Hang</span>
-                                            <span class="text-2xl font-playfair font-black text-[#D73B3E]"><span id="view-penis-girth-sec2">12.8</span> <span class="text-xs font-normal text-stone-500">cm</span></span>
+                                            <span class="text-2xl font-playfair font-black text-[#D73B3E]"><span id="view-penis-girth-sec2">--</span> <span class="text-xs font-normal text-stone-500">cm</span></span>
                                         </div>
                                     </div>
                                     <div class="text-[11px] text-[#4A4A4A] italic bg-white/80 p-3 rounded-xl border border-stone-200 leading-relaxed">
@@ -472,7 +663,7 @@
                                 <!-- Khung hiển thị ảnh cậu nhỏ -->
                                 <div class="md:col-span-5 flex justify-center">
                                     <div id="view-penis-photo-container" class="w-full max-w-[210px] aspect-square rounded-2xl overflow-hidden border-2 border-[#D73B3E]/40 bg-stone-900 relative shadow-md group cursor-pointer" onclick="window.openPenisPhotoLightbox()">
-                                        <img id="view-penis-photo" src="" alt="Hình Cậu Nhỏ" class="w-full h-full object-cover penis-photo-blurred transition-all duration-300">
+                                        <img id="view-penis-photo" src="" alt="Hình Cậu Nhỏ" loading="lazy" decoding="async" class="w-full h-full object-cover penis-photo-blurred transition-all duration-300">
                                         <div id="view-penis-photo-placeholder" class="hidden absolute inset-0 flex flex-col items-center justify-center p-3 text-center bg-stone-100 text-stone-500">
                                             <span class="text-3xl mb-1">🍆</span>
                                             <span class="text-[11px] font-bold">Chưa Có Ảnh</span>
@@ -490,14 +681,14 @@
                             <!-- PrEP Status -->
                             <div class="p-4 rounded-xl border border-[#D1CCC5] bg-[#F9F6F0]">
                                 <span class="text-xs uppercase font-mono tracking-wider text-[#4A4A4A] block mb-1">Phòng Ngừa PrEP</span>
-                                <div id="view-prep" class="text-base font-bold text-[#1A1A1A]">Đang dùng hàng ngày (Daily PrEP)</div>
+                                <div id="view-prep" class="text-base font-bold text-[#1A1A1A]">--</div>
                                 <span class="text-xs text-emerald-700 italic block mt-1">Được bảo vệ liên tục trước nguy cơ phơi nhiễm HIV</span>
                             </div>
 
                             <!-- STDs Status -->
                             <div class="p-4 rounded-xl border border-[#D1CCC5] bg-[#F9F6F0]">
                                 <span class="text-xs uppercase font-mono tracking-wider text-[#4A4A4A] block mb-1">Xét Nghiệm STDs Gần Nhất</span>
-                                <div id="view-stds" class="text-base font-bold text-emerald-800">Âm tính tất cả</div>
+                                <div id="view-stds" class="text-base font-bold text-emerald-800">--</div>
                                 <span class="text-xs text-[#4A4A4A] italic block mt-1">Định kỳ khuyến nghị: 3 đến 6 tháng / lần</span>
                             </div>
                         </div>
@@ -506,7 +697,7 @@
                         <div class="p-4 rounded-xl border border-[#D1CCC5] bg-white">
                             <span class="text-xs uppercase font-mono tracking-wider text-[#4A4A4A] block mb-1 font-bold">Ghi Chú Y Tế &amp; Tiền Sử Dị Ứng</span>
                             <p id="view-notes" class="text-sm italic text-[#4A4A4A] leading-relaxed">
-                                Chưa có ghi chú đặc biệt nào. Sức khỏe nội tiết và thể lực ổn định.
+                                Chưa có ghi chú đặc biệt nào.
                             </p>
                         </div>
                     </div>
@@ -544,7 +735,10 @@
                         
                         <!-- Cột trái (lg:col-span-4): Thông tin cá nhân -->
                         <div class="lg:col-span-4 space-y-4 bg-[#F9F6F0] p-5 rounded-xl border border-[#D1CCC5]">
-                            <h4 class="font-playfair font-bold text-base text-[#007BA7] border-b border-[#D1CCC5] pb-2">I. Nhận Diện &amp; Liên Lạc</h4>
+                            <h4 class="font-playfair font-bold text-base text-[#007BA7] border-b border-[#D1CCC5] pb-2 flex items-center gap-1.5">
+                                <svg class="w-5 h-5 text-[#007BA7] shrink-0" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+                                <span>Nhận Diện &amp; Liên Lạc</span>
+                            </h4>
                             <div class="space-y-3 text-xs">
                                 <div>
                                     <label class="block font-bold text-[#1A1A1A] mb-1">Ảnh / Video Bìa Trang Cá Nhân (Cover)</label>
@@ -593,7 +787,10 @@
                         <div class="lg:col-span-8 space-y-6">
                             <!-- Phần II: Thể chất & Nam học -->
                             <div class="bg-[#F9F6F0] p-5 rounded-xl border border-[#D1CCC5]">
-                                <h4 class="font-playfair font-bold text-base text-[#007BA7] border-b border-[#D1CCC5] pb-2 mb-3">II. Chỉ Số Thể Chất &amp; Kích Thước Nam Học</h4>
+                                <h4 class="font-playfair font-bold text-base text-[#007BA7] border-b border-[#D1CCC5] pb-2 mb-3 flex items-center gap-1.5">
+                                    <svg class="w-5 h-5 text-[#007BA7] shrink-0" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+                                    <span>Chỉ Số Thể Chất &amp; Kích Thước Nam Học</span>
+                                </h4>
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                                     <div>
                                         <label class="block font-bold text-[#1A1A1A] mb-1">Chiều Cao (cm)</label>
@@ -632,7 +829,10 @@
 
                             <!-- Phần III: Tình dục & Y tế -->
                             <div class="bg-[#F9F6F0] p-5 rounded-xl border border-[#D1CCC5]">
-                                <h4 class="font-playfair font-bold text-base text-[#D73B3E] border-b border-[#D1CCC5] pb-2 mb-3">III. Sức Khỏe Tình Dục &amp; Y Tế Nam Học</h4>
+                                <h4 class="font-playfair font-bold text-base text-[#D73B3E] border-b border-[#D1CCC5] pb-2 mb-3 flex items-center gap-1.5">
+                                    <svg class="w-5 h-5 text-[#D73B3E] shrink-0" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75v3.75m-3-1.875h6"/></svg>
+                                    <span>Sức Khỏe Tình Dục &amp; Y Tế Nam Học</span>
+                                </h4>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                                     <!-- Ảnh Cậu Nhỏ trong Form Sửa -->
                                     <div class="sm:col-span-2 p-3.5 bg-white rounded-xl border border-[#D73B3E]/30 mb-2">
@@ -774,7 +974,30 @@
                     <!-- Container Grid Media Nóng (Có Thanh Cuộn) -->
                     <div class="max-h-[560px] overflow-y-auto pr-1.5 custom-gallery-scrollbar">
                         <div id="container-hot-media" class="hot-media-blurred grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 min-h-[140px]">
-                            <!-- Render danh sách tệp media nóng -->
+                            <div class="relative aspect-[3/4] rounded-2xl bg-stone-200/80 animate-pulse border border-stone-200/60 overflow-hidden">
+                                <div class="absolute bottom-2 left-2 right-2 space-y-1.5">
+                                    <div class="h-3 bg-stone-300/80 rounded w-2/3"></div>
+                                    <div class="h-2 bg-stone-300/60 rounded w-1/3"></div>
+                                </div>
+                            </div>
+                            <div class="relative aspect-[3/4] rounded-2xl bg-stone-200/80 animate-pulse border border-stone-200/60 overflow-hidden">
+                                <div class="absolute bottom-2 left-2 right-2 space-y-1.5">
+                                    <div class="h-3 bg-stone-300/80 rounded w-1/2"></div>
+                                    <div class="h-2 bg-stone-300/60 rounded w-1/4"></div>
+                                </div>
+                            </div>
+                            <div class="relative aspect-[3/4] rounded-2xl bg-stone-200/80 animate-pulse border border-stone-200/60 overflow-hidden">
+                                <div class="absolute bottom-2 left-2 right-2 space-y-1.5">
+                                    <div class="h-3 bg-stone-300/80 rounded w-3/4"></div>
+                                    <div class="h-2 bg-stone-300/60 rounded w-1/3"></div>
+                                </div>
+                            </div>
+                            <div class="relative aspect-[3/4] rounded-2xl bg-stone-200/80 animate-pulse border border-stone-200/60 overflow-hidden">
+                                <div class="absolute bottom-2 left-2 right-2 space-y-1.5">
+                                    <div class="h-3 bg-stone-300/80 rounded w-3/5"></div>
+                                    <div class="h-2 bg-stone-300/60 rounded w-1/4"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -829,7 +1052,30 @@
                     <!-- Container Grid Media Thường Ngày (Có Thanh Cuộn) -->
                     <div class="max-h-[560px] overflow-y-auto pr-1.5 custom-gallery-scrollbar">
                         <div id="container-daily-media" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 min-h-[180px]">
-                            <!-- Render danh sách tệp media đời thường -->
+                            <div class="relative aspect-[3/4] rounded-2xl bg-stone-200/80 animate-pulse border border-stone-200/60 overflow-hidden">
+                                <div class="absolute bottom-2 left-2 right-2 space-y-1.5">
+                                    <div class="h-3 bg-stone-300/80 rounded w-2/3"></div>
+                                    <div class="h-2 bg-stone-300/60 rounded w-1/3"></div>
+                                </div>
+                            </div>
+                            <div class="relative aspect-[3/4] rounded-2xl bg-stone-200/80 animate-pulse border border-stone-200/60 overflow-hidden">
+                                <div class="absolute bottom-2 left-2 right-2 space-y-1.5">
+                                    <div class="h-3 bg-stone-300/80 rounded w-1/2"></div>
+                                    <div class="h-2 bg-stone-300/60 rounded w-1/4"></div>
+                                </div>
+                            </div>
+                            <div class="relative aspect-[3/4] rounded-2xl bg-stone-200/80 animate-pulse border border-stone-200/60 overflow-hidden">
+                                <div class="absolute bottom-2 left-2 right-2 space-y-1.5">
+                                    <div class="h-3 bg-stone-300/80 rounded w-3/4"></div>
+                                    <div class="h-2 bg-stone-300/60 rounded w-1/3"></div>
+                                </div>
+                            </div>
+                            <div class="relative aspect-[3/4] rounded-2xl bg-stone-200/80 animate-pulse border border-stone-200/60 overflow-hidden">
+                                <div class="absolute bottom-2 left-2 right-2 space-y-1.5">
+                                    <div class="h-3 bg-stone-300/80 rounded w-3/5"></div>
+                                    <div class="h-2 bg-stone-300/60 rounded w-1/4"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -895,7 +1141,7 @@
                         <div id="drive-status-badge-icon" class="w-9 h-9 rounded-full bg-stone-200 flex items-center justify-center text-stone-600 font-bold text-xs shrink-0">●</div>
                         <div>
                             <div class="font-mono text-[10px] font-bold uppercase tracking-wider text-stone-500">TRẠNG THÁI HIỆN TẠI</div>
-                            <div class="font-bold text-sm" id="drive-status-badge-desc">Đang tải trạng thái...</div>
+                            <div class="font-bold text-sm" id="drive-status-badge-desc"><span class="inline-block h-4 w-32 bg-stone-300 rounded animate-pulse"></span></div>
                         </div>
                     </div>
                     <button type="button" onclick="window.testDriveConnection()" id="btn-drive-test" class="px-3.5 py-1.5 rounded-full border border-stone-300 hover:border-stone-800 bg-white text-xs font-bold uppercase transition-all cursor-pointer">
@@ -964,7 +1210,7 @@
             <span>© 2026 Aura Protocol. Y học nam khoa & bảo mật hồ sơ đa tài khoản.</span>
             <div class="flex space-x-6 font-bold uppercase font-newsreader">
                 <a href="index.html" class="hover:text-[#007BA7]">Trang Chủ</a>
-                <a href="dashboard.html" class="hover:text-[#007BA7]">Bảng Điều Khiển</a>
+                <a href="dashboard.html" onclick="try{localStorage.setItem('aura_active_module','module1');}catch(e){}" class="hover:text-[#007BA7]">Bảng Điều Khiển</a>
             </div>
         </div>
     </footer>
@@ -1341,6 +1587,41 @@
             });
         }
 
+        /** Hàm tải tệp nhị phân hỗ trợ theo dõi tiến trình và không giới hạn thời gian (Zero-Timeout) */
+        function uploadBinaryWithProgress(url, fileToSend, headers, onProgress) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.timeout = 0; // Vô hiệu hóa timeout cố định, hỗ trợ video/file lớn không bị ngắt
+                xhr.open('POST', url);
+                for (const [k, v] of Object.entries(headers)) {
+                    xhr.setRequestHeader(k, v);
+                }
+                if (xhr.upload && typeof onProgress === 'function') {
+                    xhr.upload.onprogress = (evt) => {
+                        if (evt.lengthComputable) {
+                            const pct = Math.round((evt.loaded / evt.total) * 100);
+                            onProgress(pct);
+                        }
+                    };
+                }
+                xhr.onload = () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            resolve(JSON.parse(xhr.responseText));
+                        } catch (e) {
+                            reject(new Error("Lỗi đọc phản hồi từ máy chủ Aura"));
+                        }
+                    } else {
+                        reject(new Error(`Máy chủ Aura phản hồi mã HTTP ${xhr.status}`));
+                    }
+                };
+                xhr.onerror = () => reject(new Error("Không thể kết nối đến máy chủ Aura"));
+                xhr.ontimeout = () => reject(new Error("Quá thời gian gửi tệp"));
+                xhr.send(fileToSend);
+            });
+        }
+        window.uploadBinaryWithProgress = uploadBinaryWithProgress;
+
         /** Số lượng tệp tải lên đồng thời tối đa */
         const UPLOAD_CONCURRENCY = 3;
 
@@ -1355,7 +1636,7 @@
             const results = [];
 
             /**
-             * Tải lên 1 tệp đơn lẻ (nén ảnh nếu cần, rồi POST lên server)
+             * Tải lên 1 tệp đơn lẻ (nén ảnh nếu cần, rồi POST lên server với zero-timeout streaming)
              */
             async function uploadSingleFile(file) {
                 try {
@@ -1367,19 +1648,16 @@
                     const personalSub = category === 'hot' ? 'Ảnh Nóng' : 'Ảnh Đời Thường';
                     const folderName = `${uid}/Cá Nhân/${personalSub}`;
 
-                    const res = await fetch('/api/upload-media', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': fileToSend.type || 'application/octet-stream',
-                            'x-filename': encodeURIComponent(file.name),
-                            'x-folder': encodeURIComponent(folderName),
-                            'x-user-id': uid,
-                            'x-category': category
-                        },
-                        body: fileToSend
+                    const data = await uploadBinaryWithProgress('/api/upload-media', fileToSend, {
+                        'Content-Type': fileToSend.type || 'application/octet-stream',
+                        'x-filename': encodeURIComponent(file.name),
+                        'x-folder': encodeURIComponent(folderName),
+                        'x-user-id': uid,
+                        'x-category': category
+                    }, (pct) => {
+                        window.showToast("Đang Tải Lên", `Đang gửi: ${file.name} (${pct}%)...`, true);
                     });
-                    
-                    const data = await res.json();
+
                     if (data.success && data.url) {
                         const newItem = {
                             url: data.url,
@@ -1778,19 +2056,15 @@
             try {
                 const fileToSend = await compressImageBeforeUpload(file);
                 const uid = currentUid || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
-                const folderName = `${uid}/Cá Nhân/Ảnh Cậu Nhỏ`;
-                const res = await fetch('/api/upload-media', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': fileToSend.type || 'application/octet-stream',
-                        'x-filename': encodeURIComponent(file.name),
-                        'x-folder': encodeURIComponent(folderName),
-                        'x-user-id': uid,
-                        'x-category': 'hot'
-                    },
-                    body: fileToSend
+                const data = await uploadBinaryWithProgress('/api/upload-media', fileToSend, {
+                    'Content-Type': fileToSend.type || 'application/octet-stream',
+                    'x-filename': encodeURIComponent(file.name),
+                    'x-folder': encodeURIComponent(folderName),
+                    'x-user-id': uid,
+                    'x-category': 'hot'
+                }, (pct) => {
+                    if (statusEl) statusEl.innerText = `Đang tải ảnh lên (${pct}%)...`;
                 });
-                const data = await res.json();
                 if (data.success && data.url) {
                     const inputEl = document.getElementById('inp-penis-photo');
                     if (inputEl) {
@@ -1872,19 +2146,15 @@
 
                 const uid = currentUid || 'guest_local';
                 const folderName = `${uid}/Cá Nhân/Trang Bìa`;
-                const res = await fetch('/api/upload-media', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': fileToSend.type || (isVideo ? 'video/mp4' : 'image/jpeg'),
-                        'x-filename': encodeURIComponent(file.name),
-                        'x-folder': encodeURIComponent(folderName),
-                        'x-user-id': uid,
-                        'x-category': 'daily'
-                    },
-                    body: fileToSend
+                const data = await uploadBinaryWithProgress('/api/upload-media', fileToSend, {
+                    'Content-Type': fileToSend.type || (isVideo ? 'video/mp4' : 'image/jpeg'),
+                    'x-filename': encodeURIComponent(file.name),
+                    'x-folder': encodeURIComponent(folderName),
+                    'x-user-id': uid,
+                    'x-category': 'daily'
+                }, (pct) => {
+                    window.showToast("Trang Bìa", isVideo ? `Đang tải video bìa (${pct}%)...` : `Đang tải ảnh bìa (${pct}%)...`, true);
                 });
-
-                const data = await res.json();
                 if (data.success && data.url) {
                     const inp = document.getElementById('inp-cover-url');
                     if (inp) inp.value = data.url;
@@ -1926,18 +2196,18 @@
             setVal('inp-phone', data.phone || '');
             setVal('inp-location', data.location || '');
             setVal('inp-occupation', data.occupation || '');
-            setVal('inp-height', data.height || 178);
-            setVal('inp-weight', data.weight || 75);
-            setVal('inp-bodyfat', data.bodyFat != null ? data.bodyFat : 14.5);
-            setVal('inp-waist', data.waist || 78);
-            setVal('inp-bp', data.bp || '118/76');
-            setVal('inp-heartrate', data.heartRate || 62);
-            setVal('inp-penis-length', data.penisLength || 15.5);
-            setVal('inp-penis-girth', data.penisGirth || 12.8);
+            setVal('inp-height', (data.height != null && data.height !== '') ? data.height : '');
+            setVal('inp-weight', (data.weight != null && data.weight !== '') ? data.weight : '');
+            setVal('inp-bodyfat', (data.bodyFat != null && data.bodyFat !== '') ? data.bodyFat : '');
+            setVal('inp-waist', (data.waist != null && data.waist !== '') ? data.waist : '');
+            setVal('inp-bp', data.bp || '');
+            setVal('inp-heartrate', (data.heartRate != null && data.heartRate !== '') ? data.heartRate : '');
+            setVal('inp-penis-length', (data.penisLength != null && data.penisLength !== '') ? data.penisLength : '');
+            setVal('inp-penis-girth', (data.penisGirth != null && data.penisGirth !== '') ? data.penisGirth : '');
             setVal('inp-penis-photo', data.penisPhoto || '');
             window.updatePenisPhotoPreview(data.penisPhoto || '');
-            setVal('inp-prep-status', data.prepStatus || 'Hàng ngày (Daily PrEP)');
-            setVal('inp-stds', data.stds || 'Âm tính tất cả (01/2026)');
+            setVal('inp-prep-status', data.prepStatus || 'Chưa dùng');
+            setVal('inp-stds', data.stds || '');
             setVal('inp-health-notes', data.healthNotes || '');
         }
 
@@ -2049,53 +2319,63 @@
             window.updateViewCover(data.coverURL || '');
             window.updateEditCoverPreview(data.coverURL || '');
 
-            document.getElementById('view-avatar').src = data.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80';
+            const defaultAvatar = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23CBD5E1'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+            document.getElementById('view-avatar').src = data.photoURL || defaultAvatar;
             document.getElementById('view-name').innerText = data.fullName || data.displayName || 'Người dùng Aura';
             document.getElementById('view-nickname').innerText = data.nickname ? `@${data.nickname}` : '@aura_user';
-            document.getElementById('view-email').innerText = data.email || 'aura_local_mode@user';
+            document.getElementById('view-email').innerText = data.email || 'Chưa liên kết email';
             document.getElementById('view-dob').innerText = data.dob || 'Chưa cập nhật';
             
             if (data.dob) {
                 const birthYear = new Date(data.dob).getFullYear();
                 const thisYear = new Date().getFullYear();
-                document.getElementById('view-calc-age').innerText = (thisYear - birthYear) || '--';
+                const ageCalc = thisYear - birthYear;
+                document.getElementById('view-calc-age').innerText = (!isNaN(ageCalc) && ageCalc > 0) ? ageCalc : '--';
             } else {
                 document.getElementById('view-calc-age').innerText = '--';
             }
 
             document.getElementById('view-phone').innerText = data.phone || 'Chưa cập nhật';
-            document.getElementById('view-location').innerText = data.location || 'Việt Nam';
+            document.getElementById('view-location').innerText = data.location || 'Chưa cập nhật';
             document.getElementById('view-occupation').innerText = data.occupation || 'Chưa cập nhật';
 
             // Biometrics
-            const h = data.height || 178;
-            const w = data.weight || 75;
-            document.getElementById('view-height').innerText = h;
-            document.getElementById('view-weight').innerText = w;
+            const hNum = parseFloat(data.height);
+            const wNum = parseFloat(data.weight);
+            const hDisplay = (!isNaN(hNum) && hNum > 0) ? hNum : '--';
+            const wDisplay = (!isNaN(wNum) && wNum > 0) ? wNum : '--';
+            document.getElementById('view-height').innerText = hDisplay;
+            document.getElementById('view-weight').innerText = wDisplay;
             
-            if (h > 0 && w > 0) {
-                const bmiVal = (w / ((h/100) * (h/100))).toFixed(1);
+            const badge = document.getElementById('view-bmi-badge');
+            if (!isNaN(hNum) && hNum > 0 && !isNaN(wNum) && wNum > 0) {
+                const bmiVal = (wNum / ((hNum/100) * (hNum/100))).toFixed(1);
                 document.getElementById('view-bmi').innerText = bmiVal;
-                const badge = document.getElementById('view-bmi-badge');
-                if (bmiVal < 18.5) {
-                    badge.innerText = "Thiếu cân";
-                    badge.className = "inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800";
-                } else if (bmiVal <= 24.9) {
-                    badge.innerText = "Chuẩn y khoa";
-                    badge.className = "inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800";
-                } else {
-                    badge.innerText = "Thừa cân";
-                    badge.className = "inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800";
+                if (badge) {
+                    badge.classList.remove('hidden');
+                    if (bmiVal < 18.5) {
+                        badge.innerText = "Thiếu cân";
+                        badge.className = "inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800";
+                    } else if (bmiVal <= 24.9) {
+                        badge.innerText = "Chuẩn y khoa";
+                        badge.className = "inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800";
+                    } else {
+                        badge.innerText = "Thừa cân";
+                        badge.className = "inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800";
+                    }
                 }
+            } else {
+                document.getElementById('view-bmi').innerText = '--';
+                if (badge) badge.classList.add('hidden');
             }
 
-            document.getElementById('view-bodyfat').innerText = data.bodyFat != null ? data.bodyFat : '14.5';
-            document.getElementById('view-waist').innerText = data.waist || '78';
-            document.getElementById('view-bp').innerText = data.bp || '118/76';
-            document.getElementById('view-heartrate').innerText = data.heartRate || '62';
+            document.getElementById('view-bodyfat').innerText = (data.bodyFat != null && data.bodyFat !== '') ? data.bodyFat : '--';
+            document.getElementById('view-waist').innerText = (data.waist != null && data.waist !== '') ? data.waist : '--';
+            document.getElementById('view-bp').innerText = (data.bp && data.bp !== '') ? data.bp : '--';
+            document.getElementById('view-heartrate').innerText = (data.heartRate != null && data.heartRate !== '') ? data.heartRate : '--';
 
-            const pLen = data.penisLength != null ? data.penisLength : '15.5';
-            const pGirth = data.penisGirth != null ? data.penisGirth : '12.8';
+            const pLen = (data.penisLength != null && data.penisLength !== '') ? data.penisLength : '--';
+            const pGirth = (data.penisGirth != null && data.penisGirth !== '') ? data.penisGirth : '--';
             document.getElementById('view-penis-length').innerText = pLen;
             document.getElementById('view-penis-girth').innerText = pGirth;
             const sec2Len = document.getElementById('view-penis-length-sec2');
@@ -2129,9 +2409,9 @@
                 }
             }
 
-            document.getElementById('view-prep').innerText = data.prepStatus || 'Đang dùng hàng ngày (Daily PrEP)';
-            document.getElementById('view-stds').innerText = data.stds || 'Âm tính tất cả (Định kỳ)';
-            document.getElementById('view-notes').innerText = data.healthNotes || 'Chưa có ghi chú đặc biệt nào. Sức khỏe nội tiết và thể chất ổn định.';
+            document.getElementById('view-prep').innerText = data.prepStatus || 'Chưa thiết lập';
+            document.getElementById('view-stds').innerText = data.stds || 'Chưa cập nhật';
+            document.getElementById('view-notes').innerText = data.healthNotes || 'Chưa có ghi chú đặc biệt nào.';
 
             // Render 2 kho media với chuẩn hóa đường dẫn
             userHotGallery = (Array.isArray(data.hotGallery) ? data.hotGallery : []).map(x => ({
@@ -2150,50 +2430,43 @@
 
         // Khởi tạo Auth
         onAuthChange(async (user) => {
+            const defaultAvatar = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23CBD5E1'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
+
             let profileData = {
                 uid: 'guest_local',
-                displayName: 'Người Dùng Aura',
-                email: 'Chưa Đăng Nhập (Lưu Trực Tiếp Trên Máy)',
-                coverURL: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&auto=format&fit=crop&q=80',
-                photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80',
-                fullName: 'Người Dùng Aura',
-                nickname: 'my_aura',
-                dob: '1998-05-15',
-                phone: '0988 123 456',
-                location: 'Hồ Chí Minh, Việt Nam',
-                occupation: 'Doanh Nhân / Chuyên Gia',
-                height: 178,
-                weight: 75,
-                bodyFat: 14.5,
-                waist: 78,
-                bp: '118/76',
-                heartRate: 62,
-                penisLength: 15.5,
-                penisGirth: 12.8,
-                prepStatus: 'Hàng ngày (Daily PrEP)',
-                stds: 'Âm tính tất cả (01/2026)',
-                healthNotes: 'Sức khỏe nội tiết tốt, không có bệnh nền.',
+                displayName: 'Người Dùng Khách',
+                email: 'Chưa Đăng Nhập',
+                coverURL: '',
+                photoURL: defaultAvatar,
+                fullName: '',
+                nickname: '',
+                dob: '',
+                phone: '',
+                location: '',
+                occupation: '',
+                height: null,
+                weight: null,
+                bodyFat: null,
+                waist: null,
+                bp: '',
+                heartRate: null,
+                penisLength: null,
+                penisGirth: null,
+                penisPhoto: '',
+                prepStatus: '',
+                stds: '',
+                healthNotes: '',
                 hotGallery: [],
                 dailyGallery: []
             };
 
-            // Nạp từ localStorage trước
-            try {
-                const localHot = localStorage.getItem('aura_hot_gallery');
-                if (localHot) profileData.hotGallery = JSON.parse(localHot);
-                const localDaily = localStorage.getItem('aura_daily_gallery');
-                if (localDaily) profileData.dailyGallery = JSON.parse(localDaily);
-                const localProf = localStorage.getItem('aura_local_profile');
-                if (localProf) profileData = { ...profileData, ...JSON.parse(localProf) };
-            } catch (_) {}
-
             if (user) {
                 currentUid = user.uid;
                 profileData.uid = user.uid;
-                profileData.displayName = user.displayName || profileData.displayName;
-                profileData.fullName = user.displayName || profileData.fullName;
-                profileData.email = user.email || profileData.email;
-                profileData.photoURL = user.photoURL || profileData.photoURL;
+                profileData.displayName = user.displayName || 'Người dùng Aura';
+                profileData.fullName = user.displayName || '';
+                profileData.email = user.email || '';
+                profileData.photoURL = user.photoURL || defaultAvatar;
 
                 try {
                     let remoteData = {};
@@ -2222,6 +2495,16 @@
                 if (guestBanner) guestBanner.classList.add('hidden');
             } else {
                 currentUid = 'guest_local';
+                // Nạp từ localStorage nếu người dùng là khách trên máy này
+                try {
+                    const localHot = localStorage.getItem('aura_hot_gallery');
+                    if (localHot) profileData.hotGallery = JSON.parse(localHot);
+                    const localDaily = localStorage.getItem('aura_daily_gallery');
+                    if (localDaily) profileData.dailyGallery = JSON.parse(localDaily);
+                    const localProf = localStorage.getItem('aura_local_profile');
+                    if (localProf) profileData = { ...profileData, ...JSON.parse(localProf) };
+                } catch (_) {}
+
                 // Hiện banner khách nhắc đăng nhập nhưng không chặn người dùng
                 const guestBanner = document.getElementById('guest-notice-banner');
                 if (guestBanner) guestBanner.classList.remove('hidden');

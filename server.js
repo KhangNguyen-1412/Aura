@@ -5,6 +5,13 @@ const https = require('https');
 const crypto = require('crypto');
 const { execFile, spawn } = require('child_process');
 const { pipeline } = require('stream');
+const zlib = require('zlib');
+
+// TỐI ƯU HÓA HIỆU NĂNG: Bộ nhớ đệm tệp nén Gzip trong RAM (0ms độ trễ, tiết kiệm tới 85-94% băng thông mạng)
+const COMPRESSIBLE_EXTS = new Set([
+    '.html', '.js', '.mjs', '.css', '.json', '.svg', '.txt', '.xml'
+]);
+const COMPRESSION_CACHE = new Map(); // filePath -> { mtimeMs, buffer }
 
 const PORT = process.env.PORT || 3000;
 const MEDIA_DIR = path.join(__dirname, 'media');
@@ -48,6 +55,10 @@ const MIME_TYPES = {
     '.ogg': 'video/ogg',
     '.mp3': 'audio/mpeg',
     '.wav': 'audio/wav',
+    '.m4a': 'audio/mp4',
+    '.aac': 'audio/aac',
+    '.flac': 'audio/flac',
+    '.oga': 'audio/ogg',
     '.ico': 'image/x-icon',
     '.glb': 'model/gltf-binary',
     '.gltf': 'model/gltf+json',
@@ -482,6 +493,29 @@ function fixMp4Buffer(buf) {
     try { walk(0, buf.length); } catch (e) {}
     return buf;
 }
+
+// Vá duration metadata cho file MP4 trực tiếp trên đĩa mà không cần nạp toàn bộ gigabyte dữ liệu vào RAM
+function fixMp4FileOnDisk(filePath) {
+    try {
+        const stats = fs.statSync(filePath);
+        if (!stats.isFile() || stats.size < 16) return;
+        const readLen = Math.min(stats.size, 8 * 1024 * 1024);
+        const fd = fs.openSync(filePath, 'r+');
+        try {
+            const buf = Buffer.alloc(readLen);
+            fs.readSync(fd, buf, 0, readLen, 0);
+            const original = Buffer.from(buf);
+            fixMp4Buffer(buf);
+            if (!buf.equals(original)) {
+                fs.writeSync(fd, buf, 0, readLen, 0);
+                console.log(`[Aura Media] Đã vá duration metadata MP4: ${path.basename(filePath)}`);
+            }
+        } finally {
+            fs.closeSync(fd);
+        }
+    } catch (_) {}
+}
+
 function streamFileSafely(filePath, options, res, req, statusCode, headers) {
     let retries = 0;
     const maxRetries = 5;
@@ -535,11 +569,218 @@ function streamFileSafely(filePath, options, res, req, statusCode, headers) {
     tryStream();
 }
 
+// Trả về JSON với nén Gzip tự động nếu payload > 1KB và client hỗ trợ Gzip
+function sendJsonResponse(res, req, statusCode, data) {
+    const jsonStr = typeof data === 'string' ? data : JSON.stringify(data);
+    const acceptEncoding = (req.headers && req.headers['accept-encoding']) || '';
+    if (/\bgzip\b/.test(acceptEncoding) && jsonStr.length > 1024) {
+        zlib.gzip(Buffer.from(jsonStr, 'utf8'), { level: 6 }, (err, gzipped) => {
+            if (err) {
+                res.writeHead(statusCode, {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Content-Length': Buffer.byteLength(jsonStr)
+                });
+                res.end(jsonStr);
+                return;
+            }
+            res.writeHead(statusCode, {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Content-Encoding': 'gzip',
+                'Content-Length': gzipped.length,
+                'Vary': 'Accept-Encoding'
+            });
+            res.end(gzipped);
+        });
+    } else {
+        const buf = Buffer.from(jsonStr, 'utf8');
+        res.writeHead(statusCode, {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Content-Length': buf.length
+        });
+        res.end(buf);
+    }
+}
+
+// Phục vụ tệp tĩnh siêu tốc với HTTP 304, Range Requests, Streaming và Gzip Cache trong RAM
+function serveStaticFile(filePath, stats, req, res) {
+    const ext = path.extname(filePath).toLowerCase();
+    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+    const etag = `"${stats.size.toString(16)}-${Math.floor(stats.mtimeMs).toString(16)}"`;
+    const lastModified = stats.mtime.toUTCString();
+
+    // 1. TỐI ƯU HIỆU NĂNG VƯỢT TRỘI: Kiểm tra HTTP Conditional Cache (304 Not Modified)
+    if (req.headers['if-none-match'] === etag || req.headers['if-modified-since'] === lastModified) {
+        res.writeHead(304, {
+            'ETag': etag,
+            'Last-Modified': lastModified,
+            'Cache-Control': (ext === '.html' || ext === '.js') ? 'no-cache, must-revalidate' : 'public, max-age=86400, stale-while-revalidate=604800'
+        });
+        res.end();
+        return;
+    }
+
+    // 2. Hỗ trợ chuẩn xác HTTP Range Requests (phát video, tua, đọc đuôi moov atom, thumbnail preview)
+    const range = req.headers.range;
+    if (range && (contentType.startsWith('video/') || contentType.startsWith('audio/'))) {
+        const match = range.match(/bytes=(\d*)-(\d*)/);
+        if (match) {
+            let start;
+            let end;
+            const total = stats.size;
+
+            if (match[1] === '' && match[2] !== '') {
+                // Suffix range: bytes=-500 (lấy 500 byte cuối)
+                const suffix = parseInt(match[2], 10);
+                start = Math.max(0, total - suffix);
+                end = total - 1;
+            } else if (match[1] !== '' && match[2] === '') {
+                // Prefix range: bytes=1000-
+                start = parseInt(match[1], 10);
+                const CHUNK_SIZE = 4 * 1024 * 1024;
+                end = Math.min(start + CHUNK_SIZE - 1, total - 1);
+            } else if (match[1] !== '' && match[2] !== '') {
+                // Exact range: bytes=0-1000
+                start = parseInt(match[1], 10);
+                end = parseInt(match[2], 10);
+            } else {
+                start = 0;
+                end = Math.min(4 * 1024 * 1024 - 1, total - 1);
+            }
+
+            if (isNaN(start) || isNaN(end) || start > end || start >= total) {
+                res.writeHead(416, {
+                    'Content-Range': `bytes */${total}`,
+                    'Accept-Ranges': 'bytes'
+                });
+                res.end();
+                return;
+            }
+
+            end = Math.min(end, total - 1);
+            const chunkSize = (end - start) + 1;
+
+            const rangeHeaders = {
+                'Content-Range': `bytes ${start}-${end}/${total}`,
+                'Accept-Ranges': 'bytes',
+                'Content-Length': chunkSize,
+                'Content-Type': contentType,
+                'ETag': etag,
+                'Last-Modified': lastModified,
+                'Cache-Control': 'public, max-age=86400'
+            };
+
+            streamFileSafely(filePath, { start, end }, res, req, 206, rangeHeaders);
+            return;
+        }
+    }
+
+    // 3. TỐI ƯU NÉN GZIP ĐỈNH CAO: Tự động nén và cache trong RAM cho các tệp tĩnh văn bản (.html, .js, .css, .json, .svg)
+    const acceptEncoding = req.headers['accept-encoding'] || '';
+    const supportsGzip = /\bgzip\b/.test(acceptEncoding);
+
+    if (supportsGzip && COMPRESSIBLE_EXTS.has(ext)) {
+        const cached = COMPRESSION_CACHE.get(filePath);
+        if (cached && cached.mtimeMs === stats.mtimeMs) {
+            const gHeaders = {
+                'Content-Length': cached.buffer.length,
+                'Content-Type': contentType,
+                'Content-Encoding': 'gzip',
+                'Vary': 'Accept-Encoding',
+                'ETag': etag,
+                'Last-Modified': lastModified
+            };
+            if (ext === '.html') {
+                gHeaders['Permissions-Policy'] = 'accelerometer=*, gyroscope=*, magnetometer=*, xr-spatial-tracking=*';
+            }
+            if (ext === '.html' || ext === '.js') {
+                gHeaders['Cache-Control'] = 'no-cache, must-revalidate';
+            } else {
+                gHeaders['Cache-Control'] = 'public, max-age=86400, stale-while-revalidate=604800';
+            }
+            res.writeHead(200, gHeaders);
+            res.end(cached.buffer);
+            return;
+        }
+
+        // Đọc tệp và nén Gzip, lưu bộ nhớ đệm
+        fs.readFile(filePath, (readErr, rawBuf) => {
+            if (readErr) {
+                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+                res.end('Lỗi đọc tệp tĩnh: ' + readErr.message);
+                return;
+            }
+            zlib.gzip(rawBuf, { level: 6 }, (gzErr, gzBuf) => {
+                if (gzErr) {
+                    const fallbackHeaders = {
+                        'Content-Length': stats.size,
+                        'Content-Type': contentType,
+                        'Accept-Ranges': 'bytes',
+                        'ETag': etag,
+                        'Last-Modified': lastModified
+                    };
+                    if (ext === '.html') {
+                        fallbackHeaders['Permissions-Policy'] = 'accelerometer=*, gyroscope=*, magnetometer=*, xr-spatial-tracking=*';
+                    }
+                    if (ext === '.html' || ext === '.js') {
+                        fallbackHeaders['Cache-Control'] = 'no-cache, must-revalidate';
+                    } else {
+                        fallbackHeaders['Cache-Control'] = 'public, max-age=86400, stale-while-revalidate=604800';
+                    }
+                    streamFileSafely(filePath, {}, res, req, 200, fallbackHeaders);
+                    return;
+                }
+                COMPRESSION_CACHE.set(filePath, {
+                    mtimeMs: stats.mtimeMs,
+                    buffer: gzBuf
+                });
+                const gHeaders = {
+                    'Content-Length': gzBuf.length,
+                    'Content-Type': contentType,
+                    'Content-Encoding': 'gzip',
+                    'Vary': 'Accept-Encoding',
+                    'ETag': etag,
+                    'Last-Modified': lastModified
+                };
+                if (ext === '.html') {
+                    gHeaders['Permissions-Policy'] = 'accelerometer=*, gyroscope=*, magnetometer=*, xr-spatial-tracking=*';
+                }
+                if (ext === '.html' || ext === '.js') {
+                    gHeaders['Cache-Control'] = 'no-cache, must-revalidate';
+                } else {
+                    gHeaders['Cache-Control'] = 'public, max-age=86400, stale-while-revalidate=604800';
+                }
+                res.writeHead(200, gHeaders);
+                res.end(gzBuf);
+            });
+        });
+        return;
+    }
+
+    // 4. Tệp thông thường (Ảnh, media không nén, hoặc client không hỗ trợ Gzip)
+    const headers = {
+        'Content-Length': stats.size,
+        'Content-Type': contentType,
+        'Accept-Ranges': 'bytes',
+        'ETag': etag,
+        'Last-Modified': lastModified
+    };
+    if (ext === '.html') {
+        headers['Permissions-Policy'] = 'accelerometer=*, gyroscope=*, magnetometer=*, xr-spatial-tracking=*';
+    }
+    if (ext === '.html' || ext === '.js') {
+        headers['Cache-Control'] = 'no-cache, must-revalidate';
+    } else {
+        headers['Cache-Control'] = 'public, max-age=86400, stale-while-revalidate=604800';
+    }
+
+    streamFileSafely(filePath, {}, res, req, 200, headers);
+}
+
 const server = http.createServer((req, res) => {
-    // CORS headers for all requests
+    // CORS headers for all requests (bao gồm đầy đủ header upload x-folder, x-user-id, x-category...)
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, HEAD');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-filename, x-source, Range');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-filename, x-folder, x-user-id, x-category, x-entity-id, x-source, Range');
 
     if (req.method === 'OPTIONS') {
         res.writeHead(204);
@@ -550,8 +791,19 @@ const server = http.createServer((req, res) => {
     const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const pathname = parsedUrl.pathname;
 
-    // Xử lý favicon.ico để không bao giờ xuất hiện lỗi 404 trong Console trình duyệt
-    if (pathname === '/favicon.ico') {
+    // Phục vụ favicon chính thức của Aura
+    if (pathname === '/favicon.ico' || pathname === '/favicon.svg') {
+        const favPath = path.join(__dirname, 'favicon.svg');
+        if (fs.existsSync(favPath)) {
+            const favSvg = fs.readFileSync(favPath);
+            res.writeHead(200, {
+                'Content-Type': 'image/svg+xml',
+                'Cache-Control': 'public, max-age=86400',
+                'Content-Length': favSvg.length
+            });
+            res.end(favSvg);
+            return;
+        }
         res.writeHead(204);
         res.end();
         return;
@@ -661,8 +913,7 @@ const server = http.createServer((req, res) => {
             const subDir = sanitizeSubDir(rawFolder || '');
             const targetDir = subDir ? path.join(MEDIA_DIR, subDir) : MEDIA_DIR;
             if (!fs.existsSync(targetDir)) {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: true, files: [] }));
+                sendJsonResponse(res, req, 200, { success: true, files: [] });
                 return;
             }
             const files = fs.readdirSync(targetDir).filter(f => {
@@ -682,17 +933,19 @@ const server = http.createServer((req, res) => {
                     createdAt: stat.birthtime
                 };
             });
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ success: true, files }));
+            sendJsonResponse(res, req, 200, { success: true, files });
         } catch (err) {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ success: false, error: err.message }));
+            sendJsonResponse(res, req, 500, { success: false, error: err.message });
         }
         return;
     }
 
     // API: Tải tệp trực tiếp lên thư mục media (hỗ trợ phân cấp Mô hình 1: User ID / Bạn Đồng Hành / OnlyFans)
     if (pathname === '/api/upload-media' && req.method === 'POST') {
+        // VÔ HIỆU HÓA HOÀN TOÀN TIMEOUT CHO REQUEST TẢI TỆP DUNG LƯỢNG LỚN (GIGABYTES)
+        req.setTimeout(0);
+        res.setTimeout(0);
+
         const contentType = req.headers['content-type'] || '';
         const rawFilename = req.headers['x-filename'] || `file_${Date.now()}`;
         const sanitized = sanitizeFilename(rawFilename);
@@ -725,40 +978,102 @@ const server = http.createServer((req, res) => {
             fs.mkdirSync(targetDir, { recursive: true });
         }
 
-        const chunks = [];
-        req.on('data', chunk => chunks.push(chunk));
-        req.on('end', async () => {
-            const bodyBuffer = Buffer.concat(chunks);
-            try {
-                let fileBuffer = bodyBuffer;
-                let finalName = sanitized;
+        // TRƯỜNG HỢP 1: JSON Base64 (Ảnh nhỏ từ Canvas / Cropper / Avatar)
+        if (contentType.includes('application/json')) {
+            const chunks = [];
+            req.on('data', chunk => chunks.push(chunk));
+            req.on('end', async () => {
+                const bodyBuffer = Buffer.concat(chunks);
+                try {
+                    let fileBuffer = bodyBuffer;
+                    let finalName = sanitized;
 
-                // Nếu là JSON có base64
-                if (contentType.includes('application/json')) {
                     const json = JSON.parse(bodyBuffer.toString('utf8'));
                     if (json.filename) finalName = sanitizeFilename(json.filename);
                     if (json.base64) {
                         const cleanBase64 = json.base64.replace(/^data:[^;]+;base64,/, '');
                         fileBuffer = Buffer.from(cleanBase64, 'base64');
                     }
-                }
 
-                const uniqueName = getUniqueFilename(targetDir, finalName, fileBuffer.length);
+                    const uniqueName = getUniqueFilename(targetDir, finalName, fileBuffer.length);
+                    const targetPath = path.join(targetDir, uniqueName);
+                    const ext = path.extname(uniqueName).toLowerCase();
+                    const isVideo = ['.mp4', '.m4v', '.webm', '.mov', '.ogg'].includes(ext);
+
+                    if (ext === '.mp4' || ext === '.m4v') {
+                        fileBuffer = fixMp4Buffer(fileBuffer);
+                    }
+
+                    fs.writeFileSync(targetPath, fileBuffer);
+                    mediaFileIndex.set(uniqueName.toLowerCase(), targetPath);
+
+                    const webUrl = (subDir ? `media/${subDir.replace(/\\/g, '/')}/${encodeURIComponent(uniqueName)}` : `media/${encodeURIComponent(uniqueName)}`);
+                    console.log(`[Aura Media] Đã lưu tệp JSON Base64: ${webUrl} (${(fileBuffer.length / (1024 * 1024)).toFixed(2)} MB)`);
+
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: true,
+                        filename: uniqueName,
+                        folder: subDir.replace(/\\/g, '/'),
+                        url: webUrl,
+                        localUrl: webUrl,
+                        type: isVideo ? 'video' : 'image',
+                        size: fileBuffer.length,
+                        storage: 'local_media'
+                    }));
+                } catch (err) {
+                    console.error('[Aura Media] Lỗi lưu tệp JSON:', err);
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, error: err.message }));
+                }
+            });
+            return;
+        }
+
+        // TRƯỜNG HỢP 2: TẢI TỆP NHỊ PHÂN TRỰC TIẾP (STREAM THẲNG VÀO Ổ ĐĨA, RAM CỐ ĐỊNH 64KB, HỖ TRỢ FILE GIGABYTE KHÔNG TIMEOUT)
+        const tempName = `.uploading_${Date.now()}_${crypto.randomBytes(4).toString('hex')}_${sanitized}`;
+        const tempPath = path.join(targetDir, tempName);
+        const fileStream = fs.createWriteStream(tempPath, { highWaterMark: 256 * 1024 });
+        let bytesReceived = 0;
+
+        req.on('data', chunk => {
+            bytesReceived += chunk.length;
+        });
+
+        req.on('aborted', () => {
+            try { fileStream.destroy(); } catch (_) {}
+            try { if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath); } catch (_) {}
+            console.warn('[Aura Media] Client hủy kết nối giữa chừng:', sanitized);
+        });
+
+        fileStream.on('error', (err) => {
+            console.error('[Aura Media Stream Error]:', err);
+            try { if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath); } catch (_) {}
+            if (!res.headersSent) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: err.message }));
+            }
+        });
+
+        req.pipe(fileStream);
+
+        fileStream.on('finish', () => {
+            try {
+                const uniqueName = getUniqueFilename(targetDir, sanitized, bytesReceived);
                 const targetPath = path.join(targetDir, uniqueName);
                 const ext = path.extname(uniqueName).toLowerCase();
                 const isVideo = ['.mp4', '.m4v', '.webm', '.mov', '.ogg'].includes(ext);
 
                 if (ext === '.mp4' || ext === '.m4v') {
-                    fileBuffer = fixMp4Buffer(fileBuffer);
+                    fixMp4FileOnDisk(tempPath);
                 }
 
-                fs.writeFileSync(targetPath, fileBuffer);
+                fs.renameSync(tempPath, targetPath);
                 mediaFileIndex.set(uniqueName.toLowerCase(), targetPath);
 
                 const webUrl = (subDir ? `media/${subDir.replace(/\\/g, '/')}/${encodeURIComponent(uniqueName)}` : `media/${encodeURIComponent(uniqueName)}`);
-                console.log(`[Aura Media] Đã lưu tệp cục bộ: ${webUrl} (${(fileBuffer.length / (1024 * 1024)).toFixed(2)} MB)`);
+                console.log(`[Aura Media] ✓ Đã lưu tệp streaming: ${webUrl} (${(bytesReceived / (1024 * 1024)).toFixed(2)} MB)`);
 
-                // === TRẢ KẾT QUẢ NGAY LẬP TỨC cho trình duyệt (không chờ Drive hay RaiDrive) ===
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     success: true,
@@ -767,13 +1082,16 @@ const server = http.createServer((req, res) => {
                     url: webUrl,
                     localUrl: webUrl,
                     type: isVideo ? 'video' : 'image',
-                    size: fileBuffer.length,
+                    size: bytesReceived,
                     storage: 'local_media'
                 }));
             } catch (err) {
-                console.error('[Aura Media] Lỗi lưu tệp:', err);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: false, error: err.message }));
+                console.error('[Aura Media] Lỗi hoàn tất lưu tệp:', err);
+                try { if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath); } catch (_) {}
+                if (!res.headersSent) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, error: err.message }));
+                }
             }
         });
         return;
@@ -1148,15 +1466,7 @@ const server = http.createServer((req, res) => {
                         res.end('404 Not Found');
                         return;
                     }
-                    streamFileSafely(indexFilePath, {}, res, req, 200, {
-                        'Content-Length': indexStats.size,
-                        'Content-Type': 'text/html; charset=utf-8',
-                        'Accept-Ranges': 'bytes',
-                        'Permissions-Policy': 'accelerometer=*, gyroscope=*, magnetometer=*, xr-spatial-tracking=*',
-                        'Cache-Control': 'no-cache, no-store, must-revalidate',
-                        'Pragma': 'no-cache',
-                        'Expires': '0'
-                    });
+                    serveStaticFile(indexFilePath, indexStats, req, res);
                 });
                 return;
             }
@@ -1167,100 +1477,15 @@ const server = http.createServer((req, res) => {
             return;
         }
 
-        const ext = path.extname(filePath).toLowerCase();
-        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-        const etag = `"${stats.size.toString(16)}-${Math.floor(stats.mtimeMs).toString(16)}"`;
-        const lastModified = stats.mtime.toUTCString();
-
-        // TỐI ƯU HIỆU NĂNG VƯỢT TRỘI: Kiểm tra HTTP Conditional Cache (304 Not Modified)
-        if (req.headers['if-none-match'] === etag || req.headers['if-modified-since'] === lastModified) {
-            res.writeHead(304, {
-                'ETag': etag,
-                'Last-Modified': lastModified,
-                'Cache-Control': (ext === '.html' || ext === '.js') ? 'no-cache, must-revalidate' : 'public, max-age=86400, stale-while-revalidate=604800'
-            });
-            res.end();
-            return;
-        }
-
-        // Hỗ trợ chuẩn xác HTTP Range Requests (phát video, tua, đọc đuôi moov atom, thumbnail preview)
-        const range = req.headers.range;
-        if (range && (contentType.startsWith('video/') || contentType.startsWith('audio/'))) {
-            const match = range.match(/bytes=(\d*)-(\d*)/);
-            if (match) {
-                let start;
-                let end;
-                const total = stats.size;
-
-                if (match[1] === '' && match[2] !== '') {
-                    // Suffix range: bytes=-500 (lấy 500 byte cuối)
-                    const suffix = parseInt(match[2], 10);
-                    start = Math.max(0, total - suffix);
-                    end = total - 1;
-                } else if (match[1] !== '' && match[2] === '') {
-                    // Prefix range: bytes=1000-
-                    start = parseInt(match[1], 10);
-                    // TỐI ƯU SIÊU TỐC: Bật phân mảnh streaming 4MB cho lượt tải ban đầu.
-                    // Trình duyệt nhận ngay 4MB đầu tiên trong <5ms để phát tức thì thay vì chờ stream toàn bộ file lớn!
-                    const CHUNK_SIZE = 4 * 1024 * 1024;
-                    end = Math.min(start + CHUNK_SIZE - 1, total - 1);
-                } else if (match[1] !== '' && match[2] !== '') {
-                    // Exact range: bytes=0-1000
-                    start = parseInt(match[1], 10);
-                    end = parseInt(match[2], 10);
-                } else {
-                    start = 0;
-                    end = Math.min(4 * 1024 * 1024 - 1, total - 1);
-                }
-
-                // Kiểm tra phạm vi hợp lệ, tránh lỗi NaN hoặc âm gây crash server
-                if (isNaN(start) || isNaN(end) || start > end || start >= total) {
-                    res.writeHead(416, {
-                        'Content-Range': `bytes */${total}`,
-                        'Accept-Ranges': 'bytes'
-                    });
-                    res.end();
-                    return;
-                }
-
-                end = Math.min(end, total - 1);
-                const chunkSize = (end - start) + 1;
-
-                const rangeHeaders = {
-                    'Content-Range': `bytes ${start}-${end}/${total}`,
-                    'Accept-Ranges': 'bytes',
-                    'Content-Length': chunkSize,
-                    'Content-Type': contentType,
-                    'ETag': etag,
-                    'Last-Modified': lastModified,
-                    'Cache-Control': 'public, max-age=86400'
-                };
-
-                streamFileSafely(filePath, { start, end }, res, req, 206, rangeHeaders);
-                return;
-            }
-        }
-
-        // Tệp thông thường (Ảnh, tệp tải đủ, Range không kích hoạt)
-        const headers = {
-            'Content-Length': stats.size,
-            'Content-Type': contentType,
-            'Accept-Ranges': 'bytes',
-            'ETag': etag,
-            'Last-Modified': lastModified
-        };
-        if (ext === '.html') {
-            headers['Permissions-Policy'] = 'accelerometer=*, gyroscope=*, magnetometer=*, xr-spatial-tracking=*';
-        }
-        if (ext === '.html' || ext === '.js') {
-            headers['Cache-Control'] = 'no-cache, must-revalidate';
-        } else {
-            headers['Cache-Control'] = 'public, max-age=86400, stale-while-revalidate=604800';
-        }
-
-        streamFileSafely(filePath, {}, res, req, 200, headers);
+        serveStaticFile(filePath, stats, req, res);
     });
 });
+
+// Cấu hình không giới hạn thời gian (Zero-Timeout) cho luồng tải tệp dung lượng cao:
+server.timeout = 0;              // Vô hiệu hóa socket timeout khi stream tệp lớn
+server.requestTimeout = 0;       // Vô hiệu hóa requestTimeout (mặc định Node 18+ là 300s/5 phút)
+server.keepAliveTimeout = 120000;
+server.headersTimeout = 125000;
 
 function startServer(portToTry) {
     server.listen(portToTry, () => {

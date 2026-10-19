@@ -1,0 +1,2282 @@
+[
+  {
+    "stt": 1,
+    "code": "VNU",
+    "name": "ĐẠI HỌC Quốc gia Hà Nội",
+    "displayName": "ĐẠI HỌC Quốc gia Hà Nội (VNU)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 2,
+    "code": "QHL",
+    "name": "Khoa Luật (ĐHQG Hà Nội)",
+    "displayName": "Khoa Luật (ĐHQG Hà Nội) (QHL)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 3,
+    "code": "QHQ",
+    "name": "Khoa Quốc tế (ĐHQG Hà Nội)",
+    "displayName": "Khoa Quốc tế (ĐHQG Hà Nội) (QHQ)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 4,
+    "code": "QHY",
+    "name": "Trường ĐẠI HỌC Y Dược (ĐHQG Hà Nội)",
+    "displayName": "Trường ĐẠI HỌC Y Dược (ĐHQG Hà Nội) (QHY)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 5,
+    "code": "QHI",
+    "name": "Trường ĐẠI HỌC Công nghệ (ĐHQG Hà Nội)",
+    "displayName": "Trường ĐẠI HỌC Công nghệ (ĐHQG Hà Nội) (QHI)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 6,
+    "code": "QHE",
+    "name": "Trường ĐẠI HỌC Kinh tế (ĐHQG Hà Nội)",
+    "displayName": "Trường ĐẠI HỌC Kinh tế (ĐHQG Hà Nội) (QHE)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 7,
+    "code": "QHS",
+    "name": "Trường ĐH Giáo dục (ĐHQG Hà Nội)",
+    "displayName": "Trường ĐH Giáo dục (ĐHQG Hà Nội) (QHS)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 8,
+    "code": "QHT",
+    "name": "Trường ĐH Khoa học Tự nhiên (ĐHQG Hà Nội)",
+    "displayName": "Trường ĐH Khoa học Tự nhiên (ĐHQG Hà Nội) (QHT)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 9,
+    "code": "QHX",
+    "name": "Trường ĐH Khoa học Xã hội và Nhân văn (ĐHQG Hà Nội)",
+    "displayName": "Trường ĐH Khoa học Xã hội và Nhân văn (ĐHQG Hà Nội) (QHX)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 10,
+    "code": "QHD",
+    "name": "Trường Quản trị và kinh doanh (ĐHQG Hà Nội)",
+    "displayName": "Trường Quản trị và kinh doanh (ĐHQG Hà Nội) (QHD)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 11,
+    "code": "QHF",
+    "name": "Trường ĐẠI HỌC Ngoại ngữ (ĐHQG Hà Nội)",
+    "displayName": "Trường ĐẠI HỌC Ngoại ngữ (ĐHQG Hà Nội) (QHF)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 12,
+    "code": "VJU",
+    "name": "Trường ĐẠI HỌC Việt Nhật (ĐHQG Hà Nội)",
+    "displayName": "Trường ĐẠI HỌC Việt Nhật (ĐHQG Hà Nội) (VJU)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 13,
+    "code": "NVH",
+    "name": "HỌC VIỆN Âm nhạc Quốc gia Việt Nam",
+    "displayName": "HỌC VIỆN Âm nhạc Quốc gia Việt Nam (NVH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 14,
+    "code": "HBT",
+    "name": "HỌC VIỆN Báo chí Tuyên truyền",
+    "displayName": "HỌC VIỆN Báo chí Tuyên truyền (HBT)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 15,
+    "code": "HCP",
+    "name": "HỌC VIỆN Chính sách và Phát triển",
+    "displayName": "HỌC VIỆN Chính sách và Phát triển (HCP)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 16,
+    "code": "BVH",
+    "name": "HỌC VIỆN Công nghệ Bưu chính Viễn thông",
+    "displayName": "HỌC VIỆN Công nghệ Bưu chính Viễn thông (BVH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 17,
+    "code": "HCH",
+    "name": "HỌC VIỆN Hành chính Quốc gia",
+    "displayName": "HỌC VIỆN Hành chính Quốc gia (HCH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 18,
+    "code": "KMA",
+    "name": "HỌC VIỆN Kỹ thuật Mật mã",
+    "displayName": "HỌC VIỆN Kỹ thuật Mật mã (KMA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 19,
+    "code": "NHH",
+    "name": "HỌC VIỆN Ngân hàng",
+    "displayName": "HỌC VIỆN Ngân hàng (NHH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 20,
+    "code": "HQT",
+    "name": "HỌC VIỆN Ngoại giao",
+    "displayName": "HỌC VIỆN Ngoại giao (HQT)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 21,
+    "code": "HVN",
+    "name": "HỌC VIỆN Nông nghiệp Việt Nam",
+    "displayName": "HỌC VIỆN Nông nghiệp Việt Nam (HVN)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 22,
+    "code": "HPN",
+    "name": "HỌC VIỆN Phụ nữ Việt Nam",
+    "displayName": "HỌC VIỆN Phụ nữ Việt Nam (HPN)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 23,
+    "code": "HVQ",
+    "name": "HỌC VIỆN Quản lý Giáo dục",
+    "displayName": "HỌC VIỆN Quản lý Giáo dục (HVQ)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 24,
+    "code": "HTC",
+    "name": "HỌC VIỆN Tài chính",
+    "displayName": "HỌC VIỆN Tài chính (HTC)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 25,
+    "code": "HTN",
+    "name": "HỌC VIỆN Thanh Thiếu niên Việt Nam",
+    "displayName": "HỌC VIỆN Thanh Thiếu niên Việt Nam (HTN)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 26,
+    "code": "HTA",
+    "name": "HỌC VIỆN Tòa án",
+    "displayName": "HỌC VIỆN Tòa án (HTA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 27,
+    "code": "HYD",
+    "name": "HỌC VIỆN Y Dược học cổ truyền Việt Nam",
+    "displayName": "HỌC VIỆN Y Dược học cổ truyền Việt Nam (HYD)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 28,
+    "code": "BKA",
+    "name": "ĐẠI HỌC Bách khoa Hà Nội",
+    "displayName": "ĐẠI HỌC Bách khoa Hà Nội (BKA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 29,
+    "code": "LDA",
+    "name": "Trường ĐẠI HỌC Công đoàn",
+    "displayName": "Trường ĐẠI HỌC Công đoàn (LDA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 30,
+    "code": "GTA",
+    "name": "Trường ĐẠI HỌC Công nghệ Giao thông vận tải",
+    "displayName": "Trường ĐẠI HỌC Công nghệ Giao thông vận tải (GTA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 31,
+    "code": "CCM",
+    "name": "Trường ĐẠI HỌC Công nghiệp Dệt may Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Công nghiệp Dệt may Hà Nội (CCM)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 32,
+    "code": "DCN",
+    "name": "Trường ĐẠI HỌC Công nghiệp Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Công nghiệp Hà Nội (DCN)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 33,
+    "code": "VHD",
+    "name": "Trường ĐẠI HỌC Công nghiệp Việt Hung",
+    "displayName": "Trường ĐẠI HỌC Công nghiệp Việt Hung (VHD)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 34,
+    "code": "DDN",
+    "name": "Trường ĐẠI HỌC Đại Nam (*)",
+    "displayName": "Trường ĐẠI HỌC Đại Nam (*) (DDN)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 35,
+    "code": "DDL",
+    "name": "Trường ĐẠI HỌC Điện lực",
+    "displayName": "Trường ĐẠI HỌC Điện lực (DDL)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 36,
+    "code": "DKH",
+    "name": "Trường ĐẠI HỌC Dược Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Dược Hà Nội (DKH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 37,
+    "code": "FPT",
+    "name": "Trường ĐẠI HỌC FPT (*)",
+    "displayName": "Trường ĐẠI HỌC FPT (*) (FPT)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 38,
+    "code": "GHA",
+    "name": "Trường ĐẠI HỌC Giao thông vận tải",
+    "displayName": "Trường ĐẠI HỌC Giao thông vận tải (GHA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 39,
+    "code": "NHF",
+    "name": "Trường ĐẠI HỌC Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Hà Nội (NHF)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 40,
+    "code": "ETU",
+    "name": "Trường ĐẠI HỌC Hòa Bình (*)",
+    "displayName": "Trường ĐẠI HỌC Hòa Bình (*) (ETU)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 41,
+    "code": "KCN",
+    "name": "Trường ĐẠI HỌC Khoa học và Công nghệ Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Khoa học và Công nghệ Hà Nội (KCN)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 42,
+    "code": "DKS",
+    "name": "Trường ĐẠI HỌC Kiểm sát Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Kiểm sát Hà Nội (DKS)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 43,
+    "code": "KTA",
+    "name": "Trường ĐẠI HỌC Kiến trúc Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Kiến trúc Hà Nội (KTA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 44,
+    "code": "DKK",
+    "name": "Trường ĐẠI HỌC Kinh tế Kỹ thuật Công nghiệp",
+    "displayName": "Trường ĐẠI HỌC Kinh tế Kỹ thuật Công nghiệp (DKK)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 45,
+    "code": "KHA",
+    "name": "ĐẠI HỌC Kinh tế Quốc dân",
+    "displayName": "ĐẠI HỌC Kinh tế Quốc dân (KHA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 46,
+    "code": "LNH",
+    "name": "Trường ĐẠI HỌC Lâm nghiệp",
+    "displayName": "Trường ĐẠI HỌC Lâm nghiệp (LNH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 47,
+    "code": "DLX",
+    "name": "Trường ĐẠI HỌC Lao động Xã hội",
+    "displayName": "Trường ĐẠI HỌC Lao động Xã hội (DLX)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 48,
+    "code": "LPH",
+    "name": "Trường ĐẠI HỌC Luật Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Luật Hà Nội (LPH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 49,
+    "code": "MDA",
+    "name": "Trường ĐẠI HỌC Mỏ Địa chất Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Mỏ Địa chất Hà Nội (MDA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 50,
+    "code": "MTC",
+    "name": "Trường ĐẠI HỌC Mỹ thuật Công nghiệp",
+    "displayName": "Trường ĐẠI HỌC Mỹ thuật Công nghiệp (MTC)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 51,
+    "code": "MTH",
+    "name": "Trường ĐẠI HỌC Mỹ thuật Việt Nam",
+    "displayName": "Trường ĐẠI HỌC Mỹ thuật Việt Nam (MTH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 52,
+    "code": "NTH",
+    "name": "Trường ĐẠI HỌC Ngoại thương",
+    "displayName": "Trường ĐẠI HỌC Ngoại thương (NTH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 53,
+    "code": "NTU",
+    "name": "Trường ĐẠI HỌC Nguyễn Trãi (*)",
+    "displayName": "Trường ĐẠI HỌC Nguyễn Trãi (*) (NTU)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 54,
+    "code": "SKD",
+    "name": "Trường ĐẠI HỌC Sân khấu Điện ảnh",
+    "displayName": "Trường ĐẠI HỌC Sân khấu Điện ảnh (SKD)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 55,
+    "code": "SPH",
+    "name": "Trường ĐẠI HỌC Sư phạm Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Sư phạm Hà Nội (SPH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 56,
+    "code": "GNT",
+    "name": "Trường ĐẠI HỌC Sư phạm Nghệ thuật Trung ương Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Sư phạm Nghệ thuật Trung ương Hà Nội (GNT)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 57,
+    "code": "TDH",
+    "name": "Trường ĐẠI HỌC Sư phạm Thể dục thể thao Hà nội",
+    "displayName": "Trường ĐẠI HỌC Sư phạm Thể dục thể thao Hà nội (TDH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 58,
+    "code": "FBU",
+    "name": "Trường ĐẠI HỌC Tài chính Ngân hàng Hà Nội (*)",
+    "displayName": "Trường ĐẠI HỌC Tài chính Ngân hàng Hà Nội (*) (FBU)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 59,
+    "code": "DMT",
+    "name": "Trường ĐẠI HỌC Tài nguyên và Môi trường Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Tài nguyên và Môi trường Hà Nội (DMT)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 60,
+    "code": "DTL",
+    "name": "Trường ĐẠI HỌC Thăng Long (*)",
+    "displayName": "Trường ĐẠI HỌC Thăng Long (*) (DTL)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 61,
+    "code": "TDD",
+    "name": "Trường ĐẠI HỌC Thành Đô (*)",
+    "displayName": "Trường ĐẠI HỌC Thành Đô (*) (TDD)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 62,
+    "code": "HNM",
+    "name": "Trường ĐẠI HỌC Thủ đô Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Thủ đô Hà Nội (HNM)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 63,
+    "code": "TMU",
+    "name": "Trường ĐẠI HỌC Thương mại",
+    "displayName": "Trường ĐẠI HỌC Thương mại (TMU)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 64,
+    "code": "TLA",
+    "name": "Trường ĐẠI HỌC Thủy lợi",
+    "displayName": "Trường ĐẠI HỌC Thủy lợi (TLA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 65,
+    "code": "VHH",
+    "name": "Trường ĐẠI HỌC Văn hóa Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Văn hóa Hà Nội (VHH)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 66,
+    "code": "XDA",
+    "name": "Trường ĐẠI HỌC Xây dựng Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Xây dựng Hà Nội (XDA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 67,
+    "code": "YHB",
+    "name": "Trường ĐẠI HỌC Y Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Y Hà Nội (YHB)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 68,
+    "code": "YTC",
+    "name": "Trường ĐẠI HỌC Y tế Công cộng",
+    "displayName": "Trường ĐẠI HỌC Y tế Công cộng (YTC)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 69,
+    "code": "DCQ",
+    "name": "Trường ĐẠI HỌC Công nghệ và Quản lý Hữu nghị (*)",
+    "displayName": "Trường ĐẠI HỌC Công nghệ và Quản lý Hữu nghị (*) (DCQ)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 70,
+    "code": "DDU",
+    "name": "Trường ĐẠI HỌC Đông Đô (*)",
+    "displayName": "Trường ĐẠI HỌC Đông Đô (*) (DDU)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 71,
+    "code": "DQK",
+    "name": "Trường ĐẠI HỌC Kinh doanh và Công nghệ Hà Nội (*)",
+    "displayName": "Trường ĐẠI HỌC Kinh doanh và Công nghệ Hà Nội (*) (DQK)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 72,
+    "code": "DPD",
+    "name": "Trường ĐẠI HỌC Phương Đông (*)",
+    "displayName": "Trường ĐẠI HỌC Phương Đông (*) (DPD)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 73,
+    "code": "MHN",
+    "name": "Trường ĐẠI HỌC Mở Hà Nội",
+    "displayName": "Trường ĐẠI HỌC Mở Hà Nội (MHN)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 74,
+    "code": "PKA",
+    "name": "ĐẠI HỌC Phenikaa",
+    "displayName": "ĐẠI HỌC Phenikaa (PKA)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 75,
+    "code": "CMC",
+    "name": "Trường ĐẠI HỌC CMC",
+    "displayName": "Trường ĐẠI HỌC CMC (CMC)",
+    "region": "Hà Nội",
+    "rawRegion": "KHU VỰC HÀ NỘI"
+  },
+  {
+    "stt": 76,
+    "code": "VNU-HCM",
+    "name": "ĐẠI HỌC QUỐC GIA TP.HCM",
+    "displayName": "ĐẠI HỌC QUỐC GIA TP.HCM (VNU-HCM)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 77,
+    "code": "QSY",
+    "name": "Trường ĐẠI HỌC Sức khỏe - ĐHQG TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Sức khỏe - ĐHQG TP.HCM (QSY)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 78,
+    "code": "QSB",
+    "name": "Trường ĐẠI HỌC Bách Khoa - ĐHQG TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Bách Khoa - ĐHQG TP.HCM (QSB)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 79,
+    "code": "QSC",
+    "name": "Trường ĐẠI HỌC Công nghệ Thông tin - ĐH Quốc gia TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Công nghệ Thông tin - ĐH Quốc gia TP.HCM (QSC)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 80,
+    "code": "QST",
+    "name": "Trường ĐẠI HỌC Khoa học Tự nhiên - ĐHQG TPHCM",
+    "displayName": "Trường ĐẠI HỌC Khoa học Tự nhiên - ĐHQG TPHCM (QST)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 81,
+    "code": "QSX",
+    "name": "Trường ĐẠI HỌC Khoa học xã hội và Nhân văn - ĐHQG TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Khoa học xã hội và Nhân văn - ĐHQG TP.HCM (QSX)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 82,
+    "code": "QSQ",
+    "name": "Trường ĐẠI HỌC Quốc tế - ĐH Quốc gia TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Quốc tế - ĐH Quốc gia TP.HCM (QSQ)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 83,
+    "code": "QSK",
+    "name": "Trường ĐẠI HỌC Kinh tế - Luật (ĐH Quốc gia TP.HCM)",
+    "displayName": "Trường ĐẠI HỌC Kinh tế - Luật (ĐH Quốc gia TP.HCM) (QSK)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 84,
+    "code": "HVC",
+    "name": "HỌC VIỆN Cán bộ TP.HCM",
+    "displayName": "HỌC VIỆN Cán bộ TP.HCM (HVC)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 85,
+    "code": "BVS",
+    "name": "HỌC VIỆN Công nghệ Bưu chính Viễn thông – Cơ sở TP.HCM",
+    "displayName": "HỌC VIỆN Công nghệ Bưu chính Viễn thông – Cơ sở TP.HCM (BVS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 86,
+    "code": "HHK",
+    "name": "HỌC VIỆN Hàng không Việt Nam",
+    "displayName": "HỌC VIỆN Hàng không Việt Nam (HHK)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 87,
+    "code": "NVS",
+    "name": "Nhạc viện TP.HCM",
+    "displayName": "Nhạc viện TP.HCM (NVS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 88,
+    "code": "DCT",
+    "name": "Trường ĐẠI HỌC Công thương TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Công thương TP.HCM (DCT)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 89,
+    "code": "IUH",
+    "name": "Trường ĐẠI HỌC Công nghiệp TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Công nghiệp TP.HCM (IUH)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 90,
+    "code": "GSA",
+    "name": "Trường ĐẠI HỌC Giao thông vận tải - Cơ sở 2",
+    "displayName": "Trường ĐẠI HỌC Giao thông vận tải - Cơ sở 2 (GSA)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 91,
+    "code": "GTS",
+    "name": "Trường ĐẠI HỌC Giao thông vận tải TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Giao thông vận tải TP.HCM (GTS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 92,
+    "code": "HSU",
+    "name": "Trường ĐẠI HỌC Hoa Sen (*)",
+    "displayName": "Trường ĐẠI HỌC Hoa Sen (*) (HSU)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 93,
+    "code": "KTS",
+    "name": "Trường ĐẠI HỌC Kiến trúc TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Kiến trúc TP.HCM (KTS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 94,
+    "code": "UEF",
+    "name": "Trường ĐẠI HỌC Kinh tế - Tài chính TP.HCM (*)",
+    "displayName": "Trường ĐẠI HỌC Kinh tế - Tài chính TP.HCM (*) (UEF)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 95,
+    "code": "KSA",
+    "name": "ĐẠI HỌC Kinh tế TP.HCM",
+    "displayName": "ĐẠI HỌC Kinh tế TP.HCM (KSA)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 96,
+    "code": "DLS",
+    "name": "Trường ĐẠI HỌC Lao động Xã hội – Cơ sở TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Lao động Xã hội – Cơ sở TP.HCM (DLS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 97,
+    "code": "LPS",
+    "name": "Trường ĐẠI HỌC Luật TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Luật TP.HCM (LPS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 98,
+    "code": "MBS",
+    "name": "Trường ĐẠI HỌC Mở TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Mở TP.HCM (MBS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 99,
+    "code": "MTS",
+    "name": "Trường ĐẠI HỌC Mỹ thuật TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Mỹ thuật TP.HCM (MTS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 100,
+    "code": "NHS",
+    "name": "Trường ĐẠI HỌC Ngân hàng TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Ngân hàng TP.HCM (NHS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 101,
+    "code": "NTS",
+    "name": "Trường ĐẠI HỌC Ngoại thương – Cơ sở phía Nam",
+    "displayName": "Trường ĐẠI HỌC Ngoại thương – Cơ sở phía Nam (NTS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 102,
+    "code": "NTT",
+    "name": "Trường ĐẠI HỌC Nguyễn Tất Thành (*)",
+    "displayName": "Trường ĐẠI HỌC Nguyễn Tất Thành (*) (NTT)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 103,
+    "code": "NLS",
+    "name": "Trường ĐẠI HỌC Nông Lâm TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Nông Lâm TP.HCM (NLS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 104,
+    "code": "HIU",
+    "name": "Trường ĐẠI HỌC Quốc tế Hồng Bàng (*)",
+    "displayName": "Trường ĐẠI HỌC Quốc tế Hồng Bàng (*) (HIU)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 105,
+    "code": "SGD",
+    "name": "Trường ĐẠI HỌC Sài Gòn",
+    "displayName": "Trường ĐẠI HỌC Sài Gòn (SGD)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 106,
+    "code": "DSD",
+    "name": "Trường ĐẠI HỌC Sân khấu Điện ảnh TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Sân khấu Điện ảnh TP.HCM (DSD)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 107,
+    "code": "SPK",
+    "name": "Trường ĐẠI HỌC Sư phạm Kỹ thuật TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Sư phạm Kỹ thuật TP.HCM (SPK)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 108,
+    "code": "SPS",
+    "name": "Trường ĐẠI HỌC Sư phạm TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Sư phạm TP.HCM (SPS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 109,
+    "code": "DMS",
+    "name": "Trường ĐẠI HỌC Tài chính - Marketing",
+    "displayName": "Trường ĐẠI HỌC Tài chính - Marketing (DMS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 110,
+    "code": "DTM",
+    "name": "Trường ĐẠI HỌC Tài nguyên và Môi trường TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Tài nguyên và Môi trường TP.HCM (DTM)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 111,
+    "code": "TDS",
+    "name": "Trường ĐẠI HỌC Thể dục Thể thao TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Thể dục Thể thao TP.HCM (TDS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 112,
+    "code": "TLS",
+    "name": "Trường ĐẠI HỌC Thủy lợi – Cơ sở 2",
+    "displayName": "Trường ĐẠI HỌC Thủy lợi – Cơ sở 2 (TLS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 113,
+    "code": "DTT",
+    "name": "Trường ĐẠI HỌC Tôn Đức Thắng",
+    "displayName": "Trường ĐẠI HỌC Tôn Đức Thắng (DTT)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 114,
+    "code": "VHS",
+    "name": "Trường ĐẠI HỌC Văn hóa TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Văn hóa TP.HCM (VHS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 115,
+    "code": "VGU",
+    "name": "Trường ĐẠI HỌC Việt - Đức",
+    "displayName": "Trường ĐẠI HỌC Việt - Đức (VGU)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 116,
+    "code": "YDS",
+    "name": "Trường ĐẠI HỌC Y Dược TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Y Dược TP.HCM (YDS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 117,
+    "code": "TYS",
+    "name": "Trường ĐẠI HỌC Y khoa Phạm Ngọc Thạch",
+    "displayName": "Trường ĐẠI HỌC Y khoa Phạm Ngọc Thạch (TYS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 118,
+    "code": "DSG",
+    "name": "Trường ĐẠI HỌC Công nghệ Sài Gòn (*)",
+    "displayName": "Trường ĐẠI HỌC Công nghệ Sài Gòn (*) (DSG)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 119,
+    "code": "GDU",
+    "name": "Trường ĐẠI HỌC Gia Định (*)",
+    "displayName": "Trường ĐẠI HỌC Gia Định (*) (GDU)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 120,
+    "code": "DKC",
+    "name": "Trường ĐẠI HỌC Công nghệ TP.HCM (*)",
+    "displayName": "Trường ĐẠI HỌC Công nghệ TP.HCM (*) (DKC)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 121,
+    "code": "DHV",
+    "name": "Trường ĐẠI HỌC Hùng Vương TPHCM (*)",
+    "displayName": "Trường ĐẠI HỌC Hùng Vương TPHCM (*) (DHV)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 122,
+    "code": "SIU",
+    "name": "Trường ĐẠI HỌC Quốc tế Sài Gòn (*)",
+    "displayName": "Trường ĐẠI HỌC Quốc tế Sài Gòn (*) (SIU)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 123,
+    "code": "DVH",
+    "name": "Trường ĐẠI HỌC Văn Hiến (*)",
+    "displayName": "Trường ĐẠI HỌC Văn Hiến (*) (DVH)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 124,
+    "code": "DVL",
+    "name": "Trường ĐẠI HỌC Văn Lang (*)",
+    "displayName": "Trường ĐẠI HỌC Văn Lang (*) (DVL)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 125,
+    "code": "STS",
+    "name": "Trường ĐẠI HỌC Sư phạm TDTT TP.HCM",
+    "displayName": "Trường ĐẠI HỌC Sư phạm TDTT TP.HCM (STS)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 126,
+    "code": "DNT",
+    "name": "Trường ĐẠI HỌC Ngoại ngữ - Tin học TP.HCM (*)",
+    "displayName": "Trường ĐẠI HỌC Ngoại ngữ - Tin học TP.HCM (*) (DNT)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 127,
+    "code": "UMT",
+    "name": "Trường ĐẠI HỌC Quản lý và công nghệ TPHCM",
+    "displayName": "Trường ĐẠI HỌC Quản lý và công nghệ TPHCM (UMT)",
+    "region": "TP. Hồ Chí Minh",
+    "rawRegion": "KHU VỰC TPHCM"
+  },
+  {
+    "stt": 128,
+    "code": "TNU",
+    "name": "ĐẠI HỌC Thái Nguyên",
+    "displayName": "ĐẠI HỌC Thái Nguyên (TNU)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 129,
+    "code": "DTF",
+    "name": "Trường Ngoại ngữ (ĐH Thái Nguyên)",
+    "displayName": "Trường Ngoại ngữ (ĐH Thái Nguyên) (DTF)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 130,
+    "code": "DTQ",
+    "name": "Khoa Quốc tế (ĐH Thái Nguyên)",
+    "displayName": "Khoa Quốc tế (ĐH Thái Nguyên) (DTQ)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 131,
+    "code": "DTP",
+    "name": "Phân hiệu ĐẠI HỌC Thái Nguyên tại Lào Cai",
+    "displayName": "Phân hiệu ĐẠI HỌC Thái Nguyên tại Lào Cai (DTP)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 132,
+    "code": "DTC",
+    "name": "Trường ĐẠI HỌC Công nghệ TT và Truyền thông (ĐH Thái Nguyên)",
+    "displayName": "Trường ĐẠI HỌC Công nghệ TT và Truyền thông (ĐH Thái Nguyên) (DTC)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 133,
+    "code": "DTZ",
+    "name": "Trường ĐẠI HỌC Khoa học (ĐH Thái Nguyên)",
+    "displayName": "Trường ĐẠI HỌC Khoa học (ĐH Thái Nguyên) (DTZ)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 134,
+    "code": "DTE",
+    "name": "Trường ĐẠI HỌC Kinh tế - Quản trị kinh doanh (ĐH Thái Nguyên)",
+    "displayName": "Trường ĐẠI HỌC Kinh tế - Quản trị kinh doanh (ĐH Thái Nguyên) (DTE)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 135,
+    "code": "DTK",
+    "name": "Trường ĐẠI HỌC Kỹ thuật Công nghiệp (ĐH Thái Nguyên)",
+    "displayName": "Trường ĐẠI HỌC Kỹ thuật Công nghiệp (ĐH Thái Nguyên) (DTK)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 136,
+    "code": "DTN",
+    "name": "Trường ĐẠI HỌC Nông lâm (ĐH Thái Nguyên)",
+    "displayName": "Trường ĐẠI HỌC Nông lâm (ĐH Thái Nguyên) (DTN)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 137,
+    "code": "DTS",
+    "name": "Trường ĐẠI HỌC Sư phạm (ĐH Thái Nguyên)",
+    "displayName": "Trường ĐẠI HỌC Sư phạm (ĐH Thái Nguyên) (DTS)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 138,
+    "code": "DTY",
+    "name": "Trường ĐẠI HỌC Y Dược (ĐH Thái Nguyên)",
+    "displayName": "Trường ĐẠI HỌC Y Dược (ĐH Thái Nguyên) (DTY)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 139,
+    "code": "DCA",
+    "name": "Trường ĐẠI HỌC Chu Văn An (*)",
+    "displayName": "Trường ĐẠI HỌC Chu Văn An (*) (DCA)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 140,
+    "code": "DDA",
+    "name": "Trường ĐẠI HỌC Công nghệ Đông Á (*)",
+    "displayName": "Trường ĐẠI HỌC Công nghệ Đông Á (*) (DDA)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 141,
+    "code": "DDM",
+    "name": "Trường ĐẠI HỌC Công nghiệp Quảng Ninh",
+    "displayName": "Trường ĐẠI HỌC Công nghiệp Quảng Ninh (DDM)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 142,
+    "code": "VUI",
+    "name": "Trường ĐẠI HỌC Công nghiệp Việt Trì",
+    "displayName": "Trường ĐẠI HỌC Công nghiệp Việt Trì (VUI)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 143,
+    "code": "DHP",
+    "name": "Trường ĐẠI HỌC Quản lý và công nghệ Hải Phòng (*)",
+    "displayName": "Trường ĐẠI HỌC Quản lý và công nghệ Hải Phòng (*) (DHP)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 144,
+    "code": "DTV",
+    "name": "Trường ĐẠI HỌC Lương Thế Vinh (*)",
+    "displayName": "Trường ĐẠI HỌC Lương Thế Vinh (*) (DTV)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 145,
+    "code": "YDD",
+    "name": "Trường ĐẠI HỌC Điều dưỡng Nam Định",
+    "displayName": "Trường ĐẠI HỌC Điều dưỡng Nam Định (YDD)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 146,
+    "code": "HLU",
+    "name": "Trường ĐẠI HỌC Hạ Long",
+    "displayName": "Trường ĐẠI HỌC Hạ Long (HLU)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 147,
+    "code": "DKT",
+    "name": "Trường ĐẠI HỌC Hải Dương",
+    "displayName": "Trường ĐẠI HỌC Hải Dương (DKT)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 148,
+    "code": "THP",
+    "name": "Trường ĐẠI HỌC Hải Phòng",
+    "displayName": "Trường ĐẠI HỌC Hải Phòng (THP)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 149,
+    "code": "HHA",
+    "name": "Trường ĐẠI HỌC Hàng hải",
+    "displayName": "Trường ĐẠI HỌC Hàng hải (HHA)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 150,
+    "code": "DNB",
+    "name": "Trường ĐẠI HỌC Hoa Lư",
+    "displayName": "Trường ĐẠI HỌC Hoa Lư (DNB)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 151,
+    "code": "HDT",
+    "name": "Trường ĐẠI HỌC Hồng Đức",
+    "displayName": "Trường ĐẠI HỌC Hồng Đức (HDT)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 152,
+    "code": "THV",
+    "name": "Trường ĐẠI HỌC Hùng Vương",
+    "displayName": "Trường ĐẠI HỌC Hùng Vương (THV)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 153,
+    "code": "UKB",
+    "name": "Trường ĐẠI HỌC Kinh Bắc (*)",
+    "displayName": "Trường ĐẠI HỌC Kinh Bắc (*) (UKB)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 154,
+    "code": "DKY",
+    "name": "Trường ĐẠI HỌC Kỹ thuật Y tế Hải Dương",
+    "displayName": "Trường ĐẠI HỌC Kỹ thuật Y tế Hải Dương (DKY)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 155,
+    "code": "DBG",
+    "name": "Trường ĐẠI HỌC Nông Lâm Bắc Giang",
+    "displayName": "Trường ĐẠI HỌC Nông Lâm Bắc Giang (DBG)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 156,
+    "code": "DBH",
+    "name": "Trường ĐẠI HỌC Quốc tế Bắc Hà (*)",
+    "displayName": "Trường ĐẠI HỌC Quốc tế Bắc Hà (*) (DBH)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 157,
+    "code": "SDU",
+    "name": "Trường ĐẠI HỌC Sao Đỏ",
+    "displayName": "Trường ĐẠI HỌC Sao Đỏ (SDU)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 158,
+    "code": "SP2",
+    "name": "Trường ĐẠI HỌC Sư phạm Hà Nội 2",
+    "displayName": "Trường ĐẠI HỌC Sư phạm Hà Nội 2 (SP2)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 159,
+    "code": "SKH",
+    "name": "Trường ĐẠI HỌC Sư phạm Kỹ thuật Hưng Yên",
+    "displayName": "Trường ĐẠI HỌC Sư phạm Kỹ thuật Hưng Yên (SKH)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 160,
+    "code": "SKN",
+    "name": "Trường ĐẠI HỌC Sư phạm Kỹ thuật Nam Định",
+    "displayName": "Trường ĐẠI HỌC Sư phạm Kỹ thuật Nam Định (SKN)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 161,
+    "code": "DFA",
+    "name": "Trường ĐẠI HỌC Tài chính - Quản trị kinh doanh",
+    "displayName": "Trường ĐẠI HỌC Tài chính - Quản trị kinh doanh (DFA)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 162,
+    "code": "TQU",
+    "name": "Trường ĐẠI HỌC Tân Trào",
+    "displayName": "Trường ĐẠI HỌC Tân Trào (TQU)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 163,
+    "code": "TTB",
+    "name": "Trường ĐẠI HỌC Tây Bắc",
+    "displayName": "Trường ĐẠI HỌC Tây Bắc (TTB)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 164,
+    "code": "DTB",
+    "name": "Trường ĐẠI HỌC Thái Bình",
+    "displayName": "Trường ĐẠI HỌC Thái Bình (DTB)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 165,
+    "code": "DDB",
+    "name": "Trường ĐẠI HỌC Thành Đông (*)",
+    "displayName": "Trường ĐẠI HỌC Thành Đông (*) (DDB)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 166,
+    "code": "TDB",
+    "name": "Trường ĐẠI HỌC Thể dục Thể thao Bắc Ninh",
+    "displayName": "Trường ĐẠI HỌC Thể dục Thể thao Bắc Ninh (TDB)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 167,
+    "code": "DVP",
+    "name": "Trường ĐẠI HỌC Trưng Vương (*)",
+    "displayName": "Trường ĐẠI HỌC Trưng Vương (*) (DVP)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 168,
+    "code": "DVD",
+    "name": "Trường ĐẠI HỌC Văn hóa Thể thao và Du lịch Thanh Hóa",
+    "displayName": "Trường ĐẠI HỌC Văn hóa Thể thao và Du lịch Thanh Hóa (DVD)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 169,
+    "code": "DVB",
+    "name": "Trường ĐẠI HỌC Việt Bắc",
+    "displayName": "Trường ĐẠI HỌC Việt Bắc (DVB)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 170,
+    "code": "YPB",
+    "name": "Trường ĐẠI HỌC Y Dược Hải Phòng",
+    "displayName": "Trường ĐẠI HỌC Y Dược Hải Phòng (YPB)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 171,
+    "code": "YTB",
+    "name": "Trường ĐẠI HỌC Y Dược Thái Bình",
+    "displayName": "Trường ĐẠI HỌC Y Dược Thái Bình (YTB)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 172,
+    "code": "THU",
+    "name": "Trường ĐẠI HỌC Y khoa Tokyo Việt Nam",
+    "displayName": "Trường ĐẠI HỌC Y khoa Tokyo Việt Nam (THU)",
+    "region": "Miền Bắc",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN BẮC"
+  },
+  {
+    "stt": 173,
+    "code": "TAG",
+    "name": "ĐẠI HỌC Cần Thơ",
+    "displayName": "ĐẠI HỌC Cần Thơ (TAG)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 174,
+    "code": "BVU",
+    "name": "Trường ĐẠI HỌC Bà Rịa - Vũng Tàu (*)",
+    "displayName": "Trường ĐẠI HỌC Bà Rịa - Vũng Tàu (*) (BVU)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 175,
+    "code": "DBL",
+    "name": "Trường ĐẠI HỌC Bạc Liêu",
+    "displayName": "Trường ĐẠI HỌC Bạc Liêu (DBL)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 176,
+    "code": "DBD",
+    "name": "Trường ĐẠI HỌC Bình Dương (*)",
+    "displayName": "Trường ĐẠI HỌC Bình Dương (*) (DBD)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 177,
+    "code": "TCT",
+    "name": "Trường ĐẠI HỌC An Giang (ĐHQG HCM)",
+    "displayName": "Trường ĐẠI HỌC An Giang (ĐHQG HCM) (TCT)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 178,
+    "code": "DCD",
+    "name": "Trường ĐẠI HỌC Công nghệ Đồng Nai (*)",
+    "displayName": "Trường ĐẠI HỌC Công nghệ Đồng Nai (*) (DCD)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 179,
+    "code": "MIT",
+    "name": "Trường ĐẠI HỌC Công nghệ Miền Đông (*)",
+    "displayName": "Trường ĐẠI HỌC Công nghệ Miền Đông (*) (MIT)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 180,
+    "code": "DCL",
+    "name": "Trường ĐẠI HỌC Cửu Long (*)",
+    "displayName": "Trường ĐẠI HỌC Cửu Long (*) (DCL)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 181,
+    "code": "DLH",
+    "name": "Trường ĐẠI HỌC Lạc Hồng (*)",
+    "displayName": "Trường ĐẠI HỌC Lạc Hồng (*) (DLH)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 182,
+    "code": "PVU",
+    "name": "Trường ĐẠI HỌC Dầu khí Việt Nam",
+    "displayName": "Trường ĐẠI HỌC Dầu khí Việt Nam (PVU)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 183,
+    "code": "DNU",
+    "name": "Trường ĐẠI HỌC Đồng Nai",
+    "displayName": "Trường ĐẠI HỌC Đồng Nai (DNU)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 184,
+    "code": "SPD",
+    "name": "Trường ĐẠI HỌC Đồng Tháp",
+    "displayName": "Trường ĐẠI HỌC Đồng Tháp (SPD)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 185,
+    "code": "TKG",
+    "name": "Trường ĐẠI HỌC Kiên Giang",
+    "displayName": "Trường ĐẠI HỌC Kiên Giang (TKG)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 186,
+    "code": "DLA",
+    "name": "Trường ĐẠI HỌC Kinh tế Công nghiệp Long An (*)",
+    "displayName": "Trường ĐẠI HỌC Kinh tế Công nghiệp Long An (*) (DLA)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 187,
+    "code": "DKB",
+    "name": "Trường ĐẠI HỌC Kinh tế Kỹ thuật Bình Dương (*)",
+    "displayName": "Trường ĐẠI HỌC Kinh tế Kỹ thuật Bình Dương (*) (DKB)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 188,
+    "code": "KCC",
+    "name": "Trường ĐẠI HỌC Kỹ thuật Công nghệ Cần Thơ",
+    "displayName": "Trường ĐẠI HỌC Kỹ thuật Công nghệ Cần Thơ (KCC)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 189,
+    "code": "LNS",
+    "name": "Trường ĐẠI HỌC Lâm nghiệp – Cơ sở 2",
+    "displayName": "Trường ĐẠI HỌC Lâm nghiệp – Cơ sở 2 (LNS)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 190,
+    "code": "DNC",
+    "name": "Trường ĐẠI HỌC Nam Cần Thơ (*)",
+    "displayName": "Trường ĐẠI HỌC Nam Cần Thơ (*) (DNC)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 191,
+    "code": "EIU",
+    "name": "Trường ĐẠI HỌC Quốc tế Miền Đông (*)",
+    "displayName": "Trường ĐẠI HỌC Quốc tế Miền Đông (*) (EIU)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 192,
+    "code": "VLU",
+    "name": "Trường ĐẠI HỌC Sư phạm Kỹ thuật Vĩnh Long",
+    "displayName": "Trường ĐẠI HỌC Sư phạm Kỹ thuật Vĩnh Long (VLU)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 193,
+    "code": "TTU",
+    "name": "Trường ĐẠI HỌC Tân Tạo (*)",
+    "displayName": "Trường ĐẠI HỌC Tân Tạo (*) (TTU)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 194,
+    "code": "DTD",
+    "name": "Trường ĐẠI HỌC Tây Đô (*)",
+    "displayName": "Trường ĐẠI HỌC Tây Đô (*) (DTD)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 195,
+    "code": "TDM",
+    "name": "Trường ĐẠI HỌC Thủ Dầu Một",
+    "displayName": "Trường ĐẠI HỌC Thủ Dầu Một (TDM)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 196,
+    "code": "TTG",
+    "name": "Trường ĐẠI HỌC Tiền Giang",
+    "displayName": "Trường ĐẠI HỌC Tiền Giang (TTG)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 197,
+    "code": "DVT",
+    "name": "Trường ĐẠI HỌC Trà Vinh",
+    "displayName": "Trường ĐẠI HỌC Trà Vinh (DVT)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 198,
+    "code": "VGU",
+    "name": "Trường ĐẠI HỌC Việt – Đức",
+    "displayName": "Trường ĐẠI HỌC Việt – Đức (VGU)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 199,
+    "code": "VTT",
+    "name": "Trường ĐẠI HỌC Võ Trường Toản (*)",
+    "displayName": "Trường ĐẠI HỌC Võ Trường Toản (*) (VTT)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 200,
+    "code": "MTU",
+    "name": "Trường ĐẠI HỌC Xây dựng Miền Tây",
+    "displayName": "Trường ĐẠI HỌC Xây dựng Miền Tây (MTU)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 201,
+    "code": "YCT",
+    "name": "Trường ĐẠI HỌC Y Dược Cần Thơ",
+    "displayName": "Trường ĐẠI HỌC Y Dược Cần Thơ (YCT)",
+    "region": "Miền Nam",
+    "rawRegion": "KHU VỰC CÁC TỈNH, THÀNH MIỀN NAM"
+  },
+  {
+    "stt": 202,
+    "code": "HueUni",
+    "name": "ĐẠI HỌC HUẾ",
+    "displayName": "ĐẠI HỌC HUẾ (HueUni)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 203,
+    "code": "DHD",
+    "name": "Trường Du lịch - ĐH Huế",
+    "displayName": "Trường Du lịch - ĐH Huế (DHD)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 204,
+    "code": "DHC",
+    "name": "Khoa Giáo dục Thể chất - ĐH Huế",
+    "displayName": "Khoa Giáo dục Thể chất - ĐH Huế (DHC)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 205,
+    "code": "DHT",
+    "name": "Trường ĐẠI HỌC Khoa học - ĐH Huế",
+    "displayName": "Trường ĐẠI HỌC Khoa học - ĐH Huế (DHT)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 206,
+    "code": "DHK",
+    "name": "Trường ĐẠI HỌC Kinh tế - ĐH Huế",
+    "displayName": "Trường ĐẠI HỌC Kinh tế - ĐH Huế (DHK)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 207,
+    "code": "DHL",
+    "name": "Trường ĐẠI HỌC Nông Lâm - ĐH Huế",
+    "displayName": "Trường ĐẠI HỌC Nông Lâm - ĐH Huế (DHL)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 208,
+    "code": "DHN",
+    "name": "Trường ĐẠI HỌC Nghệ thuật - ĐH Huế",
+    "displayName": "Trường ĐẠI HỌC Nghệ thuật - ĐH Huế (DHN)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 209,
+    "code": "DHA",
+    "name": "Trường ĐẠI HỌC Luật - ĐH Huế",
+    "displayName": "Trường ĐẠI HỌC Luật - ĐH Huế (DHA)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 210,
+    "code": "DHF",
+    "name": "Trường ĐẠI HỌC Ngoại ngữ - ĐH Huế",
+    "displayName": "Trường ĐẠI HỌC Ngoại ngữ - ĐH Huế (DHF)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 211,
+    "code": "DHS",
+    "name": "Trường ĐẠI HỌC Sư phạm - ĐH Huế",
+    "displayName": "Trường ĐẠI HỌC Sư phạm - ĐH Huế (DHS)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 212,
+    "code": "DHY",
+    "name": "Trường ĐẠI HỌC Y Dược - ĐH Huế",
+    "displayName": "Trường ĐẠI HỌC Y Dược - ĐH Huế (DHY)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 213,
+    "code": "DHE",
+    "name": "Khoa Kỹ thuật và công nghệ - ĐH Huế",
+    "displayName": "Khoa Kỹ thuật và công nghệ - ĐH Huế (DHE)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 214,
+    "code": "DHI",
+    "name": "Khoa Quốc tế - ĐH Huế",
+    "displayName": "Khoa Quốc tế - ĐH Huế (DHI)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 215,
+    "code": "DHQ",
+    "name": "Phân hiệu ĐH Huế tại quảng Trị",
+    "displayName": "Phân hiệu ĐH Huế tại quảng Trị (DHQ)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 216,
+    "code": "UDN",
+    "name": "ĐẠI HỌC ĐÀ NẴNG",
+    "displayName": "ĐẠI HỌC ĐÀ NẴNG (UDN)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 217,
+    "code": "DDG",
+    "name": "Khoa Giáo dục Thể chất – ĐH Đà Nẵng",
+    "displayName": "Khoa Giáo dục Thể chất – ĐH Đà Nẵng (DDG)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 218,
+    "code": "DDY",
+    "name": "Khoa Y Dược – ĐH Đà Nẵng",
+    "displayName": "Khoa Y Dược – ĐH Đà Nẵng (DDY)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 219,
+    "code": "DDP",
+    "name": "Phân hiệu ĐẠI HỌC Đà Nẵng tại Kon Tum",
+    "displayName": "Phân hiệu ĐẠI HỌC Đà Nẵng tại Kon Tum (DDP)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 220,
+    "code": "DDK",
+    "name": "Trường ĐẠI HỌC Bách Khoa - ĐH Đà Nẵng",
+    "displayName": "Trường ĐẠI HỌC Bách Khoa - ĐH Đà Nẵng (DDK)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 221,
+    "code": "DDQ",
+    "name": "Trường ĐẠI HỌC Kinh tế - ĐH Đà Nẵng",
+    "displayName": "Trường ĐẠI HỌC Kinh tế - ĐH Đà Nẵng (DDQ)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 222,
+    "code": "DDF",
+    "name": "Trường ĐẠI HỌC Ngoại ngữ - ĐH Đà Nẵng",
+    "displayName": "Trường ĐẠI HỌC Ngoại ngữ - ĐH Đà Nẵng (DDF)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 223,
+    "code": "DDS",
+    "name": "Trường ĐẠI HỌC Sư phạm - ĐH Đà nẵng",
+    "displayName": "Trường ĐẠI HỌC Sư phạm - ĐH Đà nẵng (DDS)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 224,
+    "code": "DSK",
+    "name": "Trường ĐẠI HỌC Sư phạm Kỹ thuật – ĐH Đà Nẵng",
+    "displayName": "Trường ĐẠI HỌC Sư phạm Kỹ thuật – ĐH Đà Nẵng (DSK)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 225,
+    "code": "DDV",
+    "name": "Viện nghiên cứu đào tạo Việt - Anh - ĐH Đà Nẵng",
+    "displayName": "Viện nghiên cứu đào tạo Việt - Anh - ĐH Đà Nẵng (DDV)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 226,
+    "code": "VKU",
+    "name": "Khoa Công nghệ thông tin và Truyền thông – ĐH Đà Nẵng",
+    "displayName": "Khoa Công nghệ thông tin và Truyền thông – ĐH Đà Nẵng (VKU)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 227,
+    "code": "KTD",
+    "name": "Trường ĐẠI HỌC Kiến trúc Đà Nẵng (*)",
+    "displayName": "Trường ĐẠI HỌC Kiến trúc Đà Nẵng (*) (KTD)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 228,
+    "code": "BMU",
+    "name": "Trường ĐẠI HỌC Y dược Buôn Ma Thuột (*)",
+    "displayName": "Trường ĐẠI HỌC Y dược Buôn Ma Thuột (*) (BMU)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 229,
+    "code": "DVX",
+    "name": "Trường ĐẠI HỌC Công nghệ Vạn Xuân (*)",
+    "displayName": "Trường ĐẠI HỌC Công nghệ Vạn Xuân (*) (DVX)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 230,
+    "code": "DCV",
+    "name": "Trường ĐẠI HỌC Công nghiệp Vinh (*)",
+    "displayName": "Trường ĐẠI HỌC Công nghiệp Vinh (*) (DCV)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 231,
+    "code": "TDL",
+    "name": "Trường ĐẠI HỌC Đà Lạt",
+    "displayName": "Trường ĐẠI HỌC Đà Lạt (TDL)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 232,
+    "code": "DDT",
+    "name": "ĐẠI HỌC Duy Tân (*)",
+    "displayName": "ĐẠI HỌC Duy Tân (*) (DDT)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 233,
+    "code": "DPX",
+    "name": "Trường ĐẠI HỌC Dân lập Phú Xuân (*)",
+    "displayName": "Trường ĐẠI HỌC Dân lập Phú Xuân (*) (DPX)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 234,
+    "code": "DYD",
+    "name": "Trường ĐẠI HỌC Yersin Đà Lạt (*)",
+    "displayName": "Trường ĐẠI HỌC Yersin Đà Lạt (*) (DYD)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 235,
+    "code": "DAD",
+    "name": "Trường ĐẠI HỌC Đông Á (*)",
+    "displayName": "Trường ĐẠI HỌC Đông Á (*) (DAD)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 236,
+    "code": "HHT",
+    "name": "Trường ĐẠI HỌC Hà Tĩnh",
+    "displayName": "Trường ĐẠI HỌC Hà Tĩnh (HHT)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 237,
+    "code": "UKH",
+    "name": "Trường ĐẠI HỌC Khánh Hòa",
+    "displayName": "Trường ĐẠI HỌC Khánh Hòa (UKH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 238,
+    "code": "CEA",
+    "name": "Trường ĐẠI HỌC Kinh tế Nghệ An",
+    "displayName": "Trường ĐẠI HỌC Kinh tế Nghệ An (CEA)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 239,
+    "code": "YDN",
+    "name": "Trường ĐẠI HỌC Kỹ thuật Y Dược Đà Nẵng",
+    "displayName": "Trường ĐẠI HỌC Kỹ thuật Y Dược Đà Nẵng (YDN)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 240,
+    "code": "HVA",
+    "name": "HỌC VIỆN Âm nhạc Huế",
+    "displayName": "HỌC VIỆN Âm nhạc Huế (HVA)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 241,
+    "code": "TSN",
+    "name": "Trường ĐẠI HỌC Nha Trang",
+    "displayName": "Trường ĐẠI HỌC Nha Trang (TSN)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 242,
+    "code": "DPQ",
+    "name": "Trường ĐẠI HỌC Phạm Văn Đồng",
+    "displayName": "Trường ĐẠI HỌC Phạm Văn Đồng (DPQ)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 243,
+    "code": "DPC",
+    "name": "Trường ĐẠI HỌC Phan Châu Trinh (*)",
+    "displayName": "Trường ĐẠI HỌC Phan Châu Trinh (*) (DPC)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 244,
+    "code": "DPT",
+    "name": "Trường ĐẠI HỌC Phan Thiết (*)",
+    "displayName": "Trường ĐẠI HỌC Phan Thiết (*) (DPT)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 245,
+    "code": "DPY",
+    "name": "Trường ĐẠI HỌC Phú Yên",
+    "displayName": "Trường ĐẠI HỌC Phú Yên (DPY)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 246,
+    "code": "DQB",
+    "name": "Trường ĐẠI HỌC Quảng Bình",
+    "displayName": "Trường ĐẠI HỌC Quảng Bình (DQB)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 247,
+    "code": "DQU",
+    "name": "Trường ĐẠI HỌC Quảng Nam",
+    "displayName": "Trường ĐẠI HỌC Quảng Nam (DQU)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 248,
+    "code": "DQT",
+    "name": "Trường ĐẠI HỌC Quang Trung (*)",
+    "displayName": "Trường ĐẠI HỌC Quang Trung (*) (DQT)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 249,
+    "code": "DQN",
+    "name": "Trường ĐẠI HỌC Quy Nhơn",
+    "displayName": "Trường ĐẠI HỌC Quy Nhơn (DQN)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 250,
+    "code": "SKV",
+    "name": "Trường ĐẠI HỌC Sư phạm Kỹ thuật Vinh",
+    "displayName": "Trường ĐẠI HỌC Sư phạm Kỹ thuật Vinh (SKV)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 251,
+    "code": "UFA",
+    "name": "Trường ĐẠI HỌC Tài chính Kế toán",
+    "displayName": "Trường ĐẠI HỌC Tài chính Kế toán (UFA)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 252,
+    "code": "TTN",
+    "name": "Trường ĐẠI HỌC Tây Nguyên",
+    "displayName": "Trường ĐẠI HỌC Tây Nguyên (TTN)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 253,
+    "code": "TBD",
+    "name": "Trường ĐẠI HỌC Thái Bình Dương (*)",
+    "displayName": "Trường ĐẠI HỌC Thái Bình Dương (*) (TBD)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 254,
+    "code": "TTD",
+    "name": "Trường ĐẠI HỌC Thể dục Thể thao Đà Nẵng",
+    "displayName": "Trường ĐẠI HỌC Thể dục Thể thao Đà Nẵng (TTD)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 255,
+    "code": "TDV",
+    "name": "Trường ĐẠI HỌC Vinh",
+    "displayName": "Trường ĐẠI HỌC Vinh (TDV)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 256,
+    "code": "XDT",
+    "name": "Trường ĐẠI HỌC Xây dựng Miền Trung",
+    "displayName": "Trường ĐẠI HỌC Xây dựng Miền Trung (XDT)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 257,
+    "code": "YKV",
+    "name": "Trường ĐẠI HỌC Y khoa Vinh",
+    "displayName": "Trường ĐẠI HỌC Y khoa Vinh (YKV)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 258,
+    "code": "BPH",
+    "name": "HỌC VIỆN Biên phòng",
+    "displayName": "HỌC VIỆN Biên phòng (BPH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 259,
+    "code": "HQH",
+    "name": "HỌC VIỆN Hải Quân",
+    "displayName": "HỌC VIỆN Hải Quân (HQH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 260,
+    "code": "HEH",
+    "name": "HỌC VIỆN Hậu cần",
+    "displayName": "HỌC VIỆN Hậu cần (HEH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 261,
+    "code": "NQH",
+    "name": "HỌC VIỆN Khoa học Quân sự",
+    "displayName": "HỌC VIỆN Khoa học Quân sự (NQH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 262,
+    "code": "KQH",
+    "name": "HỌC VIỆN Kỹ thuật Quân sự",
+    "displayName": "HỌC VIỆN Kỹ thuật Quân sự (KQH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 263,
+    "code": "PKH",
+    "name": "HỌC VIỆN Phòng không - Không quân",
+    "displayName": "HỌC VIỆN Phòng không - Không quân (PKH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 264,
+    "code": "YQH",
+    "name": "HỌC VIỆN Quân Y",
+    "displayName": "HỌC VIỆN Quân Y (YQH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 265,
+    "code": "LCH",
+    "name": "Trường ĐẠI HỌC Chính trị (Trường SĨ QUAN Chính trị)",
+    "displayName": "Trường ĐẠI HỌC Chính trị (Trường SĨ QUAN Chính trị) (LCH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 266,
+    "code": "ZNH",
+    "name": "Trường ĐẠI HỌC Văn hóa - Nghệ thuật Quân đội",
+    "displayName": "Trường ĐẠI HỌC Văn hóa - Nghệ thuật Quân đội (ZNH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 267,
+    "code": "SNH",
+    "name": "Trường SĨ QUAN Công binh",
+    "displayName": "Trường SĨ QUAN Công binh (SNH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 268,
+    "code": "DCH",
+    "name": "Trường SĨ QUAN Đặc công",
+    "displayName": "Trường SĨ QUAN Đặc công (DCH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 269,
+    "code": "KGH",
+    "name": "Trường SĨ QUAN không quân",
+    "displayName": "Trường SĨ QUAN không quân (KGH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 270,
+    "code": "VPH",
+    "name": "Trường SĨ QUAN Kỹ thuật QS Vinhempich (ĐH Trần Đại Nghĩa)",
+    "displayName": "Trường SĨ QUAN Kỹ thuật QS Vinhempich (ĐH Trần Đại Nghĩa) (VPH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 271,
+    "code": "LAH",
+    "name": "Trường SĨ QUAN Lục quân 1 (ĐH Trần Quốc Tuấn)",
+    "displayName": "Trường SĨ QUAN Lục quân 1 (ĐH Trần Quốc Tuấn) (LAH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 272,
+    "code": "LBH",
+    "name": "Trường SĨ QUAN Lục quân 2 (ĐH Nguyễn Huệ)",
+    "displayName": "Trường SĨ QUAN Lục quân 2 (ĐH Nguyễn Huệ) (LBH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 273,
+    "code": "PBH",
+    "name": "Trường SĨ QUAN Pháo binh",
+    "displayName": "Trường SĨ QUAN Pháo binh (PBH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 274,
+    "code": "HGH",
+    "name": "Trường SĨ QUAN Phòng Hóa",
+    "displayName": "Trường SĨ QUAN Phòng Hóa (HGH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 275,
+    "code": "TGH",
+    "name": "Trường SĨ QUAN Tăng - Thiết giáp",
+    "displayName": "Trường SĨ QUAN Tăng - Thiết giáp (TGH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 276,
+    "code": "TTH",
+    "name": "Trường SĨ QUAN Thông tin",
+    "displayName": "Trường SĨ QUAN Thông tin (TTH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 277,
+    "code": "ANH",
+    "name": "HỌC VIỆN An ninh Nhân dân",
+    "displayName": "HỌC VIỆN An ninh Nhân dân (ANH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 278,
+    "code": "CSH",
+    "name": "HỌC VIỆN Cảnh sát Nhân dân",
+    "displayName": "HỌC VIỆN Cảnh sát Nhân dân (CSH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 279,
+    "code": "HCA",
+    "name": "HỌC VIỆN Chính trị Công an Nhân dân",
+    "displayName": "HỌC VIỆN Chính trị Công an Nhân dân (HCA)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 280,
+    "code": "ANS",
+    "name": "Trường ĐẠI HỌC An ninh nhân dân",
+    "displayName": "Trường ĐẠI HỌC An ninh nhân dân (ANS)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 281,
+    "code": "CSS",
+    "name": "Trường ĐẠI HỌC Cảnh sát nhân dân",
+    "displayName": "Trường ĐẠI HỌC Cảnh sát nhân dân (CSS)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 282,
+    "code": "HCB",
+    "name": "Trường ĐẠI HỌC Kỹ thuật - Hậu cần Công an nhân dân phía Bắc",
+    "displayName": "Trường ĐẠI HỌC Kỹ thuật - Hậu cần Công an nhân dân phía Bắc (HCB)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 283,
+    "code": "HCN",
+    "name": "Trường ĐẠI HỌC Kỹ thuật - Hậu cần Công an nhân dân phía Nam",
+    "displayName": "Trường ĐẠI HỌC Kỹ thuật - Hậu cần Công an nhân dân phía Nam (HCN)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 284,
+    "code": "PCH",
+    "name": "Trường ĐẠI HỌC Phòng cháy chữa cháy phía Bắc",
+    "displayName": "Trường ĐẠI HỌC Phòng cháy chữa cháy phía Bắc (PCH)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  },
+  {
+    "stt": 285,
+    "code": "PCS",
+    "name": "Trường ĐẠI HỌC Phòng cháy chữa cháy phía Nam",
+    "displayName": "Trường ĐẠI HỌC Phòng cháy chữa cháy phía Nam (PCS)",
+    "region": "Miền Trung & Tây Nguyên",
+    "rawRegion": "KHU VỰC MIỀN TRUNG VÀ CAO NGUYÊN TRUNG BỘ"
+  }
+]

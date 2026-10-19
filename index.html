@@ -10,7 +10,8 @@
     <meta name="author" content="Aura Health System">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="http://localhost:3000/">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
 
     <!-- Open Graph / Facebook / Zalo / Telegram -->
     <meta property="og:type" content="website">
@@ -43,9 +44,11 @@
     }
     </script>
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts & Resource Hints: Khởi tạo bắt tay TLS song song -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS (Bản tương thích 100% với cấu hình Aura) -->
@@ -131,12 +134,185 @@
             background-color: #007BA7 !important;
             color: #FFFFFF !important;
         }
+
+        /* Header Cố Định & Triệt Tiêu Giật Layout (Anti-Layout-Shift / Zero-CLS) */
+        #aura-global-header {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 100 !important;
+            width: 100% !important;
+            min-height: 80px;
+            background-color: rgba(249, 246, 240, 0.95) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border-bottom: 1px solid #D1CCC5 !important;
+            view-transition-name: aura-global-header;
+        }
+        @media (min-width: 1024px) {
+            #aura-global-header .aura-mobile-subbar {
+                display: none !important;
+            }
+            #aura-global-header .aura-desktop-nav {
+                display: flex !important;
+            }
+        }
+        @media (max-width: 1023px) {
+            #aura-global-header .aura-desktop-nav {
+                display: none !important;
+            }
+            #aura-global-header .aura-mobile-subbar {
+                display: flex !important;
+            }
+        }
+        #header-auth-corner {
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        /* Hỗ trợ Native View Transitions cho trình duyệt hiện đại (Chrome/Edge 126+) */
+        @view-transition {
+            navigation: auto;
+        }
+        ::view-transition-old(root) {
+            animation: auraFadeOut 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+        ::view-transition-new(root) {
+            animation: auraFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes auraFadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-8px); }
+        }
+        @keyframes auraFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hiệu ứng trang chuyển vào mượt mà */
+        main {
+            animation: auraPageEnter 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes auraPageEnter {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hiệu ứng trang lướt ra khi bấm chuyển trang */
+        body.aura-page-exiting main {
+            opacity: 0 !important;
+            transform: translateY(-8px) !important;
+            transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1), transform 0.18s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* Khung chứa các nút điều hướng Header */
+        .aura-nav-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(239, 236, 228, 0.7);
+            border: 1px solid rgba(209, 204, 197, 0.85);
+            border-radius: 9999px;
+            padding: 3px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Con trỏ trượt mượt mà (Sliding Active Indicator) */
+        .aura-nav-indicator {
+            position: absolute;
+            background-color: #007BA7;
+            border-radius: 9999px;
+            box-shadow: 0 2px 10px rgba(0, 123, 167, 0.35);
+            transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        width 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.2s ease,
+                        transform 0.15s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Con trỏ bóng mờ khi di chuột (Hover Pill) */
+        .aura-nav-hover-pill {
+            position: absolute;
+            background-color: rgba(0, 123, 167, 0.08);
+            border-radius: 9999px;
+            transition: left 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        width 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        height 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.2s ease;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+        }
+
+        /* Từng nút điều hướng */
+        .aura-nav-item {
+            position: relative;
+            z-index: 2;
+            transition: color 0.25s ease, transform 0.12s ease;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .aura-nav-item.is-active {
+            color: #FFFFFF !important;
+            font-weight: 800;
+        }
+        .aura-nav-item:not(.is-active) {
+            color: #4A4A4A;
+        }
+        .aura-nav-item:not(.is-active):hover {
+            color: #007BA7;
+        }
+        .aura-nav-item:active {
+            transform: scale(0.96);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-[#007BA7] selection:text-white bg-[#F9F6F0]">
 
-    <!-- GLOBAL EDITORIAL HEADER -->
-    <div id="aura-global-header"></div>
+    <!-- GLOBAL EDITORIAL HEADER (Cố Định & Chuyển Đổi Mượt Chuẩn Studio) -->
+    <header id="aura-global-header" class="sticky top-0 z-50 w-full bg-[#F9F6F0]/95 backdrop-blur-md border-b border-[#D1CCC5] shadow-xs font-newsreader">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="index.html" data-nav-id="home" class="flex items-center gap-3.5 group cursor-pointer" title="Trang Chủ Aura">
+                    <div class="w-10 h-10 md:w-11 md:h-11 rounded-full shadow-2xs group-hover:scale-105 transition-all duration-300 shrink-0 overflow-hidden">
+                        <img src="favicon.svg" alt="Aura Logo" class="w-full h-full object-contain pointer-events-none">
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-playfair text-2xl md:text-3xl font-black text-[#007BA7] tracking-tight uppercase group-hover:text-[#005b7a] transition-colors leading-none">Aura.</span>
+                        <span class="text-[8.5px] md:text-[9px] uppercase tracking-[0.22em] text-[#D73B3E] font-mono font-bold mt-1">Y Học & Sức Khỏe Tối Ưu</span>
+                    </div>
+                </a>
+
+                <nav class="aura-desktop-nav hidden lg:flex items-center">
+                    <div class="aura-nav-container flex items-center relative">
+                        <div id="aura-nav-hover-pill" class="aura-nav-hover-pill"></div>
+                        <div id="aura-nav-active-pill" class="aura-nav-indicator" style="opacity: 0;"></div>
+
+                        <a href="index.html" data-nav-id="home" class="aura-nav-item px-4 py-2 text-xs uppercase tracking-wider font-bold rounded-full is-active cursor-default" style="color: #FFFFFF !important;">Trang Chủ</a>
+                        <a href="khao-sat.html" data-nav-id="khao-sat" class="aura-nav-item px-4 py-2 text-xs uppercase tracking-wider font-bold rounded-full cursor-pointer">Khảo Sát & Nam Học</a>
+                        <a href="ban-dong-hanh.html" data-nav-id="ban-dong-hanh" class="aura-nav-item px-4 py-2 text-xs uppercase tracking-wider font-bold rounded-full cursor-pointer">Bạn Đồng Hành</a>
+                        <a href="huan-luyen-pt.html" data-nav-id="pt" class="aura-nav-item px-4 py-2 text-xs uppercase tracking-wider font-bold rounded-full cursor-pointer">Huấn Luyện PT</a>
+                        <a href="gioi-thieu.html" data-nav-id="gioi-thieu" class="aura-nav-item px-4 py-2 text-xs uppercase tracking-wider font-bold rounded-full cursor-pointer">Về Aura</a>
+                    </div>
+                </nav>
+            </div>
+
+            <div id="header-auth-corner" class="flex items-center space-x-3">
+                <!-- Đồng bộ tức thì bởi auth.js -->
+            </div>
+        </div>
+
+        <div class="aura-mobile-subbar lg:hidden border-t border-[#D1CCC5] bg-[#F9F6F0] overflow-x-auto py-2.5 px-4 flex items-center space-x-2 scrollbar-none">
+            <a href="index.html" data-nav-id="home" class="aura-mobile-nav-item px-3.5 py-1.5 text-[11px] uppercase tracking-wider whitespace-nowrap font-bold transition-all rounded-full is-active-mobile text-white bg-[#007BA7] shadow-xs cursor-default" style="background-color: #007BA7 !important; color: #FFFFFF !important;">Trang Chủ</a>
+            <a href="khao-sat.html" data-nav-id="khao-sat" class="aura-mobile-nav-item px-3.5 py-1.5 text-[11px] uppercase tracking-wider whitespace-nowrap font-bold transition-all rounded-full text-[#4A4A4A] hover:text-[#007BA7] bg-white border border-[#D1CCC5] cursor-pointer">Khảo Sát & Nam Học</a>
+            <a href="ban-dong-hanh.html" data-nav-id="ban-dong-hanh" class="aura-mobile-nav-item px-3.5 py-1.5 text-[11px] uppercase tracking-wider whitespace-nowrap font-bold transition-all rounded-full text-[#4A4A4A] hover:text-[#007BA7] bg-white border border-[#D1CCC5] cursor-pointer">Bạn Đồng Hành</a>
+            <a href="huan-luyen-pt.html" data-nav-id="pt" class="aura-mobile-nav-item px-3.5 py-1.5 text-[11px] uppercase tracking-wider whitespace-nowrap font-bold transition-all rounded-full text-[#4A4A4A] hover:text-[#007BA7] bg-white border border-[#D1CCC5] cursor-pointer">Huấn Luyện PT</a>
+            <a href="gioi-thieu.html" data-nav-id="gioi-thieu" class="aura-mobile-nav-item px-3.5 py-1.5 text-[11px] uppercase tracking-wider whitespace-nowrap font-bold transition-all rounded-full text-[#4A4A4A] hover:text-[#007BA7] bg-white border border-[#D1CCC5] cursor-pointer">Về Aura</a>
+        </div>
+    </header>
 
     <!-- MAIN HERO CONTENT -->
     <main class="flex-1">
@@ -321,9 +497,14 @@
     <!-- FOOTER -->
     <footer class="bg-white border-t border-[#D1CCC5] py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex flex-col items-center md:items-start">
-                <span class="font-playfair text-3xl font-black text-[#007BA7] uppercase tracking-tight">Aura.</span>
-                <span class="text-xs text-[#4A4A4A] mt-1">© 2026 Aura Men's Health & Wellness Protocol. Bảo mật dữ liệu cá nhân cao cấp.</span>
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full shadow-2xs overflow-hidden shrink-0">
+                    <img src="favicon.svg" alt="Aura Logo" class="w-full h-full object-contain pointer-events-none">
+                </div>
+                <div class="flex flex-col items-center md:items-start">
+                    <span class="font-playfair text-2xl font-black text-[#007BA7] uppercase tracking-tight leading-none">Aura.</span>
+                    <span class="text-xs text-[#4A4A4A] mt-1">© 2026 Aura Men's Health & Wellness Protocol. Bảo mật dữ liệu cá nhân cao cấp.</span>
+                </div>
             </div>
             <div class="flex items-center space-x-6 text-xs uppercase font-mono tracking-wider font-bold">
                 <a href="khao-sat.html" class="text-[#4A4A4A] hover:text-[#007BA7]">Khảo Sát</a>
@@ -349,6 +530,7 @@
             if (user) {
                 ctaContainer.innerHTML = `
                     <a href="dashboard.html" 
+                       onclick="try{localStorage.setItem('aura_active_module','module1');}catch(e){}"
                        class="btn-cerulean-primary px-7 py-4 rounded-full font-sans-ui text-sm font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95 flex items-center gap-2.5 cursor-pointer shadow-md"
                        style="background-color: #007BA7 !important; color: #FFFFFF !important; box-shadow: 0 4px 14px rgba(0, 123, 167, 0.4) !important;">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
@@ -371,6 +553,7 @@
                     btn.onclick = async () => {
                         const res = await loginWithGoogle();
                         if (res.success) {
+                            try { localStorage.setItem('aura_active_module', 'module1'); } catch(e){}
                             window.location.href = 'dashboard.html';
                         }
                     };
