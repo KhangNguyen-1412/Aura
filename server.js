@@ -456,6 +456,156 @@ function getUniqueFilename(targetDir, desiredName, bufferSize = 0) {
     return candidate;
 }
 
+// Phân giải đường dẫn tệp media vật lý an toàn từ URL, đường dẫn tương đối hoặc tên tệp
+function resolveMediaFile(urlOrPath, folder = '') {
+    if (!urlOrPath || typeof urlOrPath !== 'string') return null;
+    let clean = urlOrPath.trim();
+    if (!clean || clean.startsWith('data:')) return null;
+
+    // Loại bỏ query params và hash
+    clean = clean.split('#')[0].split('?')[0];
+
+    // Bỏ host / protocol nếu là URL tuyệt đối
+    if (clean.startsWith('http://') || clean.startsWith('https://')) {
+        try {
+            const parsed = new URL(clean);
+            clean = parsed.pathname;
+        } catch (_) {}
+    }
+
+    try {
+        clean = decodeURIComponent(clean);
+    } catch (_) {}
+
+    // Bỏ tiền tố media/ hoặc /media/ nếu có
+    clean = clean.replace(/^[/\\]+/, '');
+    if (clean.toLowerCase().startsWith('media/') || clean.toLowerCase().startsWith('media\\')) {
+        clean = clean.substring(6);
+    }
+    clean = clean.replace(/^[/\\]+/, '');
+
+    const normalizedMediaDir = path.resolve(MEDIA_DIR);
+    const edgingDir = path.resolve(MEDIA_DIR, 'edging_voice');
+
+    // 1. Thử đường dẫn tương đối trực tiếp trong MEDIA_DIR
+    if (clean) {
+        const candidate1 = path.resolve(normalizedMediaDir, clean);
+        if (candidate1.startsWith(normalizedMediaDir) && candidate1 !== normalizedMediaDir && !candidate1.startsWith(edgingDir)) {
+            if (fs.existsSync(candidate1)) {
+                try {
+                    if (fs.statSync(candidate1).isFile()) return candidate1;
+                } catch (_) {}
+            }
+        }
+    }
+
+    // 2. Thử ghép folder (nếu có) + tên tệp
+    if (folder) {
+        const sanitizedFolder = sanitizeSubDir(folder);
+        const baseName = path.basename(clean);
+        if (sanitizedFolder && baseName) {
+            const candidate2 = path.resolve(normalizedMediaDir, sanitizedFolder, baseName);
+            if (candidate2.startsWith(normalizedMediaDir) && candidate2 !== normalizedMediaDir && !candidate2.startsWith(edgingDir)) {
+                if (fs.existsSync(candidate2)) {
+                    try {
+                        if (fs.statSync(candidate2).isFile()) return candidate2;
+                    } catch (_) {}
+                }
+            }
+        }
+    }
+
+    // 3. Tra cứu nhanh O(1) từ mediaFileIndex theo tên tệp (basename)
+    const base = path.basename(clean).toLowerCase();
+    if (base && mediaFileIndex.has(base)) {
+        const candidate3 = path.resolve(mediaFileIndex.get(base));
+        if (candidate3.startsWith(normalizedMediaDir) && candidate3 !== normalizedMediaDir && !candidate3.startsWith(edgingDir)) {
+            if (fs.existsSync(candidate3)) {
+                try {
+                    if (fs.statSync(candidate3).isFile()) return candidate3;
+                } catch (_) {}
+            }
+        }
+    }
+
+    return null;
+}
+
+// Xóa an toàn một tệp media vật lý khỏi ổ đĩa
+function safelyDeleteMediaFile(targetPath) {
+    if (!targetPath || typeof targetPath !== 'string') return false;
+    const normalizedMediaDir = path.resolve(MEDIA_DIR);
+    const resolved = path.resolve(targetPath);
+
+    // Kiểm tra an toàn: Phải nằm trong MEDIA_DIR, không được là MEDIA_DIR, không nằm trong edging_voice
+    if (!resolved.startsWith(normalizedMediaDir) || resolved === normalizedMediaDir) {
+        console.warn('[Aura Media Security] Chặn xóa ngoài thư mục media:', resolved);
+        return false;
+    }
+    const edgingDir = path.resolve(MEDIA_DIR, 'edging_voice');
+    if (resolved.startsWith(edgingDir)) {
+        console.warn('[Aura Media Security] Chặn xóa tệp âm thanh hệ thống edging_voice:', resolved);
+        return false;
+    }
+
+    try {
+        if (fs.existsSync(resolved)) {
+            const stat = fs.statSync(resolved);
+            if (stat.isFile()) {
+                fs.unlinkSync(resolved);
+                const baseName = path.basename(resolved).toLowerCase();
+                mediaFileIndex.delete(baseName);
+                console.log(`[Aura Media] ✓ Đã xóa tệp vật lý khỏi ổ đĩa: ${resolved}`);
+                return true;
+            }
+        }
+    } catch (err) {
+        console.error('[Aura Media] Lỗi khi xóa tệp vật lý:', resolved, err);
+    }
+    return false;
+}
+
+// Xóa an toàn toàn bộ một thư mục media (khi xóa hồ sơ đối tác/creator)
+function safelyDeleteMediaFolder(folderPath) {
+    if (!folderPath || typeof folderPath !== 'string') return false;
+    const cleanSub = sanitizeSubDir(folderPath);
+    if (!cleanSub) return false;
+
+    const normalizedMediaDir = path.resolve(MEDIA_DIR);
+    const targetDir = path.resolve(normalizedMediaDir, cleanSub);
+
+    // Kiểm tra an toàn
+    if (!targetDir.startsWith(normalizedMediaDir) || targetDir === normalizedMediaDir) {
+        console.warn('[Aura Media Security] Chặn xóa thư mục gốc media:', targetDir);
+        return false;
+    }
+    const edgingDir = path.resolve(MEDIA_DIR, 'edging_voice');
+    if (targetDir.startsWith(edgingDir) || targetDir === edgingDir) {
+        console.warn('[Aura Media Security] Chặn xóa thư mục hệ thống edging_voice:', targetDir);
+        return false;
+    }
+    const ttsDir = path.resolve(MEDIA_DIR, 'tts_cache');
+    if (targetDir === ttsDir) {
+        console.warn('[Aura Media Security] Chặn xóa thư mục tts_cache:', targetDir);
+        return false;
+    }
+
+    try {
+        if (fs.existsSync(targetDir)) {
+            const stat = fs.statSync(targetDir);
+            if (stat.isDirectory()) {
+                fs.rmSync(targetDir, { recursive: true, force: true });
+                rebuildMediaIndex();
+                console.log(`[Aura Media] ✓ Đã xóa toàn bộ thư mục và tệp con khỏi ổ đĩa: ${targetDir}`);
+                return true;
+            }
+        }
+    } catch (err) {
+        console.error('[Aura Media] Lỗi khi xóa thư mục:', targetDir, err);
+    }
+    return false;
+}
+
 // Tự động sửa lỗi track duration = 0 (tkhd) của video Zalo / điện thoại để trình duyệt hiển thị đầy đủ tổng thời lượng và thanh tua seekable
 function fixMp4Buffer(buf) {
     if (!Buffer.isBuffer(buf) || buf.length < 16) return buf;
@@ -1221,6 +1371,68 @@ const server = http.createServer((req, res) => {
                 }));
             } catch (err) {
                 console.error('[Aura Media] Lỗi tải media từ URL:', err);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: err.message }));
+            }
+        });
+        return;
+    }
+
+    // API: Xóa tệp hoặc thư mục vật lý khỏi ổ đĩa cục bộ media
+    if (pathname === '/api/delete-media' && (req.method === 'POST' || req.method === 'DELETE')) {
+        const chunks = [];
+        req.on('data', chunk => chunks.push(chunk));
+        req.on('end', () => {
+            try {
+                let body = {};
+                if (chunks.length > 0) {
+                    body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+                }
+
+                let deletedCount = 0;
+                let folderDeleted = false;
+
+                // 1. Xóa thư mục nếu có yêu cầu
+                if (body.folderPath) {
+                    folderDeleted = safelyDeleteMediaFolder(body.folderPath);
+                }
+
+                // 2. Thu thập danh sách URL / Tệp cần xóa
+                const urlsToDelete = [];
+                if (Array.isArray(body.urls)) {
+                    urlsToDelete.push(...body.urls);
+                }
+                if (Array.isArray(body.items)) {
+                    body.items.forEach(it => {
+                        if (typeof it === 'string') urlsToDelete.push(it);
+                        else if (it && (it.url || it.localUrl || it.filename)) urlsToDelete.push(it.url || it.localUrl || it.filename);
+                    });
+                }
+                if (body.url) urlsToDelete.push(body.url);
+                if (body.filename && !urlsToDelete.length) urlsToDelete.push(body.filename);
+
+                // 3. Duyệt xóa từng tệp
+                const seenFiles = new Set();
+                for (const item of urlsToDelete) {
+                    if (!item) continue;
+                    const resolvedPath = resolveMediaFile(item, body.folder);
+                    if (resolvedPath && !seenFiles.has(resolvedPath)) {
+                        seenFiles.add(resolvedPath);
+                        if (safelyDeleteMediaFile(resolvedPath)) {
+                            deletedCount++;
+                        }
+                    }
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    deletedCount,
+                    folderDeleted,
+                    message: `Đã xử lý xóa tệp media khỏi thư mục lưu trữ (đã xóa ${deletedCount} tệp${folderDeleted ? ', đã xóa thư mục' : ''}).`
+                }));
+            } catch (err) {
+                console.error('[Aura Media Delete Error]:', err);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: false, error: err.message }));
             }

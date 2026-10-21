@@ -1867,10 +1867,57 @@
             window.showToast("Đã Nạp Mẫu", "Đã nạp 6 tệp ảnh & clip video demo thành công!", false);
         };
 
-        // Xóa một tệp khỏi kho
+        /**
+         * Tự động xóa tệp vật lý khỏi folder media/ trên máy tính
+         */
+        async function deleteFileFromProjectMedia(itemsOrUrl, folder = null) {
+            if (!itemsOrUrl) return null;
+            let payload = {};
+            if (typeof itemsOrUrl === 'string') {
+                payload = { url: itemsOrUrl };
+                if (folder) payload.folder = folder;
+            } else if (Array.isArray(itemsOrUrl)) {
+                payload = {
+                    urls: itemsOrUrl.map(x => (typeof x === 'string' ? x : (x && (x.url || x.localUrl || x.filename)))).filter(Boolean)
+                };
+                if (folder) payload.folder = folder;
+            } else if (typeof itemsOrUrl === 'object') {
+                if (itemsOrUrl.folderPath || itemsOrUrl.urls) {
+                    payload = itemsOrUrl;
+                } else {
+                    payload = {
+                        url: itemsOrUrl.url || itemsOrUrl.localUrl || "",
+                        filename: itemsOrUrl.filename || "",
+                        folder: itemsOrUrl.folder || folder || ""
+                    };
+                }
+            }
+
+            try {
+                const res = await fetch('/api/delete-media', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log("[Aura Media] Xóa tệp vật lý hoàn tất:", data);
+                    return data;
+                }
+            } catch (e) {
+                console.warn("Không thể xóa tệp vật lý khỏi thư mục media:", e);
+            }
+            return null;
+        }
+        window.deleteFileFromProjectMedia = deleteFileFromProjectMedia;
+
+        // Xóa một tệp khỏi kho và tự động xóa tệp vật lý trong folder media
         window.deleteUserMedia = async function(category, idx) {
-            if (!confirm("Bạn có chắc chắn muốn xóa tệp này khỏi kho lưu trữ?")) return;
-            
+            if (!confirm("Bạn có chắc chắn muốn xóa tệp này khỏi kho lưu trữ và thư mục máy tính?")) return;
+
+            const targetList = (category === 'hot') ? userHotGallery : userDailyGallery;
+            const removedItem = (targetList && targetList[idx]) ? targetList[idx] : null;
+
             if (category === 'hot') {
                 userHotGallery.splice(idx, 1);
             } else {
@@ -1879,7 +1926,14 @@
 
             renderMediaGallery(category);
             await saveGalleriesToFirestore();
-            window.showToast("Đã Xóa Tệp", "Tệp đã được gỡ khỏi kho lưu trữ.", false);
+
+            if (removedItem) {
+                const uid = currentUid || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+                const personalSub = category === 'hot' ? 'Ảnh Nóng' : 'Ảnh Đời Thường';
+                const folder = `${uid}/Cá Nhân/${personalSub}`;
+                deleteFileFromProjectMedia(removedItem, folder);
+            }
+            window.showToast("Đã Xóa Tệp", "Tệp đã được gỡ khỏi kho lưu trữ và thư mục media.", false);
         };
 
         // Lưu hai kho gallery lên Firestore và LocalStorage

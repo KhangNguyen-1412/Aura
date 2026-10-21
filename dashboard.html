@@ -10148,7 +10148,12 @@
 
         window.resetCurrentExerciseMediaDefault = function() {
             if (!currentModalExerciseId) return;
+            const currentMedia = (typeof getPtCustomMediaMap === "function") ? getPtCustomMediaMap()[currentModalExerciseId] : null;
             savePtCustomMedia(currentModalExerciseId, null);
+            if (currentMedia) {
+                if (currentMedia.video) deleteFileFromProjectMedia(currentMedia.video);
+                if (currentMedia.image) deleteFileFromProjectMedia(currentMedia.image);
+            }
             const exWithMedia = getPtExerciseWithMedia(currentModalExerciseId);
             window.renderPtModalMedia(exWithMedia, ptModalActiveMediaTab);
             const form = document.getElementById('pt-modal-custom-media-form');
@@ -12407,6 +12412,7 @@
             if (!p || !Array.isArray(p.videoCalls)) return;
 
             if (confirm("Bạn có chắc chắn muốn xóa bản ghi video call này khỏi hồ sơ không?")) {
+                const removedItem = p.videoCalls[idx];
                 p.videoCalls.splice(idx, 1);
                 window.renderPartnerVideoCalls(p);
                 if (p.id) {
@@ -12416,7 +12422,10 @@
                         console.warn("Lỗi cập nhật Firestore khi xóa video call:", err);
                     }
                 }
-                showToast("Đã xóa video call khỏi hồ sơ.", "info");
+                if (removedItem) {
+                    deleteFileFromProjectMedia(removedItem);
+                }
+                showToast("Đã xóa video call khỏi hồ sơ và thư mục lưu trữ.", "info");
             }
         };
 
@@ -13389,6 +13398,9 @@
                 videoFileName = '';
                 if (isExistingMediaRemoved && editingReleaseLogId) {
                     await deleteVideoFromStorage(editingReleaseLogId);
+                    if (existingReleaseLogMedia && (existingReleaseLogMedia.videoUrl || existingReleaseLogMedia.videoFileName)) {
+                        deleteFileFromProjectMedia(existingReleaseLogMedia.videoUrl || existingReleaseLogMedia.videoFileName);
+                    }
                 }
             }
 
@@ -13553,8 +13565,12 @@
         window.deleteReleaseLog = async function(id) {
             if (!confirm("Bạn có chắc muốn xóa bản ghi này và tệp video đi kèm khỏi Firestore & máy tính?")) return;
             try {
+                const log = (typeof currentReleaseLogs !== "undefined" ? currentReleaseLogs : []).find(x => x && (x.id === id || String(x.id) === String(id)));
                 await deleteDoc(doc(db, "release_logs", id));
                 await deleteVideoFromStorage(id);
+                if (log && (log.videoUrl || log.videoFileName)) {
+                    deleteFileFromProjectMedia(log.videoUrl || log.videoFileName);
+                }
                 showToast("Đã xóa bản ghi và tệp ghi hình thành công", "info");
             } catch (err) {
                 handleFirestoreError(err, "Xóa bản ghi");
@@ -15748,6 +15764,53 @@
         window.saveUrlToProjectMedia = saveUrlToProjectMedia;
 
         /**
+         * Tự động xóa tệp vật lý (ảnh / video / audio) hoặc thư mục khỏi folder media/ trên máy tính
+         */
+        async function deleteFileFromProjectMedia(itemsOrUrl, folder = null) {
+            if (!itemsOrUrl) return null;
+            const serverCheck = (typeof checkLocalMediaServer === "function") ? await checkLocalMediaServer() : null;
+            if (!serverCheck || !serverCheck.active) return null;
+
+            let payload = {};
+            if (typeof itemsOrUrl === "string") {
+                payload = { url: itemsOrUrl };
+                if (folder) payload.folder = folder;
+            } else if (Array.isArray(itemsOrUrl)) {
+                payload = {
+                    urls: itemsOrUrl.map(x => (typeof x === "string" ? x : (x && (x.url || x.localUrl || x.filename)))).filter(Boolean)
+                };
+                if (folder) payload.folder = folder;
+            } else if (typeof itemsOrUrl === "object") {
+                if (itemsOrUrl.folderPath || itemsOrUrl.urls) {
+                    payload = itemsOrUrl;
+                } else {
+                    payload = {
+                        url: itemsOrUrl.url || itemsOrUrl.localUrl || "",
+                        filename: itemsOrUrl.filename || "",
+                        folder: itemsOrUrl.folder || folder || ""
+                    };
+                }
+            }
+
+            try {
+                const res = await fetch(`${serverCheck.baseUrl}/api/delete-media`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log("[Aura Media] Xóa tệp vật lý hoàn tất:", data);
+                    return data;
+                }
+            } catch (e) {
+                console.warn("Không thể xóa tệp vật lý khỏi thư mục media:", e);
+            }
+            return null;
+        }
+        window.deleteFileFromProjectMedia = deleteFileFromProjectMedia;
+
+        /**
          * Xử lý tải nhiều tệp ảnh/video lưu trực tiếp vào thư mục media của dự án (Chống trùng lặp tuyệt đối)
          */
         window.handleProjectMediaGalleryUpload = function(e) {
@@ -16138,8 +16201,12 @@
 
         function removePartnerMedia(index) {
             if (index >= 0 && index < currentPartnerGallery.length) {
+                const removedItem = currentPartnerGallery[index];
                 currentPartnerGallery.splice(index, 1);
                 renderPartnerModalGallery();
+                if (removedItem) {
+                    deleteFileFromProjectMedia(removedItem);
+                }
             }
         }
         window.removePartnerMedia = removePartnerMedia;
@@ -18699,8 +18766,12 @@
 
         window.removeCrudPartnerVideoCall = function(idx) {
             if (idx >= 0 && idx < currentPartnerVideoCalls.length) {
+                const removedItem = currentPartnerVideoCalls[idx];
                 currentPartnerVideoCalls.splice(idx, 1);
                 window.renderPartnerModalVideoCalls();
+                if (removedItem) {
+                    deleteFileFromProjectMedia(removedItem);
+                }
             }
         };
 
@@ -19158,6 +19229,9 @@
                 }
                 currentPartnerAudioVault.splice(idx, 1);
                 window.renderPartnerModalAudioVault();
+                if (item) {
+                    deleteFileFromProjectMedia(item);
+                }
             }
         };
 
@@ -19410,10 +19484,42 @@
         };
 
         window.deletePartner = async function(id) {
-            if (!confirm("Bạn có chắc muốn xóa hồ sơ này khỏi Firestore?")) return;
+            if (!confirm("Bạn có chắc muốn xóa hồ sơ này khỏi Firestore và toàn bộ dữ liệu trong thư mục lưu trữ?")) return;
             try {
+                const list = window.currentPartners || currentPartners || [];
+                const p = list.find(x => x && (x.id === id || String(x.id) === String(id)));
+
                 await deleteDoc(doc(db, "partners", id));
-                showToast("Đã xóa hồ sơ thành công", "info");
+
+                if (p) {
+                    const allUrls = [];
+                    if (p.avatar) allUrls.push(p.avatar);
+                    if (p.cover) allUrls.push(p.cover);
+                    if (Array.isArray(p.gallery)) {
+                        p.gallery.forEach(it => { if (it) allUrls.push(it.url || it.localUrl || it.filename); });
+                    }
+                    if (Array.isArray(p.teachingGallery)) {
+                        p.teachingGallery.forEach(it => { if (it) allUrls.push(it.url || it.localUrl || it.filename); });
+                    }
+                    if (Array.isArray(p.videoCalls)) {
+                        p.videoCalls.forEach(it => { if (it) allUrls.push(it.url || it.localUrl || it.filename); });
+                    }
+                    if (Array.isArray(p.audioVault)) {
+                        p.audioVault.forEach(it => { if (it) allUrls.push(it.url || it.localUrl || it.filename); });
+                    }
+
+                    const typeLabel = (typeof isPartnerOnlyFan === "function" && isPartnerOnlyFan(p)) ? "Trai OnlyFans" : "Bạn Đồng Hành";
+                    const personName = (p.name || "").trim();
+                    const uid = (typeof currentUserId !== "undefined" && currentUserId) ||
+                                (typeof auth !== "undefined" && auth.currentUser ? auth.currentUser.uid : "odRSfSMD1ZaoglEFBkeIKhLCusZ2");
+                    const folderPath = personName ? `${uid}/${typeLabel}/${personName}` : null;
+
+                    deleteFileFromProjectMedia({
+                        folderPath: folderPath,
+                        urls: allUrls.filter(Boolean)
+                    });
+                }
+                showToast("Đã xóa hồ sơ và dọn dẹp thư mục lưu trữ thành công", "info");
             } catch (err) {
                 handleFirestoreError(err, "Xóa hồ sơ");
             }
@@ -22875,8 +22981,14 @@
         };
 
         window.removeTeachingMedia = function(idx) {
-            currentTeachingGallery.splice(idx, 1);
-            window.renderPartnerModalTeachingGallery();
+            if (idx >= 0 && idx < currentTeachingGallery.length) {
+                const removedItem = currentTeachingGallery[idx];
+                currentTeachingGallery.splice(idx, 1);
+                window.renderPartnerModalTeachingGallery();
+                if (removedItem) {
+                    deleteFileFromProjectMedia(removedItem);
+                }
+            }
         };
         // Hàm lấy Icon SVG đồng bộ phong cách Minimalist/Editorial
         window.getSocialIconSvg = function(platform) {
