@@ -747,7 +747,7 @@
                                         <video id="edit-cover-preview-video" autoplay loop muted playsinline class="w-full h-full object-cover hidden"></video>
                                     </div>
                                     <div class="flex gap-2">
-                                        <input type="text" id="inp-cover-url" oninput="window.updateEditCoverPreview(this.value)" class="flex-1 p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]" placeholder="https://... URL ảnh/video bìa hoặc media/...">
+                                        <input type="text" id="inp-cover-url" oninput="window.updateEditCoverPreview(this.value)" class="flex-1 p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#007BA7]" placeholder="https://... URL ảnh hoặc video bìa">
                                         <button type="button" onclick="document.getElementById('inp-cover-file').click()" class="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 border border-[#D1CCC5] font-bold rounded-lg text-ink text-xs shrink-0 cursor-pointer">Tải Tệp</button>
                                     </div>
                                     <input type="file" id="inp-cover-file" accept="image/*,video/*,.mp4,.mov,.webm,.m4v" class="hidden" onchange="window.handleCoverUpload(event)">
@@ -843,7 +843,7 @@
                                                 <span id="edit-penis-photo-empty" class="text-2xl text-stone-400">🍆</span>
                                             </div>
                                             <div class="flex-1 w-full space-y-2">
-                                                <input type="text" id="inp-penis-photo" placeholder="Đường dẫn ảnh (media/... hoặc https://...)" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#D73B3E] text-xs" oninput="window.updatePenisPhotoPreview(this.value)">
+                                                <input type="text" id="inp-penis-photo" placeholder="https://... Liên kết ảnh hồ sơ" class="w-full p-2.5 rounded-lg border border-[#D1CCC5] bg-white outline-none focus:border-[#D73B3E] text-xs" oninput="window.updatePenisPhotoPreview(this.value)">
                                                 <div class="flex items-center gap-2">
                                                     <input type="file" id="input-penis-photo-file" accept="image/*" class="hidden" onchange="window.handleUploadPenisPhoto(event)">
                                                     <button type="button" onclick="document.getElementById('input-penis-photo-file').click()" class="px-3.5 py-1.5 rounded-full bg-[#D73B3E] text-white text-[11px] font-bold uppercase tracking-wider hover:opacity-90 transition-all cursor-pointer shadow-xs">
@@ -909,9 +909,9 @@
 
                 <!-- Action controls -->
                 <div class="flex flex-wrap items-center gap-3 shrink-0">
-                    <div class="px-3.5 py-2 rounded-full border border-emerald-300 bg-emerald-50 text-emerald-800 text-xs font-bold uppercase tracking-wider shadow-2xs flex items-center gap-2 pointer-events-none" title="Tệp được lưu trữ trực tiếp vào thư mục media của máy chủ">
+                    <div class="px-3.5 py-2 rounded-full border border-emerald-300 bg-emerald-50 text-emerald-800 text-xs font-bold uppercase tracking-wider shadow-2xs flex items-center gap-2 pointer-events-none" title="Hệ thống lưu trữ bảo mật riêng tư">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>Media Local (Đang Lưu Máy Chủ)</span>
+                        <span>Lưu Trữ Mã Hóa An Toàn</span>
                     </div>
                     <button type="button" id="btn-toggle-blur" onclick="window.toggleHotBlur()" 
                             class="px-4 py-2 rounded-full border border-[#D1CCC5] bg-white hover:border-[#D73B3E] hover:text-[#D73B3E] text-xs font-bold uppercase tracking-wider transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer">
@@ -952,7 +952,7 @@
                                     🔞
                                 </div>
                                 <span class="text-sm font-playfair font-bold text-[#D73B3E]">Kéo &amp; Thả Ảnh Hoặc Clip Nóng Vào Đây</span>
-                                <span class="text-xs text-[#4A4A4A] italic mt-0.5">Hoặc bấm để chọn tệp từ máy / dán link Google Drive (MP4, MOV, WebM, JPG, PNG)</span>
+                                <span class="text-xs text-[#4A4A4A] italic mt-0.5">Hoặc bấm chọn tệp từ máy / dán liên kết URL (MP4, MOV, WebM, JPG, PNG)</span>
                                 
                                 <div class="mt-3 flex items-center gap-2" onclick="event.stopPropagation()">
                                     <button type="button" onclick="document.getElementById('input-upload-hot').click()" 
@@ -963,7 +963,7 @@
                                     </button>
                                     <button type="button" onclick="window.promptAddMediaUrl('hot')" 
                                             class="px-3.5 py-1.5 rounded-full border border-[#D73B3E] text-[#D73B3E] hover:bg-[#D73B3E]/10 text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1">
-                                        <span>🔗 Dán Link URL / Drive</span>
+                                        <span>🔗 Dán Liên Kết URL</span>
                                     </button>
                                 </div>
                             </div>
@@ -1041,7 +1041,7 @@
                                     </button>
                                     <button type="button" onclick="window.promptAddMediaUrl('daily')" 
                                             class="px-3.5 py-1.5 rounded-full border border-[#007BA7] text-[#007BA7] hover:bg-[#007BA7]/10 text-xs font-bold uppercase transition-all cursor-pointer flex items-center gap-1">
-                                        <span>🔗 Dán Link URL / Drive</span>
+                                        <span>🔗 Dán Liên Kết URL</span>
                                     </button>
                                 </div>
                             </div>
@@ -1116,93 +1116,7 @@
         </div>
     </div>
 
-    <!-- MODAL CẤU HÌNH GOOGLE DRIVE TỰ ĐỘNG -->
-    <div id="modal-drive-settings" class="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-stone-200 overflow-hidden flex flex-col max-h-[90vh]">
-            <!-- Header -->
-            <div class="bg-gradient-to-r from-stone-900 to-stone-800 text-white p-6 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-xl">
-                        ☁️
-                    </div>
-                    <div>
-                        <h3 class="font-playfair text-xl font-bold">Cấu Hình Google Drive Tự Động</h3>
-                        <p class="text-xs text-stone-300">Tự động sao lưu ảnh &amp; clip lên Google Drive khi tải lên Aura</p>
-                    </div>
-                </div>
-                <button type="button" onclick="window.closeDriveSettingsModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors">✕</button>
-            </div>
 
-            <!-- Body (Scrollable) -->
-            <div class="p-6 overflow-y-auto space-y-6 flex-1 text-sm text-[#1A1A1A]">
-                <!-- Trạng thái hiện tại -->
-                <div id="drive-status-card" class="p-4 rounded-2xl border border-stone-200 bg-stone-50 flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <div id="drive-status-badge-icon" class="w-9 h-9 rounded-full bg-stone-200 flex items-center justify-center text-stone-600 font-bold text-xs shrink-0">●</div>
-                        <div>
-                            <div class="font-mono text-[10px] font-bold uppercase tracking-wider text-stone-500">TRẠNG THÁI HIỆN TẠI</div>
-                            <div class="font-bold text-sm" id="drive-status-badge-desc"><span class="inline-block h-4 w-32 bg-stone-300 rounded animate-pulse"></span></div>
-                        </div>
-                    </div>
-                    <button type="button" onclick="window.testDriveConnection()" id="btn-drive-test" class="px-3.5 py-1.5 rounded-full border border-stone-300 hover:border-stone-800 bg-white text-xs font-bold uppercase transition-all cursor-pointer">
-                        Kiểm Tra Kết Nối
-                    </button>
-                </div>
-
-                <!-- Ô nhập Web App URL -->
-                <div class="space-y-2">
-                    <label class="block font-bold text-xs uppercase tracking-wider text-[#4A4A4A]">
-                        Google Apps Script Web App URL:
-                    </label>
-                    <input type="url" id="input-drive-script-url" placeholder="https://script.google.com/macros/s/AKfycbx.../exec"
-                           class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:border-[#007BA7] focus:ring-2 focus:ring-[#007BA7]/20 outline-none text-xs font-mono">
-                    <p class="text-[11px] text-stone-500 italic">Dán URL bạn nhận được từ Google Apps Script sau khi bấm Triển khai (Deploy) Web App.</p>
-                </div>
-
-                <!-- Checkbox Bật/Tắt -->
-                <label class="flex items-center gap-3 p-3.5 rounded-xl border border-stone-200 hover:bg-stone-50 cursor-pointer">
-                    <input type="checkbox" id="check-drive-enabled" class="w-4 h-4 text-[#007BA7] rounded border-stone-300 focus:ring-[#007BA7]">
-                    <div>
-                        <div class="font-bold text-xs text-stone-800">Kích hoạt tự động đẩy media lên Google Drive</div>
-                        <div class="text-[11px] text-stone-500">Ảnh và video sẽ được lưu thẳng vào thư mục Google Drive của bạn (đồng thời giữ bản sao cục bộ dự phòng).</div>
-                    </div>
-                </label>
-
-                <!-- Kết Quả Kiểm Tra -->
-                <div id="drive-test-result" class="hidden p-3.5 rounded-xl text-xs font-mono border"></div>
-
-                <!-- Hướng Dẫn Tóm Tắt & Nút Sao Chép Mã -->
-                <div class="border border-stone-200 rounded-2xl p-4 bg-stone-50/60 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-xs uppercase tracking-wider text-stone-700">Mã Nguồn Google Apps Script:</span>
-                        <button type="button" onclick="window.copyDriveScriptCode()" class="px-3 py-1 rounded-full bg-[#007BA7] text-white hover:bg-[#007BA7]/90 text-[11px] font-bold uppercase transition-all cursor-pointer">
-                            📋 Sao Chép Mã Apps Script
-                        </button>
-                    </div>
-                    <div class="text-xs text-[#4A4A4A] space-y-1.5 leading-relaxed">
-                        <p>1. Mở <a href="https://drive.google.com" target="_blank" class="text-[#007BA7] underline font-bold">Google Drive</a> → Tạo thư mục <b>Aura Media</b> → Copy <b>Folder ID</b> trên thanh URL.</p>
-                        <p>2. Mở <a href="https://script.google.com" target="_blank" class="text-[#007BA7] underline font-bold">script.google.com</a> → Tạo dự án mới → Dán mã nguồn đã sao chép vào <code>Code.gs</code>.</p>
-                        <p>3. Thay <code>YOUR_FOLDER_ID</code> ở dòng đầu bằng Folder ID ở Bước 1.</p>
-                        <p>4. Bấm <b>Deploy → New deployment</b> → Chọn <b>Web app</b> → Ai có quyền truy cập: <b>Anyone (Bất kỳ ai)</b> → Bấm <b>Deploy</b>.</p>
-                        <p>5. Copy Web App URL dán vào ô bên trên rồi bấm <b>Lưu &amp; Áp Dụng</b>!</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="bg-stone-50 border-t border-stone-200 p-4 px-6 flex items-center justify-between">
-                <span class="text-xs text-stone-400">Tự động kích hoạt ngay không cần khởi động lại</span>
-                <div class="flex items-center gap-3">
-                    <button type="button" onclick="window.closeDriveSettingsModal()" class="px-4 py-2 rounded-full border border-stone-300 text-stone-700 hover:bg-stone-100 text-xs font-bold uppercase transition-all cursor-pointer">
-                        Đóng
-                    </button>
-                    <button type="button" onclick="window.saveDriveSettings()" class="px-5 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider shadow-sm transition-all cursor-pointer">
-                        💾 Lưu &amp; Áp Dụng
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- FOOTER -->
     <footer class="bg-white border-t border-[#D1CCC5] py-6 mt-12 font-newsreader">
@@ -1756,9 +1670,9 @@
         setupDropzone('dropzone-hot', 'hot');
         setupDropzone('dropzone-daily', 'daily');
 
-        // Thêm link media từ URL (Google Drive, CDN ảnh, Cloudinary, link trực tiếp...)
+        // Thêm link media từ URL (Cloud Storage, CDN ảnh, Cloudinary, link trực tiếp...)
         window.promptAddMediaUrl = async function(category) {
-            const inputVal = prompt(`Nhập liên kết (URL) ảnh/clip hoặc link tệp Google Drive của bạn:\n(Ví dụ: https://drive.google.com/file/d/xxx hoặc link ảnh/video MP4)`);
+            const inputVal = prompt(`Nhập liên kết (URL) ảnh hoặc video clip:\n(Ví dụ: Liên kết trực tiếp MP4, WebM, hoặc Cloud Storage)`);
             if (!inputVal || !inputVal.trim()) return;
 
             let finalUrl = inputVal.trim();
@@ -1770,7 +1684,7 @@
             if (driveMatch) {
                 const fileId = driveMatch[1];
                 isDrive = true;
-                const isUserVideo = confirm("Tệp Google Drive này có phải là VIDEO CLIP không?\n\n• Bấm OK nếu là Video Clip\n• Bấm Cancel nếu là Hình Ảnh");
+                const isUserVideo = confirm("Tệp liên kết này có phải là VIDEO CLIP không?\n\n• Bấm OK nếu là Video Clip\n• Bấm Cancel nếu là Hình Ảnh");
                 if (isUserVideo) {
                     finalUrl = `https://drive.google.com/file/d/${fileId}/preview`;
                     isVid = true;
@@ -1806,7 +1720,7 @@
             const newItem = {
                 url: finalUrl,
                 type: isVid ? 'video' : 'image',
-                filename: isDrive ? (isVid ? `Google Drive Clip (${new Date().toLocaleDateString('vi-VN')})` : `Google Drive Ảnh (${new Date().toLocaleDateString('vi-VN')})`) : `Media (${new Date().toLocaleDateString('vi-VN')})`,
+                filename: isVid ? `Video Clip (${new Date().toLocaleDateString('vi-VN')})` : `Hình Ảnh (${new Date().toLocaleDateString('vi-VN')})`,
                 createdAt: new Date().toISOString()
             };
 
@@ -1908,7 +1822,7 @@
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    console.log("[Aura Media] Xóa tệp vật lý hoàn tất:", data);
+                    console.log("[Aura Vault] Đồng bộ dữ liệu hoàn tất:", data);
                     return data;
                 }
             } catch (e) {
@@ -1940,7 +1854,7 @@
                 const folder = `${uid}/Cá Nhân/${personalSub}`;
                 deleteFileFromProjectMedia(removedItem, folder);
             }
-            window.showToast("Đã Xóa Tệp", "Tệp đã được gỡ khỏi kho lưu trữ và thư mục media.", false);
+            window.showToast("Đã Xóa Tệp", "Tệp đã được gỡ khỏi kho lưu trữ thành công.", false);
         };
 
         // Lưu hai kho gallery lên Firestore và LocalStorage
@@ -2005,7 +1919,7 @@
             }
             if (titleEl) titleEl.innerText = mediaTitle;
             if (dlLink) {
-                dlLink.href = driveId ? `https://drive.google.com/uc?id=${driveId}&export=download` : (targetUrl || url);
+                dlLink.href = driveId ? `/api/drive-stream/${driveId}` : (targetUrl || url);
                 dlLink.download = mediaTitle;
             }
 
@@ -2092,6 +2006,7 @@
             try {
                 const fileToSend = await compressImageBeforeUpload(file);
                 const uid = currentUid || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+                const folderName = `${uid}/Cá Nhân/Nhạy Cảm`;
                 const data = await uploadBinaryWithProgress('/api/upload-media', fileToSend, {
                     'Content-Type': fileToSend.type || 'application/octet-stream',
                     'x-filename': encodeURIComponent(file.name),
@@ -2195,7 +2110,7 @@
                     const inp = document.getElementById('inp-cover-url');
                     if (inp) inp.value = data.url;
                     window.updateEditCoverPreview(data.url);
-                    window.showToast("Trang Bìa", isVideo ? "Đã lưu video bìa vào thư mục media!" : "Đã lưu ảnh bìa vào thư mục media!", false);
+                    window.showToast("Trang Bìa", isVideo ? "Đã tải lên và lưu video bìa thành công!" : "Đã tải lên và lưu ảnh bìa thành công!", false);
                     return;
                 }
                 throw new Error(data.error || "Máy chủ không thể lưu tệp bìa");
@@ -2556,280 +2471,6 @@
 
             renderProfileView(profileData);
         });
-
-        // ==========================================
-        // QUẢN LÝ TÍCH HỢP GOOGLE DRIVE
-        // ==========================================
-        const APPS_SCRIPT_SOURCE = `// =============================================
-// AURA MEDIA VAULT — Google Drive Auto Upload
-// =============================================
-// Thay YOUR_FOLDER_ID bên dưới bằng ID thư mục Google Drive của bạn
-
-const ROOT_FOLDER_ID = 'YOUR_FOLDER_ID';
-
-function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    var fileName = data.filename || ('media_' + Date.now());
-    var mimeType = data.mimeType || 'application/octet-stream';
-    var base64Data = data.base64;
-    var subFolder = data.folder || '';
-
-    if (!base64Data) {
-      return ContentService.createTextOutput(JSON.stringify({
-        success: false, error: 'Thiếu dữ liệu base64'
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-
-    var targetFolder = DriveApp.getFolderById(ROOT_FOLDER_ID);
-    if (subFolder) {
-      var parts = subFolder.split('/').filter(function(p) { return p && p.length > 0; });
-      for (var i = 0; i < parts.length; i++) {
-        var existing = targetFolder.getFoldersByName(parts[i]);
-        if (existing.hasNext()) {
-          targetFolder = existing.next();
-        } else {
-          targetFolder = targetFolder.createFolder(parts[i]);
-        }
-      }
-    }
-
-    var blob = Utilities.newBlob(Utilities.base64Decode(base64Data), mimeType, fileName);
-    var file = targetFolder.createFile(blob);
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-
-    var fileId = file.getId();
-    var isVideo = mimeType.indexOf('video') === 0;
-
-    return ContentService.createTextOutput(JSON.stringify({
-      success: true,
-      fileId: fileId,
-      fileName: file.getName(),
-      mimeType: mimeType,
-      size: file.getSize(),
-      url: isVideo
-        ? 'https://drive.google.com/file/d/' + fileId + '/preview'
-        : 'https://lh3.googleusercontent.com/d/' + fileId,
-      driveUrl: 'https://drive.google.com/file/d/' + fileId + '/view',
-      type: isVideo ? 'video' : 'image'
-    })).setMimeType(ContentService.MimeType.JSON);
-
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({
-      success: false, error: err.toString()
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({
-    status: 'ok',
-    service: 'Aura Media Vault — Google Drive Bridge',
-    version: '1.0',
-    timestamp: new Date().toISOString()
-  })).setMimeType(ContentService.MimeType.JSON);
-}`;
-
-        async function fetchDriveConfig() {
-            try {
-                const res = await fetch('/api/drive-config');
-                if (res.ok) {
-                    return await res.json();
-                }
-            } catch (_) {}
-            return { enabled: false, scriptUrl: '' };
-        }
-
-        async function refreshDriveIndicator() {
-            const dot = document.getElementById('drive-indicator-dot');
-            const text = document.getElementById('drive-indicator-text');
-            if (!dot || !text) return;
-
-            const cfg = await fetchDriveConfig();
-            if (cfg.enabled && cfg.scriptUrl) {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
-                text.innerText = "Google Drive (Bật)";
-                text.className = "text-emerald-700 font-bold";
-            } else if (cfg.scriptUrl && !cfg.enabled) {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
-                text.innerText = "Google Drive (Tắt)";
-                text.className = "text-amber-700 font-bold";
-            } else {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-stone-300";
-                text.innerText = "Google Drive";
-                text.className = "text-stone-600";
-            }
-        }
-
-        window.openDriveSettingsModal = async function() {
-            const modal = document.getElementById('modal-drive-settings');
-            const urlInput = document.getElementById('input-drive-script-url');
-            const checkEnabled = document.getElementById('check-drive-enabled');
-            const statusDesc = document.getElementById('drive-status-badge-desc');
-            const statusIcon = document.getElementById('drive-status-badge-icon');
-            const testResult = document.getElementById('drive-test-result');
-
-            if (testResult) testResult.classList.add('hidden');
-
-            const cfg = await fetchDriveConfig();
-            if (urlInput) urlInput.value = cfg.scriptUrl || '';
-            if (checkEnabled) checkEnabled.checked = Boolean(cfg.enabled);
-
-            if (statusDesc && statusIcon) {
-                if (cfg.enabled && cfg.scriptUrl) {
-                    statusIcon.className = "w-9 h-9 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm shrink-0";
-                    statusIcon.innerText = "✓";
-                    statusDesc.innerHTML = `<span class="text-emerald-700 font-bold">Đang Hoạt Động</span> — Tự động lưu tệp lên Drive`;
-                } else if (cfg.scriptUrl) {
-                    statusIcon.className = "w-9 h-9 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-sm shrink-0";
-                    statusIcon.innerText = "!";
-                    statusDesc.innerHTML = `<span class="text-amber-700 font-bold">Đã Cấu Hình Nhưng Đang Tắt</span>`;
-                } else {
-                    statusIcon.className = "w-9 h-9 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center font-bold text-sm shrink-0";
-                    statusIcon.innerText = "○";
-                    statusDesc.innerHTML = `<span class="text-stone-600">Chưa Cấu Hình URL Web App</span>`;
-                }
-            }
-
-            if (modal) modal.classList.remove('hidden');
-        };
-
-        window.closeDriveSettingsModal = function() {
-            const modal = document.getElementById('modal-drive-settings');
-            if (modal) modal.classList.add('hidden');
-        };
-
-        window.testDriveConnection = async function() {
-            const urlInput = document.getElementById('input-drive-script-url');
-            const testBtn = document.getElementById('btn-drive-test');
-            const testResult = document.getElementById('drive-test-result');
-            const testUrl = (urlInput ? urlInput.value : '').trim();
-
-            if (!testUrl) {
-                alert("Vui lòng dán Web App URL của Google Apps Script trước khi kiểm tra!");
-                return;
-            }
-
-            if (testBtn) {
-                testBtn.disabled = true;
-                testBtn.innerText = "Đang kiểm tra...";
-            }
-
-            try {
-                const res = await fetch('/api/drive-test', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ scriptUrl: testUrl })
-                });
-                const resp = await res.json();
-                const data = resp.result || resp;
-
-                if (testResult) {
-                    testResult.classList.remove('hidden');
-
-                    if (data.success) {
-                        testResult.className = "p-4 rounded-2xl text-xs border bg-emerald-50 text-emerald-900 border-emerald-300";
-                        testResult.innerHTML = `
-                            <div class="flex items-center gap-2 font-bold text-sm text-emerald-700 mb-1">
-                                <span>✓</span> <span>KẾT NỐI THÀNH CÔNG!</span>
-                            </div>
-                            <p class="text-stone-700">Google Apps Script đã sẵn sàng hoạt động. Bây giờ bạn hãy bấm nút <b>"💾 Lưu &amp; Áp Dụng"</b> ở góc dưới để bắt đầu tự động lưu ảnh/clip vào Drive!</p>
-                        `;
-                    } else {
-                        testResult.className = "p-4 rounded-2xl text-xs border bg-amber-50 text-amber-900 border-amber-300";
-                        let guidanceHtml = '';
-
-                        if (data.type === 'auth_required') {
-                            guidanceHtml = `
-                                <div class="mt-2 text-stone-800 bg-white/80 p-3.5 rounded-xl border border-amber-300">
-                                    <div class="font-bold text-amber-800 mb-1">👉 Cách khắc phục (trong 30 giây):</div>
-                                    <ol class="list-decimal list-inside space-y-1.5 text-[11px] leading-relaxed">
-                                        <li>Mở lại tab Google Apps Script (<a href="https://script.google.com" target="_blank" class="text-[#007BA7] underline font-bold">script.google.com</a>).</li>
-                                        <li>Bấm nút <b>Triển khai (Deploy)</b> → chọn <b>Quản lý triển khai (Manage deployments)</b>.</li>
-                                        <li>Bấm biểu tượng cây bút ✏️ <i>(Chỉnh sửa)</i> ở góc trên.</li>
-                                        <li>Tại mục <b>Ai có quyền truy cập (Who has access)</b>: Bấm đổi thành <b>Bất kỳ ai (Anyone)</b> <i>(hiện tại của bạn đang để "Chỉ mình tôi")</i>.</li>
-                                        <li>Tại mục <b>Phiên bản (Version)</b>: Chọn <b>Phiên bản mới (New version)</b>.</li>
-                                        <li>Bấm <b>Triển khai (Deploy)</b>, sao chép URL mới dán lại vào đây rồi kiểm tra lại nhé!</li>
-                                    </ol>
-                                </div>
-                            `;
-                        } else if (data.type === 'not_found') {
-                            guidanceHtml = `
-                                <div class="mt-2 text-stone-800 bg-white/80 p-3.5 rounded-xl border border-amber-300">
-                                    <div class="font-bold text-amber-800 mb-1">👉 Cách khắc phục:</div>
-                                    <p class="text-[11px] leading-relaxed">Đường dẫn không tồn tại. Vui lòng đảm bảo bạn đã copy <b>toàn bộ đường link</b> từ Google Apps Script (link chuẩn phải có chữ <code>/exec</code> ở cuối cùng, ví dụ: <code>.../macros/s/AKfycb.../exec</code>).</p>
-                                </div>
-                            `;
-                        } else if (data.type === 'invalid_url_type') {
-                            guidanceHtml = `
-                                <div class="mt-2 text-stone-800 bg-white/80 p-3.5 rounded-xl border border-amber-300">
-                                    <div class="font-bold text-amber-800 mb-1">👉 Cách khắc phục:</div>
-                                    <p class="text-[11px] leading-relaxed">Bạn đang dán link trình soạn thảo code (URL có chứa <code>/edit</code>). Hãy bấm nút xanh <b>Triển khai</b> → <b>Triển khai mới</b> → Chọn loại <b>Ứng dụng web</b> để nhận link có đuôi <code>/exec</code>.</p>
-                                </div>
-                            `;
-                        }
-
-                        testResult.innerHTML = `
-                            <div class="flex items-center gap-2 font-bold text-sm text-amber-800 mb-1">
-                                <span>⚠️</span> <span>CHƯA KẾT NỐI ĐƯỢC:</span>
-                            </div>
-                            <p class="font-medium text-amber-900">${data.message || 'Google yêu cầu cấp quyền hoặc URL chưa chính xác.'}</p>
-                            ${guidanceHtml}
-                        `;
-                    }
-                }
-            } catch (err) {
-                if (testResult) {
-                    testResult.classList.remove('hidden');
-                    testResult.className = "p-3.5 rounded-xl text-xs font-mono border bg-rose-50 text-rose-800 border-rose-300";
-                    testResult.innerHTML = `<b>✗ LỖI KẾT NỐI:</b> ${err.message}`;
-                }
-            } finally {
-                if (testBtn) {
-                    testBtn.disabled = false;
-                    testBtn.innerText = "Kiểm Tra Kết Nối";
-                }
-            }
-        };
-
-        window.saveDriveSettings = async function() {
-            const urlInput = document.getElementById('input-drive-script-url');
-            const checkEnabled = document.getElementById('check-drive-enabled');
-            const scriptUrl = (urlInput ? urlInput.value : '').trim();
-            const enabled = checkEnabled ? checkEnabled.checked : false;
-
-            try {
-                const res = await fetch('/api/drive-config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ enabled, scriptUrl })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    window.showToast("Google Drive", enabled ? "Đã kích hoạt tự động lưu Google Drive!" : "Đã lưu cài đặt Google Drive.", false);
-                    await refreshDriveIndicator();
-                    window.closeDriveSettingsModal();
-                } else {
-                    alert("Lỗi lưu cấu hình: " + (data.error || 'Không xác định'));
-                }
-            } catch (err) {
-                alert("Lỗi kết nối máy chủ: " + err.message);
-            }
-        };
-
-        window.copyDriveScriptCode = function() {
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(APPS_SCRIPT_SOURCE).then(() => {
-                    window.showToast("Đã Sao Chép", "Đã chép toàn bộ mã nguồn Google Apps Script vào bộ nhớ tạm!", false);
-                }).catch(() => {
-                    alert("Không thể sao chép tự động. Bạn có thể xem trong file huong_dan_google_drive.md!");
-                });
-            } else {
-                alert("Trình duyệt không hỗ trợ sao chép tự động. Bạn có thể xem trong file huong_dan_google_drive.md!");
-            }
-        };
-
-        // Tự động lưu trữ cục bộ vào media/ được kích hoạt mặc định
 
         // Đồng bộ Friendly URL & khôi phục vị trí xem khi reload trang
         window.addEventListener('DOMContentLoaded', () => {

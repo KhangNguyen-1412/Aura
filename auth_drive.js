@@ -55,7 +55,7 @@ async function main() {
                             <h2 style="color:#15803d;margin-top:0;">🎉 KẾT NỐI GOOGLE DRIVE THÀNH CÔNG!</h2>
                             <p style="color:#166534;font-size:15px;line-height:1.6;">
                                 Tài khoản: <b>${result.account?.email || 'Chính chủ'}</b><br>
-                                Thư mục đích: <b>Aura Media (1Mz1kzYEAfx4oO1pKrj7hxZPOajS_QzHt)</b>
+                                Thư mục đích: <b>Bộ Lưu Trữ Đám Mây Bảo Mật</b>
                             </p>
                             <p style="color:#4b5563;font-size:13px;margin-top:20px;">
                                 Refresh Token đã được lưu an toàn. Bạn có thể đóng tab này và quay lại terminal/dashboard!

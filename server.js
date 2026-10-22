@@ -654,15 +654,14 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // API: Kiểm tra trạng thái máy chủ
+    // API: Kiểm tra trạng thái máy chủ (Bảo mật: Không để lộ thư mục vật lý hoặc cấu hình storage)
     if (pathname === '/api/status' && req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
             status: 'ok',
-            mediaDir: MEDIA_DIR,
+            storageReady: true,
             indexedFiles: mediaFileIndex.size,
             port: server.address()?.port || PORT,
-            drive: driveEngine.getStatus(),
             timestamp: new Date().toISOString()
         }));
         return;
@@ -1274,19 +1273,35 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // API: Trạng thái kết nối Google Drive hiện tại
+    // API: Trạng thái kết nối Google Drive hiện tại (Bảo mật: Chỉ Master UID mới được phép truy vấn)
     if ((pathname === '/api/drive/status' || pathname === '/api/drive-config') && req.method === 'GET') {
+        const reqUid = req.headers['x-user-id'] || parsedUrl.searchParams.get('uid');
+        if (reqUid !== 'odRSfSMD1ZaoglEFBkeIKhLCusZ2') {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Truy cập bị từ chối' }));
+            return;
+        }
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
             success: true,
             status: driveEngine.getStatus(),
-            config: driveEngine.config
+            config: {
+                clientId: driveEngine.config.clientId || '',
+                clientSecret: driveEngine.config.clientSecret || '',
+                enabled: Boolean(driveEngine.config.enabled)
+            }
         }));
         return;
     }
 
-    // API: Lưu cấu hình Google Drive (Client ID, Secret, Root Folder ID...)
+    // API: Lưu cấu hình Google Drive (Chỉ Master UID)
     if ((pathname === '/api/drive/save-config' || pathname === '/api/drive-config') && req.method === 'POST') {
+        const reqUid = req.headers['x-user-id'] || parsedUrl.searchParams.get('uid');
+        if (reqUid !== 'odRSfSMD1ZaoglEFBkeIKhLCusZ2') {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Truy cập bị từ chối' }));
+            return;
+        }
         const chunks = [];
         req.on('data', chunk => chunks.push(chunk));
         req.on('end', async () => {
@@ -1304,8 +1319,14 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // API: Kích hoạt đồng bộ toàn bộ media cục bộ lên Google Drive (Batch Sync)
+    // API: Kích hoạt đồng bộ toàn bộ media cục bộ lên Google Drive (Batch Sync - Chỉ Master UID)
     if (pathname === '/api/drive/sync-media' && req.method === 'POST') {
+        const reqUid = req.headers['x-user-id'] || parsedUrl.searchParams.get('uid');
+        if (reqUid !== 'odRSfSMD1ZaoglEFBkeIKhLCusZ2') {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Truy cập bị từ chối' }));
+            return;
+        }
         try {
             syncMediaToDrive.runBatchSync().catch(err => {
                 console.error('[Aura Batch Sync Error]:', err);
@@ -1313,7 +1334,7 @@ const server = http.createServer(async (req, res) => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({
                 success: true,
-                message: 'Đã bắt đầu tiến trình đồng bộ Media lên Google Drive trong nền',
+                message: 'Đã bắt đầu tiến trình đồng bộ Media trong nền',
                 syncState: syncMediaToDrive.getSyncState()
             }));
         } catch (err) {
@@ -1323,8 +1344,14 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // API: Lấy tiến độ đồng bộ Media
+    // API: Lấy tiến độ đồng bộ Media (Chỉ Master UID)
     if (pathname === '/api/drive/sync-status' && req.method === 'GET') {
+        const reqUid = req.headers['x-user-id'] || parsedUrl.searchParams.get('uid');
+        if (reqUid !== 'odRSfSMD1ZaoglEFBkeIKhLCusZ2') {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Truy cập bị từ chối' }));
+            return;
+        }
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
             success: true,

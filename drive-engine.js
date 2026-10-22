@@ -536,9 +536,7 @@ function getStatus() {
         enabled: Boolean(config.enabled),
         configured: Boolean(config.clientId && config.clientSecret),
         authenticated: Boolean(driveClient && currentAccountInfo),
-        account: currentAccountInfo,
-        rootFolderId: config.rootFolderId,
-        rootFolderName: config.rootFolderName,
+        account: currentAccountInfo ? { email: currentAccountInfo.email, quotaUsed: currentAccountInfo.quotaUsed, quotaTotal: currentAccountInfo.quotaTotal } : null,
         cachedFoldersCount: folderCache.size
     };
 }
