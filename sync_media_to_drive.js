@@ -15,6 +15,7 @@ const driveEngine = require('./drive-engine');
 
 const MEDIA_DIR = path.join(__dirname, 'media');
 const MANIFEST_FILE = path.join(__dirname, 'drive-sync-manifest.json');
+const DEFAULT_UID = 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
 const FIRESTORE_API_KEY = 'AIzaSyC-BfkoWmpKkXvUwLgIo7dL4zCwcbOcAak';
 const FIRESTORE_BASE = 'https://firestore.googleapis.com/v1/projects/aura-47c9e/databases/(default)/documents';
 
@@ -68,11 +69,26 @@ function scanMediaFiles(dir, baseDir = MEDIA_DIR) {
             const isMedia = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.mp4', '.m4v', '.webm', '.mov', '.mp3', '.wav'].includes(ext);
             if (isMedia) {
                 const relPath = path.relative(baseDir, fullPath).replace(/\\/g, '/');
-                const folderPath = path.dirname(relPath).replace(/\\/g, '/');
+                let folderPath = path.dirname(relPath).replace(/\\/g, '/');
+                if (folderPath === '.') folderPath = '';
+
+                // BẢO VỆ CẤU TRÚC: Mọi tệp BẮT BUỘC phải nằm bên trong thư mục [UID]!
+                // Tuyệt đối không được phép có bất kỳ folder nào nằm ngang hàng với UID trong Aura Media!
+                const segments = folderPath.split('/').filter(Boolean);
+                if (segments.length === 0 || segments[0] !== DEFAULT_UID) {
+                    if (segments[0] === 'edging_voice') {
+                        folderPath = `${DEFAULT_UID}/Edging`;
+                    } else if (folderPath) {
+                        folderPath = `${DEFAULT_UID}/${folderPath}`;
+                    } else {
+                        folderPath = `${DEFAULT_UID}`;
+                    }
+                }
+
                 results.push({
                     fullPath,
                     relPath,
-                    folderPath: folderPath === '.' ? '' : folderPath,
+                    folderPath,
                     filename: item,
                     size: stat.size,
                     ext

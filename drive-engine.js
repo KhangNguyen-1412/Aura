@@ -247,6 +247,9 @@ async function checkRootFolder() {
     }
 }
 
+// Khóa Promise chống trùng lặp tạo thư mục song song
+const folderCreationLocks = new Map();
+
 /**
  * TÌM HOẶC TẠO THƯ MỤC TRÊN GOOGLE DRIVE (SIÊU TỐC VỚI BỘ NHỚ ĐỆM 0ms)
  * @param {string} subPath - Đường dẫn tương đối dạng: "UID/Bạn Đồng Hành/Tên Người"
@@ -256,62 +259,93 @@ async function getOrCreateFolder(subPath) {
     if (!subPath) return config.rootFolderId;
     
     // Chuẩn hóa path: thay dấu \ thành /, bỏ dấu / đầu cuối
-    const normalized = subPath.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
+    let normalized = subPath.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
     if (!normalized) return config.rootFolderId;
+
+    // QUY TẮC BẢO VỆ CẤU TRÚC THƯ MỤC TUYỆT ĐỐI (MÔ HÌNH 2):
+    // Cấp ngoài cùng của Aura Media CHỈ ĐƯỢC PHÉP chứa các folder UID người dùng (ví dụ: odRSfSMD1ZaoglEFBkeIKhLCusZ2).
+    // Tuyệt đối không để bất kỳ tệp hoặc thư mục nào nằm ngang hàng với UID trong Aura Media!
+    const DEFAULT_UID = 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+    const rawSegments = normalized.split('/').filter(Boolean);
+    if (rawSegments.length === 0) return config.rootFolderId;
+
+    const firstLower = rawSegments[0].toLowerCase();
+    const categories = ['bạn đồng hành', 'trai onlyfans', 'cá nhân', 'edging', 'edging_voice', 'chưa phân loại'];
+    if (categories.includes(firstLower)) {
+        if (firstLower === 'edging_voice') rawSegments[0] = 'Edging';
+        normalized = `${DEFAULT_UID}/${rawSegments.join('/')}`;
+    } else if (rawSegments[0] !== DEFAULT_UID && rawSegments[0].length < 20) {
+        // Nếu tên đầu tiên không giống định dạng UID Firebase (28 ký tự), tự động đưa vào UID
+        normalized = `${DEFAULT_UID}/${rawSegments.join('/')}`;
+    }
 
     // 1. Kiểm tra cache tức thì (0 mili-giây!)
     if (folderCache.has(normalized)) {
         return folderCache.get(normalized);
     }
 
-    if (!driveClient) throw new Error('Google Drive chưa được kết nối hoặc chưa cấp quyền OAuth.');
-
-    // 2. Duyệt từng cấp thư mục
-    const segments = normalized.split('/').filter(Boolean);
-    let currentParentId = config.rootFolderId;
-    let currentAccPath = '';
-
-    for (const seg of segments) {
-        currentAccPath = currentAccPath ? `${currentAccPath}/${seg}` : seg;
-
-        // Nếu cấp này đã có trong cache
-        if (folderCache.has(currentAccPath)) {
-            currentParentId = folderCache.get(currentAccPath);
-            continue;
-        }
-
-        // Tìm trên Drive xem thư mục này đã có dưới currentParentId chưa
-        const safeName = seg.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        const query = `'${currentParentId}' in parents and name = '${safeName}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
-        
-        const listRes = await driveClient.files.list({
-            q: query,
-            fields: 'files(id, name)',
-            pageSize: 1
-        });
-
-        if (listRes.data.files && listRes.data.files.length > 0) {
-            currentParentId = listRes.data.files[0].id;
-        } else {
-            // Chưa có -> Tạo mới ngay
-            const createRes = await driveClient.files.create({
-                requestBody: {
-                    name: seg,
-                    mimeType: 'application/vnd.google-apps.folder',
-                    parents: [currentParentId]
-                },
-                fields: 'id, name'
-            });
-            currentParentId = createRes.data.id;
-            console.log(`[Drive Engine] 📁 Đã tạo thư mục mới trên Drive: "${seg}" [${currentParentId}]`);
-        }
-
-        // Lưu vào cache
-        folderCache.set(currentAccPath, currentParentId);
+    // 2. Chống race-condition: Nếu đang có luồng khác giải quyết đường dẫn này, đợi luồng đó
+    if (folderCreationLocks.has(normalized)) {
+        return await folderCreationLocks.get(normalized);
     }
 
-    saveFolderCache();
-    return currentParentId;
+    const creationPromise = (async () => {
+        if (!driveClient) throw new Error('Google Drive chưa được kết nối hoặc chưa cấp quyền OAuth.');
+
+        const segments = normalized.split('/').filter(Boolean);
+        let currentParentId = config.rootFolderId;
+        let currentAccPath = '';
+
+        for (const seg of segments) {
+            currentAccPath = currentAccPath ? `${currentAccPath}/${seg}` : seg;
+
+            // Nếu cấp này đã có trong cache
+            if (folderCache.has(currentAccPath)) {
+                currentParentId = folderCache.get(currentAccPath);
+                continue;
+            }
+
+            // Tìm trên Drive xem thư mục này đã có dưới currentParentId chưa
+            const safeName = seg.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+            const query = `'${currentParentId}' in parents and name = '${safeName}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
+            
+            const listRes = await driveClient.files.list({
+                q: query,
+                fields: 'files(id, name)',
+                pageSize: 1
+            });
+
+            if (listRes.data.files && listRes.data.files.length > 0) {
+                currentParentId = listRes.data.files[0].id;
+            } else {
+                // Chưa có -> Tạo mới ngay
+                const createRes = await driveClient.files.create({
+                    requestBody: {
+                        name: seg,
+                        mimeType: 'application/vnd.google-apps.folder',
+                        parents: [currentParentId]
+                    },
+                    fields: 'id, name'
+                });
+                currentParentId = createRes.data.id;
+                console.log(`[Drive Engine] 📁 Đã tạo thư mục mới trên Drive: "${seg}" [${currentParentId}]`);
+            }
+
+            // Lưu vào cache
+            folderCache.set(currentAccPath, currentParentId);
+        }
+
+        saveFolderCache();
+        return currentParentId;
+    })();
+
+    folderCreationLocks.set(normalized, creationPromise);
+    try {
+        const resId = await creationPromise;
+        return resId;
+    } finally {
+        folderCreationLocks.delete(normalized);
+    }
 }
 
 /**
