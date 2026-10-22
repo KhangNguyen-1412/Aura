@@ -20561,7 +20561,9 @@
 
             try {
                 if (window.db && window.addDoc && window.collection) {
+                    const activeUid = (typeof currentUserId !== 'undefined' && currentUserId) || (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : 'odRSfSMD1ZaoglEFBkeIKhLCusZ2');
                     await addDoc(collection(db, "libido_logs"), {
+                        userId: activeUid,
                         slot: slotKey,
                         date: dayObj ? dayObj.dateKey : getTodayKey(),
                         dayIndex: dayIdx,
@@ -20827,7 +20829,9 @@
             const dayObj = new Date(dateVal);
             const dayOfWeek = (dayObj.getDay() + 6) % 7; // Chuyển sang 0=T2, 6=CN
 
+            const activeUid = (typeof currentUserId !== 'undefined' && currentUserId) || (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : 'odRSfSMD1ZaoglEFBkeIKhLCusZ2');
             const logDoc = {
+                userId: activeUid,
                 date: dateVal,
                 slot: slotVal,
                 level: levelVal,
@@ -20900,7 +20904,9 @@
             const frequency = document.getElementById('input-trigger-frequency').value;
             const desc = document.getElementById('input-trigger-desc').value;
 
+            const activeUid = (typeof currentUserId !== 'undefined' && currentUserId) || (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : 'odRSfSMD1ZaoglEFBkeIKhLCusZ2');
             const triggerDoc = {
+                userId: activeUid,
                 name,
                 category,
                 impact,
@@ -21910,10 +21916,10 @@
                     const pSnap = await getDocs(query(collection(db, "partners"), where("userId", "==", uid)));
                     pSnap.forEach(d => userPartners.push({ id: d.id, ...d.data() }));
                 } catch (_) {
-                    userPartners = (window.currentPartners || []).filter(p => !p.userId || p.userId === uid);
+                    userPartners = (window.currentPartners || []).filter(p => p.userId === uid || (!p.userId && uid === 'odRSfSMD1ZaoglEFBkeIKhLCusZ2'));
                 }
                 if (userPartners.length === 0 && window.currentPartners && window.currentPartners.length > 0) {
-                    userPartners = window.currentPartners.filter(p => !p.userId || p.userId === uid);
+                    userPartners = window.currentPartners.filter(p => p.userId === uid || (!p.userId && uid === 'odRSfSMD1ZaoglEFBkeIKhLCusZ2'));
                 }
 
                 // 3. Nhật ký giải phóng
@@ -21922,10 +21928,10 @@
                     const rSnap = await getDocs(query(collection(db, "release_logs"), where("userId", "==", uid)));
                     rSnap.forEach(d => userReleases.push({ id: d.id, ...d.data() }));
                 } catch (_) {
-                    userReleases = (window.currentReleaseLogs || []).filter(r => !r.userId || r.userId === uid);
+                    userReleases = (window.currentReleaseLogs || []).filter(r => r.userId === uid || (!r.userId && uid === 'odRSfSMD1ZaoglEFBkeIKhLCusZ2'));
                 }
                 if (userReleases.length === 0 && window.currentReleaseLogs && window.currentReleaseLogs.length > 0) {
-                    userReleases = window.currentReleaseLogs.filter(r => !r.userId || r.userId === uid);
+                    userReleases = window.currentReleaseLogs.filter(r => r.userId === uid || (!r.userId && uid === 'odRSfSMD1ZaoglEFBkeIKhLCusZ2'));
                 }
 
                 // 4. Xét nghiệm nội tiết
@@ -22282,6 +22288,18 @@
         function initRealtimeListeners() {
             updateFirestoreBadge(true, "Đã kết nối");
 
+            // Helper xác định quyền sở hữu dữ liệu tuyệt đối:
+            // - Khách vãng lai / chưa đăng nhập: Tuyệt đối không xem dữ liệu của bất kỳ ai
+            // - Người dùng đăng nhập: Chỉ xem bản ghi có userId trùng khớp với mình
+            // - Dữ liệu cũ (chưa có userId): Chỉ tài khoản gốc Master UID (odRSfSMD1ZaoglEFBkeIKhLCusZ2) mới xem được
+            const belongsToUser = (dataUserId) => {
+                const activeId = currentUserId || (auth.currentUser ? auth.currentUser.uid : null);
+                if (!activeId) return false;
+                if (dataUserId === activeId) return true;
+                if (!dataUserId && activeId === 'odRSfSMD1ZaoglEFBkeIKhLCusZ2') return true;
+                return false;
+            };
+
             // 1. Lắng nghe Profile riêng biệt theo tài khoản
             const profileDocId = currentUserId ? `profile_${currentUserId}` : "user_profile";
             const profileRef = doc(db, "profiles", profileDocId);
@@ -22320,7 +22338,7 @@
                 const tests = [];
                 snap.forEach(d => {
                     const data = d.data();
-                    if (!currentUserId || !data.userId || data.userId === currentUserId) {
+                    if (belongsToUser(data.userId)) {
                         tests.push({ id: d.id, ...data });
                     }
                 });
@@ -22334,7 +22352,7 @@
                 const items = [];
                 snap.forEach(d => {
                     const data = d.data();
-                    if (!currentUserId || !data.userId || data.userId === currentUserId) {
+                    if (belongsToUser(data.userId)) {
                         items.push({ id: d.id, ...data });
                     }
                 });
@@ -22348,7 +22366,7 @@
                 const logs = [];
                 snap.forEach(d => {
                     const data = d.data();
-                    if (!currentUserId || !data.userId || data.userId === currentUserId) {
+                    if (belongsToUser(data.userId)) {
                         logs.push({ id: d.id, ...data });
                     }
                 });
@@ -22363,7 +22381,7 @@
                 const partners = [];
                 snap.forEach(d => {
                     const data = d.data();
-                    if (!currentUserId || !data.userId || data.userId === currentUserId) {
+                    if (belongsToUser(data.userId)) {
                         partners.push({ id: d.id, ...data });
                     }
                 });
@@ -22400,7 +22418,12 @@
                 const triggersQuery = query(triggersCol, orderBy("updatedAt", "desc"), limit(30));
                 onSnapshot(triggersQuery, (snap) => {
                     const list = [];
-                    snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+                    snap.forEach(d => {
+                        const data = d.data();
+                        if (belongsToUser(data.userId)) {
+                            list.push({ id: d.id, ...data });
+                        }
+                    });
                     renderTriggerMatrix(list.length > 0 ? list : defaultTriggersList);
                 }, (err) => console.log("Lỗi tải trigger_factors:", err.message));
 
@@ -22408,7 +22431,12 @@
                 const libidoQuery = query(libidoCol, orderBy("createdAt", "desc"), limit(60));
                 onSnapshot(libidoQuery, (snap) => {
                     const list = [];
-                    snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+                    snap.forEach(d => {
+                        const data = d.data();
+                        if (belongsToUser(data.userId)) {
+                            list.push({ id: d.id, ...data });
+                        }
+                    });
                     currentLibidoLogs = list;
                     window.currentLibidoLogs = list;
                     renderLibidoHeatmap(list);
@@ -23080,8 +23108,10 @@
             if (isEdgingRunning) window.toggleEdging();
 
             const minutes = Math.round(edgingSeconds / 60 * 10) / 10;
+            const activeUid = (typeof currentUserId !== 'undefined' && currentUserId) || (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : 'odRSfSMD1ZaoglEFBkeIKhLCusZ2');
 
             const session = {
+                userId: activeUid,
                 durationMinutes: minutes,
                 date: new Date().toISOString(),
                 createdAt: window.serverTimestamp ? window.serverTimestamp() : new Date()
@@ -25295,7 +25325,10 @@
                     ? `Hoàn thành xuất sắc Thử Thách Edging sau ${timeString}. Được hệ thống cho phép giải phóng (CUM)!`
                     : `Đầu hàng trong Thử Thách Edging sau ${timeString}. Đạt ${pctDone}% tiến trình thử thách.`;
 
+                const activeUid = (typeof currentUserId !== 'undefined' && currentUserId) || (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : 'odRSfSMD1ZaoglEFBkeIKhLCusZ2');
+
                 const record = {
+                    userId: activeUid,
                     dateFormatted: dateFormatted,
                     datetime: dtVal,
                     type: releaseType,
