@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: aura-media
+    env: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: GDRIVE_ENABLED
+        value: "true"
+      - key: GDRIVE_ROOT_FOLDER_ID
+        value: "1Mz1kzYEAfx4oO1pKrj7hxZPOajS_QzHt"
+      - key: GDRIVE_CLIENT_ID
+        sync: false
+      - key: GDRIVE_CLIENT_SECRET
+        sync: false
+      - key: GDRIVE_REFRESH_TOKEN
+        sync: false
+      - key: GDRIVE_REDIRECT_URI
+        sync: false

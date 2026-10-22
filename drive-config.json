@@ -1,5 +1,10 @@
 {
-  "enabled": false,
-  "scriptUrl": "",
-  "_huong_dan": "Tính năng upload lên Google Drive đã được tắt theo yêu cầu. Tất cả tệp chỉ tải lên và lưu trực tiếp trong thư mục media cục bộ."
+  "enabled": true,
+  "rootFolderId": "1Mz1kzYEAfx4oO1pKrj7hxZPOajS_QzHt",
+  "rootFolderName": "Aura Media",
+  "authMethod": "oauth2",
+  "clientId": "",
+  "clientSecret": "",
+  "redirectUri": "http://localhost:3000/api/drive/oauth2callback",
+  "_huong_dan": "Thông tin OAuth Client ID & Secret được bảo mật qua biến môi trường hoặc file .env cục bộ."
 }

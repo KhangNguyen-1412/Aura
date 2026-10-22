@@ -118,320 +118,15 @@ function mirrorToYDrive(subDir, filename, sourcePath) {
 }
 
 // =====================================================
-// TÍCH HỢP GOOGLE DRIVE (ĐÃ TẮT THEO YÊU CẦU NGƯỜI DÙNG)
+// TÍCH HỢP GOOGLE DRIVE API V3 SIÊU TỐC (AURA CLOUD ENGINE)
 // =====================================================
-let DRIVE_CONFIG = { enabled: false, scriptUrl: '' };
-try {
-    const driveConfigPath = path.join(__dirname, 'drive-config.json');
-    if (fs.existsSync(driveConfigPath)) {
-        DRIVE_CONFIG = JSON.parse(fs.readFileSync(driveConfigPath, 'utf8'));
-    }
-} catch (e) {}
-DRIVE_CONFIG.enabled = false;
-console.log('[Aura Drive] ✗ Google Drive upload đã tắt theo yêu cầu. Tất cả tệp chỉ lưu vào folder media/.');
+const driveEngine = require('./drive-engine');
+const syncMediaToDrive = require('./sync_media_to_drive');
 
-// TỐI ƯU HIỆU NĂNG DRIVE: HTTPS Keep-Alive Agent tái sử dụng TLS connection
-const driveHttpsAgent = new https.Agent({
-    keepAlive: true,
-    maxSockets: 8,
-    maxFreeSockets: 4,
-    timeout: 60000
+// Khởi chạy nền engine Google Drive
+driveEngine.initDrive().catch(err => {
+    console.warn('[Aura Drive] Khởi động Drive Engine:', err.message);
 });
-
-// Hàng đợi giới hạn đồng thời upload Drive (tối đa 2 song song) để tránh nghẽn & quá tải Google Apps Script
-const DRIVE_CONCURRENCY = 2;
-let driveActiveUploads = 0;
-const driveQueue = [];
-
-function enqueueDriveUpload(fn) {
-    return new Promise((resolve, reject) => {
-        driveQueue.push({ fn, resolve, reject });
-        processDriveQueue();
-    });
-}
-
-function processDriveQueue() {
-    while (driveActiveUploads < DRIVE_CONCURRENCY && driveQueue.length > 0) {
-        const item = driveQueue.shift();
-        if (!item) break;
-        const { fn, resolve, reject } = item;
-        driveActiveUploads++;
-        fn().then(resolve).catch(reject).finally(() => {
-            driveActiveUploads--;
-            processDriveQueue();
-        });
-    }
-}
-
-/**
- * Gửi HTTP POST lên Google Apps Script và xử lý redirect 302 của Google.
- * Sử dụng driveHttpsAgent (Keep-Alive) để tái sử dụng kết nối TLS, tăng tốc đáng kể.
- */
-function sendToGoogleAppsScript(payloadString, targetUrl, method = 'POST', redirectCount = 0) {
-    return new Promise((resolve, reject) => {
-        if (redirectCount > 6) {
-            return reject(new Error('Quá nhiều lần chuyển hướng từ Google Apps Script (>6)'));
-        }
-        const u = new URL(targetUrl);
-        const opts = {
-            hostname: u.hostname,
-            port: 443,
-            path: u.pathname + u.search,
-            method: method,
-            agent: driveHttpsAgent,
-            headers: method === 'POST' ? {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(payloadString),
-                'User-Agent': 'Aura-Server-FastBridge/2.0'
-            } : {
-                'User-Agent': 'Aura-Server-FastBridge/2.0',
-                'Accept': 'application/json, text/plain, */*'
-            }
-        };
-
-        const httpReq = https.request(opts, (httpRes) => {
-            // Google Apps Script trả về 302 redirect sau khi nhận POST
-            if (httpRes.statusCode >= 300 && httpRes.statusCode < 400 && httpRes.headers.location) {
-                let nextLoc = httpRes.headers.location;
-                if (!nextLoc.startsWith('http')) {
-                    nextLoc = new URL(nextLoc, targetUrl).href;
-                }
-                httpRes.resume(); // Giải phóng socket
-                sendToGoogleAppsScript(payloadString, nextLoc, 'GET', redirectCount + 1)
-                    .then(resolve)
-                    .catch(reject);
-                return;
-            }
-
-            let body = '';
-            httpRes.on('data', c => body += c);
-            httpRes.on('end', () => {
-                try {
-                    const result = JSON.parse(body);
-                    resolve(result);
-                } catch (e) {
-                    reject(new Error('Phản hồi không hợp lệ từ Google Drive Script: ' + body.substring(0, 150)));
-                }
-            });
-        });
-
-        httpReq.on('error', reject);
-        // Timeout 90 giây cho mỗi lượt gửi
-        httpReq.setTimeout(90000, () => {
-            httpReq.destroy();
-            reject(new Error('Hết thời gian chờ Google Drive (90 giây)'));
-        });
-
-        if (method === 'POST') httpReq.write(payloadString);
-        httpReq.end();
-    });
-}
-
-/**
- * Đẩy file lên Google Drive qua Google Apps Script Web App.
- * TỐI ƯU: Tự động retry tối đa 2 lần với backoff nếu gặp sự cố mạng hoặc Google bận,
- * sử dụng Keep-Alive Agent để tối đa hóa tốc độ truyền tải.
- * @param {Buffer} fileBuffer - Nội dung file dạng Buffer
- * @param {string} filename - Tên file
- * @param {string} mimeType - MIME type (image/jpeg, video/mp4...)
- * @param {string} subFolder - Đường dẫn thư mục con (companions/id, users/uid/hot...)
- * @returns {Promise<Object>} Kết quả upload {success, fileId, url, type...}
- */
-async function uploadToDrive(fileBuffer, filename, mimeType, subFolder) {
-    if (!DRIVE_CONFIG.enabled || !DRIVE_CONFIG.scriptUrl) {
-        throw new Error('Google Drive chưa cấu hình');
-    }
-
-    // Giới hạn ~25MB (base64 tăng thêm ~33% → ~33MB payload)
-    if (fileBuffer.length > 25 * 1024 * 1024) {
-        throw new Error('Tệp quá lớn cho Google Drive (tối đa 25MB). Đang lưu cục bộ.');
-    }
-
-    const base64 = fileBuffer.toString('base64');
-    const payload = JSON.stringify({
-        filename: filename,
-        mimeType: mimeType || 'application/octet-stream',
-        base64: base64,
-        folder: subFolder || ''
-    });
-
-    const maxRetries = 2;
-    let lastError = null;
-
-    console.log(`[Aura Drive] 🚀 Đang tải lên Drive: ${filename} (${(fileBuffer.length / 1024 / 1024).toFixed(1)}MB) → ${subFolder || '/'}`);
-
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-        try {
-            if (attempt > 0) {
-                const delayMs = attempt * 1500;
-                console.warn(`[Aura Drive] Thử lại lần ${attempt}/${maxRetries} cho ${filename} sau ${delayMs}ms...`);
-                await new Promise(r => setTimeout(r, delayMs));
-            }
-            const result = await sendToGoogleAppsScript(payload, DRIVE_CONFIG.scriptUrl, 'POST');
-            return result;
-        } catch (err) {
-            lastError = err;
-            console.warn(`[Aura Drive] Lần thử ${attempt + 1} thất bại cho ${filename}: ${err.message}`);
-        }
-    }
-
-    throw lastError || new Error('Upload lên Drive thất bại sau các lần thử lại');
-}
-
-/**
- * Kiểm tra kết nối tới Google Apps Script Web App qua HTTP GET.
- * @param {string} scriptUrl - URL Web App của Apps Script
- * @returns {Promise<Object>}
- */
-function testDriveConnection(scriptUrl) {
-    return new Promise((resolve, reject) => {
-        let cleanUrl = String(scriptUrl || '').trim();
-        if (!cleanUrl) return reject(new Error('Chưa cung cấp scriptUrl'));
-
-        if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
-            cleanUrl = 'https://' + cleanUrl;
-        }
-
-        if (cleanUrl.includes('/edit') || cleanUrl.includes('/u/')) {
-            return resolve({
-                success: false,
-                type: 'invalid_url_type',
-                message: 'Đây là link trình soạn thảo (Editor) của Google Apps Script, không phải link Web App. Bạn cần bấm nút [Triển khai] (Deploy) -> chọn [Ứng dụng web] để lấy link có đuôi /exec.'
-            });
-        }
-
-        let redirectCount = 0;
-        const maxRedirects = 6;
-
-        const doRequest = (targetUrl) => {
-            if (redirectCount++ > maxRedirects) {
-                return resolve({
-                    success: false,
-                    type: 'too_many_redirects',
-                    message: 'Quá nhiều lần chuyển hướng (vượt quá 6 lần).'
-                });
-            }
-            try {
-                const u = new URL(targetUrl);
-
-                if (u.hostname.includes('accounts.google.com')) {
-                    return resolve({
-                        success: false,
-                        type: 'auth_required',
-                        statusCode: 401,
-                        message: 'Google yêu cầu đăng nhập tài khoản. Nguyên nhân: Lúc Triển khai (Deploy), mục [Ai có quyền truy cập / Who has access] chưa được chọn là [Bất kỳ ai / Anyone] (Google mặc định là Chỉ mình tôi).'
-                    });
-                }
-
-                const opts = {
-                    hostname: u.hostname,
-                    port: u.port || (u.protocol === 'https:' ? 443 : 80),
-                    path: u.pathname + u.search,
-                    method: 'GET',
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Aura-Drive-Bridge/1.0',
-                        'Accept': 'application/json, text/plain, */*'
-                    }
-                };
-
-                const mod = u.protocol === 'https:' ? https : http;
-                const httpReq = mod.request(opts, (httpRes) => {
-                    if (httpRes.statusCode >= 300 && httpRes.statusCode < 400 && httpRes.headers.location) {
-                        let nextLoc = httpRes.headers.location;
-                        if (!nextLoc.startsWith('http')) {
-                            nextLoc = new URL(nextLoc, targetUrl).href;
-                        }
-                        httpRes.resume();
-                        doRequest(nextLoc);
-                        return;
-                    }
-
-                    let body = '';
-                    httpRes.on('data', c => body += c);
-                    httpRes.on('end', () => {
-                        const trimmed = body.trim();
-                        try {
-                            const result = JSON.parse(trimmed);
-                            if (result.status === 'ok' || result.service || result.success !== false) {
-                                return resolve({
-                                    success: true,
-                                    statusCode: httpRes.statusCode,
-                                    data: result,
-                                    message: 'Kết nối Google Apps Script thành công!'
-                                });
-                            }
-                            return resolve({
-                                success: false,
-                                statusCode: httpRes.statusCode,
-                                data: result,
-                                message: result.error || 'Google Apps Script trả về lỗi'
-                            });
-                        } catch (_) {}
-
-                        if (trimmed.includes('accounts.google.com') || trimmed.includes('Sign in') || trimmed.includes('Đăng nhập')) {
-                            return resolve({
-                                success: false,
-                                type: 'auth_required',
-                                statusCode: httpRes.statusCode,
-                                message: 'Google yêu cầu đăng nhập. Bạn cần chọn [Ai có quyền truy cập: Bất kỳ ai (Anyone)] khi Triển khai Web App.'
-                            });
-                        }
-
-                        if (httpRes.statusCode === 404) {
-                            return resolve({
-                                success: false,
-                                type: 'not_found',
-                                statusCode: 404,
-                                message: 'Không tìm thấy Web App (404 Not Found). Vui lòng kiểm tra xem bạn đã copy đầy đủ URL đến tận chữ "/exec" ở cuối chưa.'
-                            });
-                        }
-
-                        if (trimmed.includes('Script function not found') || trimmed.includes('doGet')) {
-                            return resolve({
-                                success: false,
-                                type: 'missing_doget',
-                                statusCode: httpRes.statusCode,
-                                message: 'Google Apps Script chưa có hàm doGet(). Hãy đảm bảo bạn đã dán toàn bộ mã nguồn và bấm Ctrl+S (Lưu) rồi mới Triển khai.'
-                            });
-                        }
-
-                        return resolve({
-                            success: false,
-                            type: 'html_response',
-                            statusCode: httpRes.statusCode,
-                            preview: trimmed.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').substring(0, 150),
-                            message: 'Google Apps Script trả về trang web thay vì dữ liệu JSON. Vui lòng kiểm tra lại quyền truy cập (Anyone) và triển khai lại.'
-                        });
-                    });
-                });
-
-                httpReq.on('error', (err) => {
-                    resolve({
-                        success: false,
-                        type: 'network_error',
-                        message: 'Không thể kết nối đến Google: ' + err.message
-                    });
-                });
-
-                httpReq.setTimeout(15000, () => {
-                    httpReq.destroy();
-                    resolve({
-                        success: false,
-                        type: 'timeout',
-                        message: 'Quá thời gian chờ phản hồi từ Google (15 giây).'
-                    });
-                });
-
-                httpReq.end();
-            } catch (err) {
-                reject(err);
-            }
-        };
-
-        console.log('[Aura Drive Test] Đang kiểm tra URL:', cleanUrl);
-        doRequest(cleanUrl);
-    });
-}
 
 
 
@@ -926,7 +621,7 @@ function serveStaticFile(filePath, stats, req, res) {
     streamFileSafely(filePath, {}, res, req, 200, headers);
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
     // CORS headers for all requests (bao gồm đầy đủ header upload x-folder, x-user-id, x-category...)
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, HEAD');
@@ -967,10 +662,7 @@ const server = http.createServer((req, res) => {
             mediaDir: MEDIA_DIR,
             indexedFiles: mediaFileIndex.size,
             port: server.address()?.port || PORT,
-            drive: {
-                enabled: Boolean(DRIVE_CONFIG.enabled),
-                configured: Boolean(DRIVE_CONFIG.scriptUrl)
-            },
+            drive: driveEngine.getStatus(),
             timestamp: new Date().toISOString()
         }));
         return;
@@ -1160,6 +852,38 @@ const server = http.createServer((req, res) => {
                     const webUrl = (subDir ? `media/${subDir.replace(/\\/g, '/')}/${encodeURIComponent(uniqueName)}` : `media/${encodeURIComponent(uniqueName)}`);
                     console.log(`[Aura Media] Đã lưu tệp JSON Base64: ${webUrl} (${(fileBuffer.length / (1024 * 1024)).toFixed(2)} MB)`);
 
+                    // NẾU GOOGLE DRIVE ĐÃ KẾT NỐI: TẢI TRỰC TIẾP LÊN DRIVE
+                    if (driveEngine.getStatus().authenticated && driveEngine.config.enabled) {
+                        try {
+                            const driveMime = isVideo ? 'video/mp4' : (ext === '.png' ? 'image/png' : 'image/jpeg');
+                            const driveRes = await driveEngine.uploadToDriveBuffer({
+                                buffer: fileBuffer,
+                                filename: uniqueName,
+                                mimeType: driveMime,
+                                folderPath: subDir.replace(/\\/g, '/')
+                            });
+                            console.log(`[Aura Drive] ✓ Tệp Base64 đã lên Drive: ${driveRes.driveFileId}`);
+                            res.writeHead(200, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({
+                                success: true,
+                                filename: uniqueName,
+                                folder: subDir.replace(/\\/g, '/'),
+                                url: isVideo ? driveRes.streamUrl : driveRes.url,
+                                localUrl: webUrl,
+                                driveFileId: driveRes.driveFileId,
+                                thumbnailUrl: driveRes.thumbnailUrl,
+                                streamUrl: driveRes.streamUrl,
+                                directUrl: driveRes.directUrl,
+                                type: isVideo ? 'video' : 'image',
+                                size: fileBuffer.length,
+                                storage: 'google_drive'
+                            }));
+                            return;
+                        } catch (driveErr) {
+                            console.warn('[Aura Drive] Lỗi upload buffer lên Drive, giữ bản lưu cục bộ:', driveErr.message);
+                        }
+                    }
+
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         success: true,
@@ -1207,7 +931,7 @@ const server = http.createServer((req, res) => {
 
         req.pipe(fileStream);
 
-        fileStream.on('finish', () => {
+        fileStream.on('finish', async () => {
             try {
                 const uniqueName = getUniqueFilename(targetDir, sanitized, bytesReceived);
                 const targetPath = path.join(targetDir, uniqueName);
@@ -1223,6 +947,42 @@ const server = http.createServer((req, res) => {
 
                 const webUrl = (subDir ? `media/${subDir.replace(/\\/g, '/')}/${encodeURIComponent(uniqueName)}` : `media/${encodeURIComponent(uniqueName)}`);
                 console.log(`[Aura Media] ✓ Đã lưu tệp streaming: ${webUrl} (${(bytesReceived / (1024 * 1024)).toFixed(2)} MB)`);
+
+                // NẾU GOOGLE DRIVE ĐÃ KẾT NỐI: TẢI TRỰC TIẾP LÊN DRIVE
+                if (driveEngine.getStatus().authenticated && driveEngine.config.enabled) {
+                    try {
+                        const driveMime = isVideo ? (ext === '.webm' ? 'video/webm' : 'video/mp4') : (ext === '.png' ? 'image/png' : (ext === '.webp' ? 'image/webp' : 'image/jpeg'));
+                        const driveReadStream = fs.createReadStream(targetPath);
+                        const driveRes = await driveEngine.uploadToDriveStream({
+                            stream: driveReadStream,
+                            filename: uniqueName,
+                            mimeType: driveMime,
+                            size: bytesReceived,
+                            folderPath: subDir.replace(/\\/g, '/')
+                        });
+
+                        console.log(`[Aura Drive] 🚀 Tệp đã lên Google Drive thành công: ${driveRes.driveFileId} -> ${driveRes.url}`);
+
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: true,
+                            filename: uniqueName,
+                            folder: subDir.replace(/\\/g, '/'),
+                            url: isVideo ? driveRes.streamUrl : driveRes.url,
+                            localUrl: webUrl,
+                            driveFileId: driveRes.driveFileId,
+                            thumbnailUrl: driveRes.thumbnailUrl,
+                            streamUrl: driveRes.streamUrl,
+                            directUrl: driveRes.directUrl,
+                            type: isVideo ? 'video' : 'image',
+                            size: bytesReceived,
+                            storage: 'google_drive'
+                        }));
+                        return;
+                    } catch (driveErr) {
+                        console.error('[Aura Drive] Lỗi upload Drive:', driveErr.message);
+                    }
+                }
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
@@ -1358,6 +1118,40 @@ const server = http.createServer((req, res) => {
                 const webUrl = (subDir ? `media/${subDir.replace(/\\/g, '/')}/${encodeURIComponent(uniqueName)}` : `media/${encodeURIComponent(uniqueName)}`);
                 console.log(`[Aura Media] Đã tải về và lưu cục bộ: ${webUrl}`);
 
+                // NẾU GOOGLE DRIVE ĐÃ KẾT NỐI: TẢI TRỰC TIẾP LÊN DRIVE
+                if (driveEngine.getStatus().authenticated && driveEngine.config.enabled) {
+                    try {
+                        const driveMime = isVideo ? (ext === '.webm' ? 'video/webm' : 'video/mp4') : (ext === '.png' ? 'image/png' : (ext === '.webp' ? 'image/webp' : 'image/jpeg'));
+                        const stat = fs.statSync(targetPath);
+                        const driveReadStream = fs.createReadStream(targetPath);
+                        const driveRes = await driveEngine.uploadToDriveStream({
+                            stream: driveReadStream,
+                            filename: uniqueName,
+                            mimeType: driveMime,
+                            size: stat.size,
+                            folderPath: subDir.replace(/\\/g, '/')
+                        });
+
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: true,
+                            filename: uniqueName,
+                            folder: subDir.replace(/\\/g, '/'),
+                            url: isVideo ? driveRes.streamUrl : driveRes.url,
+                            localUrl: webUrl,
+                            driveFileId: driveRes.driveFileId,
+                            thumbnailUrl: driveRes.thumbnailUrl,
+                            streamUrl: driveRes.streamUrl,
+                            directUrl: driveRes.directUrl,
+                            type: isVideo ? 'video' : 'image',
+                            storage: 'google_drive'
+                        }));
+                        return;
+                    } catch (driveErr) {
+                        console.error('[Aura Drive] Lỗi upload Drive cho file download:', driveErr.message);
+                    }
+                }
+
                 // === TRẢ KẾT QUẢ NGAY LẬP TỨC ===
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
@@ -1440,65 +1234,114 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    // API: Lấy cấu hình Google Drive hiện tại
-    if (pathname === '/api/drive-config' && req.method === 'GET') {
+    // API: Lấy URL xác thực Google OAuth 2.0 (1-Click Login)
+    if (pathname === '/api/drive/auth-url' && req.method === 'GET') {
+        try {
+            const authUrl = driveEngine.getAuthUrl();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, authUrl }));
+        } catch (err) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: err.message }));
+        }
+        return;
+    }
+
+    // API: Callback tiếp nhận mã ủy quyền từ Google OAuth 2.0
+    if (pathname === '/api/drive/oauth2callback' && req.method === 'GET') {
+        const code = parsedUrl.searchParams.get('code');
+        const errParam = parsedUrl.searchParams.get('error');
+        if (errParam) {
+            res.writeHead(302, { 'Location': '/dashboard.html?drive_error=' + encodeURIComponent(errParam) });
+            res.end();
+            return;
+        }
+        if (!code) {
+            res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+            res.end('Thiếu mã xác thực từ Google.');
+            return;
+        }
+        try {
+            await driveEngine.handleOAuthCallback(code);
+            console.log('[Aura Drive] ✓ Ủy quyền tài khoản Google Drive thành công!');
+            res.writeHead(302, { 'Location': '/dashboard.html?drive_connected=1' });
+            res.end();
+        } catch (err) {
+            console.error('[Aura Drive Callback Error]:', err.message);
+            res.writeHead(302, { 'Location': '/dashboard.html?drive_error=' + encodeURIComponent(err.message) });
+            res.end();
+        }
+        return;
+    }
+
+    // API: Trạng thái kết nối Google Drive hiện tại
+    if ((pathname === '/api/drive/status' || pathname === '/api/drive-config') && req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
-            enabled: !!DRIVE_CONFIG.enabled,
-            scriptUrl: DRIVE_CONFIG.scriptUrl || ''
+            success: true,
+            status: driveEngine.getStatus(),
+            config: driveEngine.config
         }));
         return;
     }
 
-    // API: Lưu cấu hình Google Drive (áp dụng ngay lập tức không cần restart server)
-    if (pathname === '/api/drive-config' && req.method === 'POST') {
-        const chunks = [];
-        req.on('data', chunk => chunks.push(chunk));
-        req.on('end', () => {
-            try {
-                const body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-                DRIVE_CONFIG.enabled = Boolean(body.enabled);
-                DRIVE_CONFIG.scriptUrl = String(body.scriptUrl || '').trim();
-
-                const driveConfigPath = path.join(__dirname, 'drive-config.json');
-                fs.writeFileSync(driveConfigPath, JSON.stringify({
-                    enabled: DRIVE_CONFIG.enabled,
-                    scriptUrl: DRIVE_CONFIG.scriptUrl,
-                    _huong_dan: "Sau khi triển khai Google Apps Script xong, dán URL Web App vào trường scriptUrl, đổi enabled thành true."
-                }, null, 2), 'utf8');
-
-                console.log(`[Aura Drive] Đã cập nhật cấu hình live: enabled=${DRIVE_CONFIG.enabled}, scriptUrl=${DRIVE_CONFIG.scriptUrl ? 'Đã thiết lập' : 'Trống'}`);
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: true, config: DRIVE_CONFIG }));
-            } catch (err) {
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: false, error: err.message }));
-            }
-        });
-        return;
-    }
-
-    // API: Kiểm tra kết nối tới Google Apps Script
-    if (pathname === '/api/drive-test' && req.method === 'POST') {
+    // API: Lưu cấu hình Google Drive (Client ID, Secret, Root Folder ID...)
+    if ((pathname === '/api/drive/save-config' || pathname === '/api/drive-config') && req.method === 'POST') {
         const chunks = [];
         req.on('data', chunk => chunks.push(chunk));
         req.on('end', async () => {
             try {
                 const body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-                const testUrl = (body.scriptUrl || DRIVE_CONFIG.scriptUrl || '').trim();
-                if (!testUrl) {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: false, error: 'Chưa có URL Google Apps Script để kiểm tra' }));
-                    return;
-                }
-                const testRes = await testDriveConnection(testUrl);
+                driveEngine.saveConfig(body);
+                await driveEngine.initDrive();
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: true, result: testRes }));
+                res.end(JSON.stringify({ success: true, status: driveEngine.getStatus() }));
             } catch (err) {
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: false, error: err.message }));
             }
         });
+        return;
+    }
+
+    // API: Kích hoạt đồng bộ toàn bộ media cục bộ lên Google Drive (Batch Sync)
+    if (pathname === '/api/drive/sync-media' && req.method === 'POST') {
+        try {
+            syncMediaToDrive.runBatchSync().catch(err => {
+                console.error('[Aura Batch Sync Error]:', err);
+            });
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+                success: true,
+                message: 'Đã bắt đầu tiến trình đồng bộ Media lên Google Drive trong nền',
+                syncState: syncMediaToDrive.getSyncState()
+            }));
+        } catch (err) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: err.message }));
+        }
+        return;
+    }
+
+    // API: Lấy tiến độ đồng bộ Media
+    if (pathname === '/api/drive/sync-status' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+            success: true,
+            syncState: syncMediaToDrive.getSyncState()
+        }));
+        return;
+    }
+
+    // API: Stream Video Google Drive trực tiếp (Hỗ trợ tua video mượt mà HTTP 206 Partial Content)
+    if (pathname.startsWith('/api/drive-stream/')) {
+        const fileId = pathname.replace('/api/drive-stream/', '').split('/')[0].split('?')[0];
+        if (!fileId) {
+            res.writeHead(400, { 'Content-Type': 'text/plain' });
+            res.end('Thiếu fileId');
+            return;
+        }
+        driveEngine.streamFromDrive(fileId, req, res);
         return;
     }
 

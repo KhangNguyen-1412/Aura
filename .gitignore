@@ -13,3 +13,11 @@ node_modules/
 .env
 .DS_Store
 Thumbs.db
+
+# Google Drive credentials & cache
+drive-oauth.json
+drive-folder-cache.json
+drive-credentials.json
+drive-sync-manifest.json
+service-account*.json
+credentials*.json

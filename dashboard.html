@@ -3302,21 +3302,85 @@
                     <!-- CỘT 1: LƯU TRỮ MEDIA, GOOGLE DRIVE & KẾT NỐI API -->
                     <div class="flex flex-col gap-6">
 
-                        <!-- 2. Khóa Google Drive API -->
+                        <!-- 2. Kho Lưu Trữ Google Drive Siêu Tốc (Aura Cloud Engine) -->
                         <div class="editorial-border bg-white p-6 shadow-sm hover:shadow-md transition-shadow rounded-xl">
-                            <div class="flex items-center gap-2.5 mb-2">
-                                <div class="w-9 h-9 rounded-full bg-cerulean/10 flex items-center justify-center text-cerulean shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-base md:text-lg text-cerulean leading-tight">Google Drive Cloud Storage</h4>
+                                        <span class="text-xs text-ink-light">Lưu trữ ảnh & video tốc độ cao (API v3 Resumable)</span>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 class="font-bold text-base md:text-lg text-cerulean leading-tight">Khóa Google Drive API</h4>
-                                    <span class="text-xs text-ink-light">Tự động phân giải album ảnh/video từ link Drive</span>
+                                <span id="drive-connection-badge" class="px-2.5 py-0.5 bg-stone-100 text-stone-600 text-[10px] font-mono uppercase font-bold tracking-wider border border-stone-200 rounded-full flex items-center gap-1.5 shrink-0">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-stone-400"></span>
+                                    <span>Đang kiểm tra...</span>
+                                </span>
+                            </div>
+
+                            <div class="p-3 bg-stone-50 border border-stone-200 rounded-lg text-[11px] font-mono space-y-1 mb-4">
+                                <div class="flex justify-between">
+                                    <span class="text-ink-light">Thư mục gốc:</span>
+                                    <span class="font-bold text-ink">Aura Media (1Mz1kzYEAfx4oO1pKrj7hxZPOajS_QzHt)</span>
+                                </div>
+                                <div class="flex justify-between" id="drive-account-row" style="display:none;">
+                                    <span class="text-ink-light">Tài khoản kết nối:</span>
+                                    <span id="drive-account-email" class="font-bold text-emerald-600">...</span>
+                                </div>
+                                <div class="flex justify-between" id="drive-quota-row" style="display:none;">
+                                    <span class="text-ink-light">Dung lượng:</span>
+                                    <span id="drive-quota-text" class="text-ink">...</span>
                                 </div>
                             </div>
-                            <p class="text-xs text-ink-light leading-relaxed mb-4">Nhập API Key cá nhân để mở khóa quyền quét và bóc tách thư mục Google Drive công khai. Key được lưu mã hóa tại trình duyệt cục bộ.</p>
-                            <div class="flex items-center gap-2">
-                                <input type="password" id="input-gdrive-api-key" placeholder="Nhập API Key (Bắt đầu bằng AIza...)" class="flex-1 py-2 px-3 border border-line bg-paper focus:outline-none focus:border-cerulean text-xs font-mono transition-colors rounded-lg">
-                                <button onclick="window.saveGDriveApiKey()" class="bg-cerulean text-white px-5 py-2 text-xs uppercase font-bold tracking-wider hover:bg-cerulean-dark transition-colors cursor-pointer shadow-sm rounded-lg whitespace-nowrap">Lưu Key</button>
+
+                            <!-- Form cấu hình OAuth 2.0 -->
+                            <div class="space-y-3 mb-4">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-ink mb-1">Google OAuth Client ID:</label>
+                                    <input type="text" id="inp-gdrive-client-id" placeholder="Nhập Client ID (.apps.googleusercontent.com)" class="w-full py-2 px-3 border border-line bg-paper focus:outline-none focus:border-cerulean text-xs font-mono rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-ink mb-1">Google OAuth Client Secret:</label>
+                                    <input type="password" id="inp-gdrive-client-secret" placeholder="Nhập Client Secret" class="w-full py-2 px-3 border border-line bg-paper focus:outline-none focus:border-cerulean text-xs font-mono rounded-lg">
+                                </div>
+                                <div class="flex flex-wrap items-center gap-2 pt-1">
+                                    <button type="button" onclick="window.saveDriveCredentials()" class="bg-stone-700 text-white px-4 py-2 text-xs uppercase font-bold tracking-wider hover:bg-stone-800 transition-colors rounded-lg shadow-sm">
+                                        Lưu Cấu Hình
+                                    </button>
+                                    <button type="button" id="btn-gdrive-auth" onclick="window.startGoogleDriveAuth()" class="bg-blue-600 text-white px-4 py-2 text-xs uppercase font-bold tracking-wider hover:bg-blue-700 transition-colors rounded-lg shadow-sm flex items-center gap-1.5">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+                                        <span>Ủy Quyền Google Drive</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Khối Đồng Bộ Media Cục Bộ Lên Drive -->
+                            <div class="pt-3 border-t border-stone-200">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div>
+                                        <h5 class="text-xs font-bold text-ink">Đồng Bộ Toàn Bộ Media Hiện Có Lên Drive</h5>
+                                        <p class="text-[11px] text-ink-light">Quét thư mục media/ và đẩy lên cây thư mục Aura Media, cập nhật Firestore Database.</p>
+                                    </div>
+                                    <button type="button" id="btn-batch-sync" onclick="window.triggerMediaBatchSync()" class="px-3.5 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-lg hover:bg-emerald-700 transition-colors shrink-0 shadow-xs">
+                                        🚀 Bắt Đầu Đồng Bộ
+                                    </button>
+                                </div>
+
+                                <!-- Thanh tiến trình đồng bộ -->
+                                <div id="sync-progress-box" class="p-3 bg-stone-50 border border-stone-200 rounded-lg text-xs space-y-2" style="display:none;">
+                                    <div class="flex justify-between font-mono text-[11px]">
+                                        <span id="sync-status-text" class="font-bold text-cerulean">Đang tải...</span>
+                                        <span id="sync-count-text" class="text-ink-light">0 / 0</span>
+                                    </div>
+                                    <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
+                                        <div id="sync-progress-bar" class="bg-emerald-500 h-2 rounded-full transition-all duration-300" style="width: 0%;"></div>
+                                    </div>
+                                    <div id="sync-current-file" class="text-[10px] font-mono text-ink-light truncate">...</div>
+                                </div>
                             </div>
                         </div>
 
@@ -15669,7 +15733,10 @@
                                 const json = JSON.parse(xhr.responseText);
                                 if (json.success) {
                                     resolve({
-                                        url: json.url, // e.g. "media/companions/id/file.mp4"
+                                        url: json.url,
+                                        thumbnailUrl: json.thumbnailUrl || '',
+                                        streamUrl: json.streamUrl || '',
+                                        directUrl: json.directUrl || '',
                                         localUrl: json.localUrl || '',
                                         driveFileId: json.driveFileId || '',
                                         filename: json.filename,
@@ -24788,5 +24855,171 @@
         }
         
         </script>
+<script>
+        // ================= GOOGLE DRIVE CLOUD STORAGE MANAGEMENT =================
+        window.loadDriveStatus = async function() {
+            try {
+                const res = await fetch('/api/drive/status');
+                if (!res.ok) return;
+                const data = await res.json();
+                const status = data.status || {};
+                const cfg = data.config || {};
+
+                const badge = document.getElementById('drive-connection-badge');
+                const accRow = document.getElementById('drive-account-row');
+                const accEmail = document.getElementById('drive-account-email');
+                const quotaRow = document.getElementById('drive-quota-row');
+                const quotaText = document.getElementById('drive-quota-text');
+                const inpClient = document.getElementById('inp-gdrive-client-id');
+                const inpSecret = document.getElementById('inp-gdrive-client-secret');
+
+                if (inpClient && !inpClient.value && cfg.clientId) inpClient.value = cfg.clientId;
+                if (inpSecret && !inpSecret.value && cfg.clientSecret) inpSecret.value = cfg.clientSecret;
+
+                if (status.authenticated && status.account) {
+                    if (badge) {
+                        badge.className = "px-2.5 py-0.5 bg-emerald-50 text-emerald-800 text-[10px] font-mono uppercase font-bold tracking-wider border border-emerald-300 rounded-full flex items-center gap-1.5 shrink-0";
+                        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>Đã Kết Nối</span>';
+                    }
+                    if (accRow && accEmail) {
+                        accRow.style.display = 'flex';
+                        accEmail.textContent = status.account.email || 'Google User';
+                    }
+                    if (quotaRow && quotaText && status.account.quotaUsed !== undefined) {
+                        quotaRow.style.display = 'flex';
+                        const usedGB = (status.account.quotaUsed / (1024 * 1024 * 1024)).toFixed(1);
+                        const totalGB = status.account.quotaTotal ? (status.account.quotaTotal / (1024 * 1024 * 1024)).toFixed(0) : 'Không giới hạn';
+                        quotaText.textContent = `${usedGB} GB / ${totalGB} GB`;
+                    }
+                } else if (status.configured) {
+                    if (badge) {
+                        badge.className = "px-2.5 py-0.5 bg-amber-50 text-amber-800 text-[10px] font-mono uppercase font-bold tracking-wider border border-amber-300 rounded-full flex items-center gap-1.5 shrink-0";
+                        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span><span>Chưa Ủy Quyền</span>';
+                    }
+                } else {
+                    if (badge) {
+                        badge.className = "px-2.5 py-0.5 bg-stone-100 text-stone-600 text-[10px] font-mono uppercase font-bold tracking-wider border border-stone-200 rounded-full flex items-center gap-1.5 shrink-0";
+                        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-stone-400"></span><span>Chưa Cấu Hình</span>';
+                    }
+                }
+            } catch (e) {
+                console.warn('Lỗi kiểm tra Google Drive status:', e);
+            }
+        };
+
+        window.saveDriveCredentials = async function() {
+            const clientId = (document.getElementById('inp-gdrive-client-id')?.value || '').trim();
+            const clientSecret = (document.getElementById('inp-gdrive-client-secret')?.value || '').trim();
+
+            if (!clientId || !clientSecret) {
+                showToast("Vui lòng điền đủ Google Client ID và Client Secret!", "error");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/drive/save-config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ clientId, clientSecret, enabled: true })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast("Đã lưu thông tin OAuth Google Drive! Bây giờ hãy bấm 'Ủy Quyền Google Drive'.", "success");
+                    window.loadDriveStatus();
+                } else {
+                    showToast(data.error || "Lỗi lưu cấu hình Drive", "error");
+                }
+            } catch (err) {
+                showToast("Lỗi máy chủ: " + err.message, "error");
+            }
+        };
+
+        window.startGoogleDriveAuth = async function() {
+            try {
+                const res = await fetch('/api/drive/auth-url');
+                const data = await res.json();
+                if (data.success && data.authUrl) {
+                    // Mở cửa sổ đăng nhập Google OAuth
+                    window.location.href = data.authUrl;
+                } else {
+                    showToast(data.error || "Chưa thể lấy link đăng nhập Google Drive", "error");
+                }
+            } catch (err) {
+                showToast("Lỗi lấy URL ủy quyền: " + err.message, "error");
+            }
+        };
+
+        let syncPollTimer = null;
+        window.triggerMediaBatchSync = async function() {
+            if (!confirm("Hệ thống sẽ quét toàn bộ ảnh & video trong thư mục media/ và tải lên folder Aura Media (1Mz1kzYEAfx4oO1pKrj7hxZPOajS_QzHt) theo đúng cấu trúc UID/Bạn Đồng Hành/Tên Đối Tác. Bạn có chắc muốn bắt đầu không?")) return;
+
+            const btn = document.getElementById('btn-batch-sync');
+            const progressBox = document.getElementById('sync-progress-box');
+            if (btn) btn.disabled = true;
+            if (progressBox) progressBox.style.display = 'block';
+
+            try {
+                const res = await fetch('/api/drive/sync-media', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast("Đã khởi chạy tiến trình đồng bộ Media lên Google Drive!", "info");
+                    window.pollBatchSyncProgress();
+                } else {
+                    showToast(data.error || "Không thể khởi chạy đồng bộ", "error");
+                    if (btn) btn.disabled = false;
+                }
+            } catch (err) {
+                showToast("Lỗi kích hoạt đồng bộ: " + err.message, "error");
+                if (btn) btn.disabled = false;
+            }
+        };
+
+        window.pollBatchSyncProgress = function() {
+            if (syncPollTimer) clearInterval(syncPollTimer);
+            syncPollTimer = setInterval(async () => {
+                try {
+                    const res = await fetch('/api/drive/sync-status');
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const state = data.syncState || {};
+
+                    const statusText = document.getElementById('sync-status-text');
+                    const countText = document.getElementById('sync-count-text');
+                    const bar = document.getElementById('sync-progress-bar');
+                    const currFile = document.getElementById('sync-current-file');
+                    const btn = document.getElementById('btn-batch-sync');
+
+                    if (state.totalFiles > 0) {
+                        const pct = Math.round((state.processedFiles / state.totalFiles) * 100);
+                        if (bar) bar.style.width = pct + '%';
+                        if (countText) countText.textContent = `${state.processedFiles} / ${state.totalFiles} (${pct}%)`;
+                    }
+                    if (currFile) currFile.textContent = state.currentFile ? ('Đang xử lý: ' + state.currentFile) : '';
+
+                    if (!state.isRunning) {
+                        clearInterval(syncPollTimer);
+                        if (statusText) statusText.textContent = "✓ Hoàn tất đồng bộ!";
+                        if (btn) btn.disabled = false;
+                        showToast(`Đồng bộ hoàn tất! Tải lên ${state.uploadedFiles} tệp, đã có sẵn ${state.skippedFiles} tệp.`, "success");
+                    } else {
+                        if (statusText) statusText.textContent = `Đang đồng bộ (${state.uploadedFiles} đã tải, ${state.skippedFiles} sẵn có)...`;
+                    }
+                } catch (_) {}
+            }, 1000);
+        };
+
+        // Kiểm tra tham số URL khi quay lại từ Google OAuth
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('drive_connected') === '1') {
+                showToast("🎉 Đã kết nối Google Drive thành công! Tất cả media sẽ được upload siêu tốc lên Drive.", "success", 7000);
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if (urlParams.get('drive_error')) {
+                showToast("Lỗi kết nối Google Drive: " + decodeURIComponent(urlParams.get('drive_error')), "error", 8000);
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            window.loadDriveStatus();
+        });
+</script>
 </body>
 </html>
