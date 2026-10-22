@@ -2172,7 +2172,7 @@
             const res = await loginWithGoogle();
             if (res.success) {
                 window.location.reload();
-            } else {
+            } else if (!res.cancelled) {
                 alert("Lỗi đăng nhập Google: " + res.error);
             }
         };

@@ -8223,6 +8223,7 @@
                 const provider = new GoogleAuthProvider();
                 await signInWithPopup(auth, provider);
             } catch (err) {
+                if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') return;
                 console.error("Lỗi đăng nhập Google:", err);
                 if (typeof showToast === 'function') {
                     showToast("Đăng nhập thất bại: " + err.message, "error");
