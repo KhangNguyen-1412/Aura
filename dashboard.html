@@ -16471,37 +16471,8 @@
 
                         successCount++;
                     } catch (err) {
-                        console.warn("Lưu media cục bộ chưa khả dụng, tự động thử chế độ dự phòng:", file.name, err);
-                        let fallbackDone = false;
-                        if (file.size < 15 * 1024 * 1024) {
-                            try {
-                                const dataUrl = await new Promise((res, rej) => {
-                                    const reader = new FileReader();
-                                    reader.onload = () => res(reader.result);
-                                    reader.onerror = rej;
-                                    reader.readAsDataURL(file);
-                                });
-                                const mediaItem = {
-                                    url: dataUrl,
-                                    type: file.type?.startsWith('video') ? 'video' : 'image',
-                                    caption: file.name,
-                                    source: 'local_data'
-                                };
-                                if (editingPartnerId === targetPartnerId) {
-                                    const exists = currentPartnerGallery.some(x => x && (x.url === mediaItem.url || x.caption === mediaItem.caption));
-                                    if (!exists) {
-                                        currentPartnerGallery.push(mediaItem);
-                                        renderPartnerModalGallery();
-                                    }
-                                }
-                                successCount++;
-                                fallbackDone = true;
-                            } catch(dErr) {}
-                        }
-
-                        if (!fallbackDone) {
-                            showToast(err.message, "error");
-                        }
+                        console.error("[Media Upload Error] Lỗi tải tệp lên máy chủ:", file.name, err);
+                        showToast(`Không thể tải tệp "${file.name}": ${err.message || "Máy chủ không phản hồi"}`, "error");
                     } finally {
                         completedCount++;
                         if (barEl) barEl.style.width = `${Math.round((completedCount / files.length) * 100)}%`;
@@ -16757,28 +16728,9 @@
         function handlePartnerGalleryUpload(e) {
             const files = Array.from(e.target.files || []);
             if (files.length === 0) return;
-
-            showToast(`Đang tải ${files.length} tệp phương tiện...`, "info");
-            let loadedCount = 0;
-
-            files.forEach(file => {
-                const isVideo = file.type.startsWith('video');
-                const reader = new FileReader();
-                reader.onload = (evt) => {
-                    currentPartnerGallery.push({
-                        url: evt.target.result,
-                        type: isVideo ? 'video' : 'image',
-                        caption: file.name
-                    });
-                    loadedCount++;
-                    if (loadedCount === files.length) {
-                        renderPartnerModalGallery();
-                        showToast(`Đã thêm ${loadedCount} tệp vào bộ sưu tập!`, "success");
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
-            e.target.value = "";
+            if (typeof handleProjectMediaGalleryUpload === 'function') {
+                return handleProjectMediaGalleryUpload(e);
+            }
         }
         window.handlePartnerGalleryUpload = handlePartnerGalleryUpload;
 
@@ -19908,17 +19860,87 @@
             const defaultRel = isOF ? "Trai qua mạng" : "Bạn trai";
             const defaultProf = isOF ? "Diễn viên Onlyfan" : "";
 
-            // Khử trùng lặp tuyệt đối cho gallery và videoCalls trước khi ghi vào Firestore
+            // Hàm hỗ trợ giải phóng chuỗi Base64 nguy hiểm lên Server/Drive để lấy link ngắn
+            async function uploadBase64IfNeeded(dataUrl, defaultName, folder) {
+                if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:')) {
+                    return dataUrl;
+                }
+                const serverCheck = (typeof checkLocalMediaServer === 'function') ? await checkLocalMediaServer() : null;
+                if (serverCheck && serverCheck.active) {
+                    try {
+                        const mime = dataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
+                        const ext = mime.includes('video') ? 'mp4' : (mime.includes('png') ? 'png' : 'jpg');
+                        const safeBaseName = (defaultName || 'media').replace(/[^a-zA-Z0-9_-]/g, '_');
+                        const filename = `${safeBaseName}_${Date.now()}.${ext}`;
+                        const res = await fetch(`${serverCheck.baseUrl}/api/upload-media`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-filename': encodeURIComponent(filename),
+                                'x-folder': encodeURIComponent(folder || '')
+                            },
+                            body: JSON.stringify({
+                                base64: dataUrl,
+                                filename: filename
+                            })
+                        });
+                        if (res.ok) {
+                            const json = await res.json();
+                            if (json.success && json.url) {
+                                return json.url;
+                            }
+                        }
+                    } catch (e) {
+                        console.warn("[Base64 Recovery] Không thể tải Base64 lên server:", e);
+                    }
+                }
+                // Nếu không upload được, trả về null để loại bỏ chuỗi khổng lồ này, chống sập giới hạn 1MB của Firestore!
+                return null;
+            }
+
+            // BẢO VỆ CHỐNG SẬP 1MB FIRESTORE: Khử trùng lặp và loại bỏ Base64 trong gallery
             const deduplicatedGallery = [];
             const seenGalleryKeys = new Set();
-            (typeof currentPartnerGallery !== 'undefined' ? currentPartnerGallery : []).forEach(item => {
-                if (!item) return;
+            for (const item of (typeof currentPartnerGallery !== 'undefined' ? currentPartnerGallery : [])) {
+                if (!item) continue;
+                if (item.url && typeof item.url === 'string' && item.url.startsWith('data:')) {
+                    const cleanUrl = await uploadBase64IfNeeded(item.url, item.filename || item.caption || 'gallery', getCurrentPartnerFolder('Nóng'));
+                    if (cleanUrl) {
+                        item.url = cleanUrl;
+                        item.source = 'project_media';
+                    } else {
+                        console.warn("[Firestore Protection] Bỏ qua tệp Base64 chưa lưu máy chủ:", item.caption);
+                        continue;
+                    }
+                }
                 const k = item.url || item.filename || item.caption;
                 if (k && !seenGalleryKeys.has(k)) {
                     seenGalleryKeys.add(k);
                     deduplicatedGallery.push(item);
                 }
-            });
+            }
+
+            // BẢO VỆ CHỐNG SẬP 1MB FIRESTORE: Kiểm tra teachingGallery
+            const deduplicatedTeachingGallery = [];
+            const seenTeachingKeys = new Set();
+            for (const item of (typeof currentTeachingGallery !== 'undefined' ? currentTeachingGallery : [])) {
+                if (!item) continue;
+                if (item.url && typeof item.url === 'string' && item.url.startsWith('data:')) {
+                    const cleanUrl = await uploadBase64IfNeeded(item.url, item.filename || item.caption || 'teaching', getCurrentPartnerFolder('Thường'));
+                    if (cleanUrl) {
+                        item.url = cleanUrl;
+                        item.source = 'project_media';
+                    } else {
+                        console.warn("[Firestore Protection] Bỏ qua tệp teaching Base64 chưa lưu máy chủ:", item.caption);
+                        continue;
+                    }
+                }
+                const k = item.url || item.filename || item.caption;
+                if (k && !seenTeachingKeys.has(k)) {
+                    seenTeachingKeys.add(k);
+                    deduplicatedTeachingGallery.push(item);
+                }
+            }
 
             updatePermanentAddressString();
             updateTemporaryAddressString();
@@ -19966,10 +19988,10 @@
 
             const partnerData = {
                 name: document.getElementById('input-partner-name')?.value || "",
-                avatar: document.getElementById('input-partner-avatar')?.value || "",
+                avatar: await uploadBase64IfNeeded(document.getElementById('input-partner-avatar')?.value || "", 'avatar', getCurrentPartnerFolder()) || "",
                 avatarPosition: document.getElementById('input-partner-avatar-position')?.value || "center",
                 avatarZoom: parseFloat(document.getElementById('input-partner-avatar-zoom')?.value || '1') || 1,
-                cover: document.getElementById('input-partner-cover')?.value || "",
+                cover: await uploadBase64IfNeeded(document.getElementById('input-partner-cover')?.value || "", 'cover', getCurrentPartnerFolder()) || "",
                 coverPosition: document.getElementById('input-partner-cover-position')?.value || "center",
                 coverZoom: parseFloat(document.getElementById('input-partner-cover-zoom')?.value || '1') || 1,
                 profession: document.getElementById('input-partner-profession')?.value || defaultProf,
@@ -19998,7 +20020,7 @@
                 
                 socialLinks: typeof currentPartnerSocials !== 'undefined' ? currentPartnerSocials : [],
                 gallery: deduplicatedGallery,
-                teachingGallery: typeof currentTeachingGallery !== 'undefined' ? currentTeachingGallery : [],
+                teachingGallery: deduplicatedTeachingGallery,
                 videoCalls: deduplicatedVideoCalls,
                 audioVault: deduplicatedAudioVault,
                 showGalleryOnCard: document.getElementById('input-partner-show-gallery')?.checked !== false,
@@ -20019,6 +20041,15 @@
                     }).catch(() => {});
                 } catch (_) {}
             }
+
+            // Kiểm tra tổng dung lượng Document an toàn (< 950 KB) để không bao giờ vi phạm giới hạn 1MB của Firestore
+            try {
+                const estBytes = new TextEncoder().encode(JSON.stringify(partnerData)).length;
+                if (estBytes > 950000) {
+                    showToast("Dung lượng hồ sơ quá lớn (" + Math.round(estBytes / 1024) + " KB). Vui lòng loại bớt các tệp chưa tải lên hoàn tất!", "error");
+                    return;
+                }
+            } catch (_) {}
 
             try {
                 if (editingPartnerId) {
