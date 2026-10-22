@@ -3302,8 +3302,8 @@
                     <!-- CỘT 1: LƯU TRỮ MEDIA, GOOGLE DRIVE & KẾT NỐI API -->
                     <div class="flex flex-col gap-6">
 
-                        <!-- 2. Kho Lưu Trữ Google Drive Siêu Tốc (Aura Cloud Engine) -->
-                        <div class="editorial-border bg-white p-6 shadow-sm hover:shadow-md transition-shadow rounded-xl">
+                        <!-- 2. Kho Lưu Trữ Google Drive Siêu Tốc (CHỈ HIỂN THỊ CHO MASTER UID) -->
+                        <div id="card-settings-gdrive" class="editorial-border bg-white p-6 shadow-sm hover:shadow-md transition-shadow rounded-xl">
                             <div class="flex items-center justify-between mb-3">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
@@ -3384,8 +3384,8 @@
                             </div>
                         </div>
 
-                        <!-- 3. Lưu Trữ Media Cục Bộ (Thư Mục Dự Án: media/) -->
-                        <div class="editorial-border bg-white p-6 shadow-sm hover:shadow-md transition-shadow rounded-xl">
+                        <!-- 3. Lưu Trữ Media Cục Bộ (CHỈ HIỂN THỊ CHO MASTER UID) -->
+                        <div id="card-settings-local-storage" class="editorial-border bg-white p-6 shadow-sm hover:shadow-md transition-shadow rounded-xl">
                             <div class="mb-3 flex justify-between items-start">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-9 h-9 rounded-full bg-cerulean/10 flex items-center justify-center text-cerulean shrink-0">
@@ -3423,19 +3423,40 @@
                             </div>
                         </div>
 
-                        <!-- 4. Giới Hạn Tải Dữ Liệu -->
-                        <div class="editorial-border bg-white p-5 shadow-sm flex items-center justify-between gap-4 rounded-xl">
-                            <div>
-                                <h4 class="font-bold text-sm md:text-base text-cerulean">Giới Hạn Tải Dữ Liệu (Tối Ưu Tốc Độ)</h4>
-                                <p class="text-xs text-ink-light mt-0.5">Chỉ nạp các bản ghi gần nhất để tránh độ trễ khi dữ liệu phình to.</p>
+                        <!-- Thẻ Thông Tin Phân Vùng Bảo Mật Tài Khoản (Hiển thị cho các tài khoản người dùng khác) -->
+                        <div id="card-settings-user-info" style="display:none;" class="editorial-border bg-white p-6 shadow-sm rounded-xl space-y-4">
+                            <div class="flex items-center gap-3 border-b border-line/60 pb-3">
+                                <img id="settings-user-info-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-12 h-12 rounded-full border border-stone-200 object-cover shadow-xs shrink-0">
+                                <div class="overflow-hidden">
+                                    <h4 id="settings-user-info-name" class="font-playfair font-bold text-lg text-ink truncate">Tài khoản Aura</h4>
+                                    <span id="settings-user-info-email" class="text-xs text-ink-light block truncate">user@example.com</span>
+                                </div>
                             </div>
-                            <div class="shrink-0">
-                                <select id="input-data-limit" onchange="window.saveDataLimit()" class="py-1.5 px-3 border border-line bg-paper focus:outline-none focus:border-cerulean editorial-select text-xs font-bold transition-colors">
-                                    <option value="20">20 bản ghi</option>
-                                    <option value="50" selected>50 bản ghi</option>
-                                    <option value="100">100 bản ghi</option>
-                                    <option value="9999">Tất cả</option>
-                                </select>
+
+                            <div class="p-3 bg-stone-50 border border-stone-200 rounded-lg text-xs font-mono space-y-2">
+                                <div class="flex justify-between items-center gap-2">
+                                    <span class="text-ink-light shrink-0">Mã định danh (UID):</span>
+                                    <span id="settings-user-info-uid" class="font-bold text-cerulean truncate max-w-[220px]">...</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-ink-light">Phân quyền tài khoản:</span>
+                                    <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-bold rounded text-[11px] border border-emerald-200">Độc Quyền Cá Nhân</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-ink-light">Bảo mật đám mây:</span>
+                                    <span class="text-emerald-600 font-bold">Firestore User-Partition</span>
+                                </div>
+                            </div>
+
+                            <div class="text-xs text-ink-light leading-relaxed space-y-2">
+                                <p class="flex items-start gap-2">
+                                    <span class="text-emerald-600 shrink-0">🔒</span>
+                                    <span><b>Bảo Mật Độc Lập Tuyệt Đối:</b> Toàn bộ danh sách bạn đồng hành, nhật ký xuất tinh và hồ sơ y tế của bạn được mã hóa và lưu trữ riêng biệt theo mã UID cá nhân. Không một tài khoản nào khác có thể nhìn thấy dữ liệu của bạn.</span>
+                                </p>
+                                <p class="flex items-start gap-2">
+                                    <span class="text-blue-600 shrink-0">⚡</span>
+                                    <span><b>Đồng Bộ Đám Mây Tự Động:</b> Dữ liệu được đồng bộ hóa thời gian thực lên máy chủ Firestore ngay lập tức mỗi khi bạn thêm mới, sửa đổi hoặc tải tệp lên.</span>
+                                </p>
                             </div>
                         </div>
 
@@ -3445,7 +3466,7 @@
                     <div class="flex flex-col gap-6">
 
                         <!-- 1. Chế Độ Ngụy Trang (Panic Button - Khẩn Cấp) -->
-                        <div class="editorial-border bg-red-50/60 border-jasper p-6 shadow-sm relative overflow-hidden rounded-xl">
+                        <div id="card-settings-panic" class="editorial-border bg-red-50/60 border-jasper p-6 shadow-sm relative overflow-hidden rounded-xl">
                             <div class="flex items-center gap-2.5 mb-2">
                                 <div class="w-9 h-9 rounded-full bg-jasper/10 flex items-center justify-center text-jasper shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
@@ -3465,7 +3486,7 @@
                         </div>
 
                         <!-- 2. Quyền Riêng Tư & Đồng Bộ Cloud -->
-                        <div class="editorial-border bg-white p-6 shadow-sm rounded-xl space-y-5">
+                        <div id="card-settings-privacy" class="editorial-border bg-white p-6 shadow-sm rounded-xl space-y-5">
                             <h4 class="font-playfair font-bold text-lg text-cerulean border-b border-line/60 pb-2 flex items-center gap-2">
                                 <svg class="w-4 h-4 text-cerulean" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                 Kiểm Soát Quyền Riêng Tư
@@ -3494,8 +3515,9 @@
                             </div>
                         </div>
 
-                        <!-- 3. Quản Lý & Xuất Nhập Dữ Liệu (Master Backup) -->
-                        <div class="editorial-border bg-white p-6 shadow-sm rounded-xl space-y-4">
+                        <!-- 3. Quản Lý & Xuất Nhập Dữ Liệu (Master Backup - CHỈ HIỂN THỊ CHO MASTER UID) -->
+                        <div id="card-settings-master-backup" class="editorial-border bg-white p-6 shadow-sm rounded-xl space-y-4"><!-- 3. Quản Lý & Xuất Nhập Dữ Liệu (Master Backup - CHỈ HIỂN THỊ CHO MASTER UID) -->
+                        <div id="card-settings-master-backup" class="editorial-border bg-white p-6 shadow-sm rounded-xl space-y-4">
                             <div class="border-b border-line/60 pb-2">
                                 <h4 class="font-playfair font-bold text-lg text-cerulean flex items-center gap-2">
                                     <svg class="w-4 h-4 text-cerulean" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
@@ -3512,10 +3534,57 @@
                                     <input type="file" accept=".json" onchange="window.importDataJson(event)" class="hidden">
                                 </label>
                             </div>
+                        </div></div>
+
+                        
+
+                        <!-- 3b. XUẤT DỮ LIỆU CÁ NHÂN DẠNG EXCEL (DÀNH CHO CÁC TÀI KHOẢN KHÁC) -->
+                        <div id="card-settings-user-excel-export" style="display:none;" class="editorial-border bg-white p-6 shadow-sm rounded-xl space-y-4">
+                            <div class="border-b border-line/60 pb-3 flex items-start justify-between gap-3">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-playfair font-bold text-lg text-emerald-800 flex items-center gap-2">
+                                            Xuất Dữ Liệu Tài Khoản (Excel)
+                                        </h4>
+                                        <p class="text-xs text-ink-light mt-0.5">Tải toàn bộ hồ sơ sinh lý, bạn đồng hành &amp; nhật ký cá nhân đã lưu trong hệ thống.</p>
+                                    </div>
+                                </div>
+                                <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-mono uppercase font-bold tracking-wider rounded-md border border-emerald-200 shrink-0">
+                                    .XLS / .CSV
+                                </span>
+                            </div>
+
+                            <div class="p-3 bg-stone-50 border border-stone-200 rounded-lg text-xs space-y-2 text-ink-light">
+                                <div class="flex items-center gap-2 text-ink">
+                                    <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Tự động tạo tệp đa trang tính: <b>Hồ Sơ Cá Nhân</b>, <b>Bạn Đồng Hành</b>, <b>Nhật Ký Giải Phóng</b>, <b>Xét Nghiệm Y Khoa</b>, <b>Tinh Dịch Đồ</b>.</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-ink">
+                                    <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    <span>Hỗ trợ mở trực tiếp trên Microsoft Excel, Google Sheets, Apple Numbers &amp; LibreOffice mà không bị lỗi font Tiếng Việt.</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-ink">
+                                    <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                    <span>Chỉ xuất dữ liệu thuộc quyền sở hữu của riêng bạn, an toàn tuyệt đối.</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-2 flex flex-col sm:flex-row gap-2.5">
+                                <button type="button" onclick="window.exportUserAccountToExcel()" class="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase tracking-wider text-xs rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    <span>Tải Tệp Excel Báo Cáo (.xls)</span>
+                                </button>
+                                <button type="button" onclick="window.exportUserAccountToCSV()" class="py-3 px-4 border border-stone-300 hover:border-emerald-600 text-stone-700 hover:text-emerald-700 font-bold uppercase tracking-wider text-xs rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer bg-stone-50">
+                                    <span>Xuất CSV (UTF-8)</span>
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- 4. Vùng Nguy Hiểm (Danger Zone) -->
-                        <div class="editorial-border border-dashed border-jasper/40 bg-stone-50 p-5 rounded-xl text-center flex flex-col items-center gap-1.5">
+                        <!-- 4. Vùng Nguy Hiểm (Danger Zone - CHỈ HIỂN THỊ CHO MASTER UID) -->
+                        <div id="card-settings-danger-zone" class="editorial-border border-dashed border-jasper/40 bg-stone-50 p-5 rounded-xl text-center flex flex-col items-center gap-1.5">
                             <span class="text-[10px] uppercase font-mono tracking-widest text-jasper font-bold">VÙNG NGUY HIỂM / FACTORY RESET</span>
                             <button onclick="window.confirmResetAllData()" class="text-xs font-bold text-jasper hover:text-jasper-dark uppercase tracking-wider hover:underline cursor-pointer transition-colors">
                                 Xóa Toàn Bộ Dữ Liệu & Khởi Tạo Lại Firestore
@@ -7219,6 +7288,9 @@
                 if (targetId === 'module7' && window.renderChart) {
                     window.renderChart();
                 }
+                if (targetId === 'module9' && typeof window.updateSettingsVisibilityByUID === 'function') {
+                    window.updateSettingsVisibilityByUID();
+                }
                 if (targetId === 'module8') {
                     const selectPartner = document.getElementById('select-stimulus-partner');
                     if (selectPartner) {
@@ -8198,6 +8270,7 @@
                 } catch (_) {}
 
                 console.log("[Aura Dashboard] Đã đăng nhập tài khoản:", user.displayName, user.uid);
+                if (typeof window.updateSettingsVisibilityByUID === 'function') window.updateSettingsVisibilityByUID();
 
                 // Khởi chạy đồng bộ dữ liệu thời gian thực độc quyền cho tài khoản này
                 initRealtimeListeners(user.uid);
@@ -8215,6 +8288,7 @@
                 // Huỷ lắng nghe và làm sạch dữ liệu giao diện
                 clearUserDataAndUI();
                 updateFirestoreBadge(false, "Chưa đăng nhập");
+                if (typeof window.updateSettingsVisibilityByUID === 'function') window.updateSettingsVisibilityByUID();
             }
         });
 
@@ -21438,7 +21512,528 @@
             }
         };
 
+                // ================= PHÂN QUYỀN MASTER & XUẤT EXCEL CHO TÀI KHOẢN =================
+        window.MASTER_UID = 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+
+        window.updateSettingsVisibilityByUID = function() {
+            const MASTER_UID = window.MASTER_UID || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+            const uid = (typeof currentUserId !== 'undefined' && currentUserId) || 
+                        (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : null) || 
+                        window.currentUserId;
+            
+            const isMaster = (uid === MASTER_UID);
+
+            // 1. Google Drive Cloud Storage (Chỉ tài khoản Master mới xem được)
+            const gdriveCard = document.getElementById('card-settings-gdrive');
+            if (gdriveCard) gdriveCard.style.display = isMaster ? '' : 'none';
+
+            // 2. Hệ Thống Lưu Trữ Riêng Tư Cục Bộ (Chỉ tài khoản Master mới xem được)
+            const localCard = document.getElementById('card-settings-local-storage');
+            if (localCard) localCard.style.display = isMaster ? '' : 'none';
+
+            // 3. Sao Lưu & Khôi Phục Dữ Liệu (Master JSON) (Chỉ tài khoản Master mới xem được)
+            const masterBackupCard = document.getElementById('card-settings-master-backup');
+            if (masterBackupCard) masterBackupCard.style.display = isMaster ? '' : 'none';
+
+            // 4. Vùng Nguy Hiểm (Danger Zone - Factory Reset) (Chỉ tài khoản Master mới xem được)
+            const dangerZoneCard = document.getElementById('card-settings-danger-zone');
+            if (dangerZoneCard) dangerZoneCard.style.display = isMaster ? '' : 'none';
+
+            // 5. Thẻ Xuất Dữ Liệu Cá Nhân Dạng Excel (Dành cho các tài khoản khác)
+            const excelCard = document.getElementById('card-settings-user-excel-export');
+            if (excelCard) excelCard.style.display = !isMaster ? '' : 'none';
+
+            // 6. Thẻ Thông Tin Phân Vùng Bảo Mật Tài Khoản (Dành cho các tài khoản khác)
+            const userInfoCard = document.getElementById('card-settings-user-info');
+            if (userInfoCard) {
+                userInfoCard.style.display = !isMaster ? '' : 'none';
+                if (!isMaster) {
+                    const user = (typeof auth !== 'undefined' && auth.currentUser) || null;
+                    const nameEl = document.getElementById('settings-user-info-name');
+                    const emailEl = document.getElementById('settings-user-info-email');
+                    const uidEl = document.getElementById('settings-user-info-uid');
+                    const avatarEl = document.getElementById('settings-user-info-avatar');
+                    if (nameEl) nameEl.textContent = user ? (user.displayName || 'Tài khoản Aura') : 'Chưa đăng nhập';
+                    if (emailEl) emailEl.textContent = user ? (user.email || 'Vui lòng đăng nhập Google') : 'Chưa đăng nhập';
+                    if (uidEl) uidEl.textContent = uid || 'Chưa xác thực';
+                    if (avatarEl && user && user.photoURL) avatarEl.src = user.photoURL;
+                }
+            }
+        };
+
+        function xmlEscape(val) {
+            if (val === null || val === undefined) return '';
+            return String(val)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+        }
+
+        function formatXmlDate(val) {
+            if (!val) return '';
+            if (val && typeof val.toDate === 'function') {
+                return val.toDate().toLocaleString('vi-VN');
+            }
+            if (typeof val === 'string' || typeof val === 'number') {
+                const d = new Date(val);
+                if (!isNaN(d.getTime())) return d.toLocaleString('vi-VN');
+            }
+            return String(val);
+        }
+
+        window.buildExcelWorkbookXML = function(exportData) {
+            const user = exportData.user || {};
+            const profile = exportData.profile || {};
+            const partners = exportData.partners || [];
+            const releases = exportData.releases || [];
+            const endocrine = exportData.endocrine || [];
+            const semen = exportData.semen || [];
+
+            let xml = '<?xml version="1.0" encoding="UTF-8"?>\r\n' +
+'<?mso-application progid="Excel.Sheet"?>\r\n' +
+'<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"\r\n' +
+' xmlns:o="urn:schemas-microsoft-com:office:office"\r\n' +
+' xmlns:x="urn:schemas-microsoft-com:office:excel"\r\n' +
+' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"\r\n' +
+' xmlns:html="http://www.w3.org/TR/REC-html40">\r\n' +
+' <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">\r\n' +
+'  <Author>Aura Mens Physiological Management System</Author>\r\n' +
+'  <Created>' + new Date().toISOString() + '</Created>\r\n' +
+' </DocumentProperties>\r\n' +
+' <Styles>\r\n' +
+'  <Style ss:ID="Default" ss:Name="Normal">\r\n' +
+'   <Alignment ss:Vertical="Center"/>\r\n' +
+'   <Borders/>\r\n' +
+'   <Font ss:FontName="Segoe UI" ss:Size="10" ss:Color="#1C1C1E"/>\r\n' +
+'   <Interior/>\r\n' +
+'   <NumberFormat/>\r\n' +
+'   <Protection/>\r\n' +
+'  </Style>\r\n' +
+'  <Style ss:ID="Header">\r\n' +
+'   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>\r\n' +
+'   <Borders>\r\n' +
+'    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/>\r\n' +
+'    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/>\r\n' +
+'    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/>\r\n' +
+'    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/>\r\n' +
+'   </Borders>\r\n' +
+'   <Font ss:FontName="Segoe UI" ss:Size="11" ss:Color="#FFFFFF" ss:Bold="1"/>\r\n' +
+'   <Interior ss:Color="#0F4C81" ss:Pattern="Solid"/>\r\n' +
+'  </Style>\r\n' +
+'  <Style ss:ID="HeaderEmerald">\r\n' +
+'   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>\r\n' +
+'   <Borders>\r\n' +
+'    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/>\r\n' +
+'    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/>\r\n' +
+'    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/>\r\n' +
+'    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/>\r\n' +
+'   </Borders>\r\n' +
+'   <Font ss:FontName="Segoe UI" ss:Size="11" ss:Color="#FFFFFF" ss:Bold="1"/>\r\n' +
+'   <Interior ss:Color="#059669" ss:Pattern="Solid"/>\r\n' +
+'  </Style>\r\n' +
+'  <Style ss:ID="Title">\r\n' +
+'   <Font ss:FontName="Segoe UI" ss:Size="14" ss:Color="#0F4C81" ss:Bold="1"/>\r\n' +
+'  </Style>\r\n' +
+'  <Style ss:ID="Cell">\r\n' +
+'   <Alignment ss:Vertical="Center"/>\r\n' +
+'   <Borders>\r\n' +
+'    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'   </Borders>\r\n' +
+'  </Style>\r\n' +
+'  <Style ss:ID="CellCenter">\r\n' +
+'   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>\r\n' +
+'   <Borders>\r\n' +
+'    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'   </Borders>\r\n' +
+'  </Style>\r\n' +
+'  <Style ss:ID="CellBold">\r\n' +
+'   <Alignment ss:Vertical="Center"/>\r\n' +
+'   <Borders>\r\n' +
+'    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E5E7EB"/>\r\n' +
+'   </Borders>\r\n' +
+'   <Font ss:FontName="Segoe UI" ss:Size="10" ss:Color="#1C1C1E" ss:Bold="1"/>\r\n' +
+'  </Style>\r\n' +
+' </Styles>';
+
+            // --- SHEET 1: HỒ SƠ TÀI KHOẢN ---
+            xml += '\r\n <Worksheet ss:Name="Hồ Sơ Cá Nhân">\r\n' +
+'  <Table>\r\n' +
+'   <Column ss:Width="200"/>\r\n' +
+'   <Column ss:Width="300"/>\r\n' +
+'   <Row ss:StyleID="Header">\r\n' +
+'    <Cell><Data ss:Type="String">Thông Số / Chỉ Số Sinh Lý</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Giá Trị Ghi Nhận</Data></Cell>\r\n' +
+'   </Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Tên Chủ Tài Khoản</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(profile.name || user.displayName || 'Chưa cập nhật') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Email Đăng Nhập</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(user.email || 'N/A') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Mã Định Danh (Firebase UID)</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(user.uid || currentUserId || 'N/A') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Tuổi</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(profile.age || 'N/A') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Chiều Cao (cm)</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(profile.height || 'N/A') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Cân Nặng (kg)</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(profile.weight || 'N/A') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Huyết Áp (mmHg)</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(profile.bloodPressure || 'N/A') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Nhịp Tim Nghỉ (bpm)</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(profile.restingHeartRate || 'N/A') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Mục Tiêu Testosterone (ng/dL)</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(profile.testoTarget || 'N/A') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Chế Độ Ăn</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(profile.dietType || 'N/A') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Giấc Ngủ Trung Bình (giờ/ngày)</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(profile.sleepHours || 'N/A') + '</Data></Cell></Row>\r\n' +
+'   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellBold"><Data ss:Type="String">Thời Gian Xuất Dữ Liệu</Data></Cell><Cell><Data ss:Type="String">' + xmlEscape(new Date().toLocaleString('vi-VN')) + '</Data></Cell></Row>\r\n' +
+'  </Table>\r\n' +
+' </Worksheet>';
+
+            // --- SHEET 2: BẠN ĐỒNG HÀNH ---
+            xml += '\r\n <Worksheet ss:Name="Bạn Đồng Hành">\r\n' +
+'  <Table>\r\n' +
+'   <Column ss:Width="40"/>\r\n' +
+'   <Column ss:Width="160"/>\r\n' +
+'   <Column ss:Width="130"/>\r\n' +
+'   <Column ss:Width="120"/>\r\n' +
+'   <Column ss:Width="50"/>\r\n' +
+'   <Column ss:Width="120"/>\r\n' +
+'   <Column ss:Width="130"/>\r\n' +
+'   <Column ss:Width="120"/>\r\n' +
+'   <Column ss:Width="110"/>\r\n' +
+'   <Column ss:Width="90"/>\r\n' +
+'   <Column ss:Width="250"/>\r\n' +
+'   <Column ss:Width="80"/>\r\n' +
+'   <Column ss:Width="200"/>\r\n' +
+'   <Row ss:StyleID="HeaderEmerald">\r\n' +
+'    <Cell><Data ss:Type="String">STT</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Tên Đối Tác</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Mối Quan Hệ</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Phân Loại / Nhóm</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Tuổi</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Số Điện Thoại</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Mạng Xã Hội / MXH</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Ngày Bắt Đầu / Gặp</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Tần Suất Gặp</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Mức Thân Thiết</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Ghi Chú Chi Tiết</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Số Lượng Media</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Thư Mục / Link Drive</Data></Cell>\r\n' +
+'   </Row>';
+
+            if (partners.length === 0) {
+                xml += '\r\n   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellCenter"><Data ss:Type="Number">1</Data></Cell><Cell><Data ss:Type="String">(Chưa có dữ liệu bạn đồng hành)</Data></Cell></Row>';
+            } else {
+                partners.forEach((p, idx) => {
+                    const mediaCount = (p.gallery && Array.isArray(p.gallery)) ? p.gallery.length : (p.mediaCount || 0);
+                    xml += '\r\n   <Row ss:StyleID="Cell">\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="Number">' + (idx + 1) + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellBold"><Data ss:Type="String">' + xmlEscape(p.name || '') + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(p.relation || '') + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(p.category || p.group || 'Bạn Đồng Hành') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(p.age || '') + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(p.phone || '') + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(p.social || p.socialLink || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(p.firstMet || p.startDate || '') + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(p.frequency || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(p.intimacy || p.rating || '') + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(p.notes || p.description || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="Number">' + mediaCount + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(p.driveUrl || p.driveFolderId || '') + '</Data></Cell>\r\n' +
+'   </Row>';
+                });
+            }
+            xml += '\r\n  </Table>\r\n </Worksheet>';
+
+            // --- SHEET 3: NHẬT KÝ GIẢI PHÓNG ---
+            xml += '\r\n <Worksheet ss:Name="Nhật Ký Giải Phóng">\r\n' +
+'  <Table>\r\n' +
+'   <Column ss:Width="40"/>\r\n' +
+'   <Column ss:Width="140"/>\r\n' +
+'   <Column ss:Width="140"/>\r\n' +
+'   <Column ss:Width="110"/>\r\n' +
+'   <Column ss:Width="130"/>\r\n' +
+'   <Column ss:Width="120"/>\r\n' +
+'   <Column ss:Width="110"/>\r\n' +
+'   <Column ss:Width="110"/>\r\n' +
+'   <Column ss:Width="250"/>\r\n' +
+'   <Row ss:StyleID="Header">\r\n' +
+'    <Cell><Data ss:Type="String">STT</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Thời Gian</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Hình Thức Xuất Tinh</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Thời Gian (Phút)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Đối Tác Đồng Hành</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Chất Lượng Khoái Cảm</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Năng Lượng Sau Đó</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Thể Tích (Ước tính)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Ghi Chú Sinh Lý</Data></Cell>\r\n' +
+'   </Row>';
+
+            if (releases.length === 0) {
+                xml += '\r\n   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellCenter"><Data ss:Type="Number">1</Data></Cell><Cell><Data ss:Type="String">(Chưa có dữ liệu nhật ký giải phóng)</Data></Cell></Row>';
+            } else {
+                releases.forEach((r, idx) => {
+                    xml += '\r\n   <Row ss:StyleID="Cell">\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="Number">' + (idx + 1) + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(formatXmlDate(r.createdAt || r.date || r.timestamp)) + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(r.type || r.method || 'Xuất tinh') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(r.durationMinutes || r.duration || '') + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(r.partnerName || r.partner || 'Một mình') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(r.qualityScore || r.satisfaction || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(r.energyLevel || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(r.volume || '') + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(r.notes || '') + '</Data></Cell>\r\n' +
+'   </Row>';
+                });
+            }
+            xml += '\r\n  </Table>\r\n </Worksheet>';
+
+            // --- SHEET 4: XÉT NGHIỆM Y KHOA ---
+            xml += '\r\n <Worksheet ss:Name="Xét Nghiệm Y Khoa">\r\n' +
+'  <Table>\r\n' +
+'   <Column ss:Width="40"/>\r\n' +
+'   <Column ss:Width="120"/>\r\n' +
+'   <Column ss:Width="140"/>\r\n' +
+'   <Column ss:Width="140"/>\r\n' +
+'   <Column ss:Width="100"/>\r\n' +
+'   <Column ss:Width="100"/>\r\n' +
+'   <Column ss:Width="110"/>\r\n' +
+'   <Column ss:Width="110"/>\r\n' +
+'   <Column ss:Width="100"/>\r\n' +
+'   <Column ss:Width="250"/>\r\n' +
+'   <Row ss:StyleID="Header">\r\n' +
+'    <Cell><Data ss:Type="String">STT</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Ngày Xét Nghiệm</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Tổng Testo (ng/dL)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Free Testo (pg/mL)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">LH (mIU/mL)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">FSH (mIU/mL)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Prolactin (ng/mL)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Estradiol (pg/mL)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">SHBG (nmol/L)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Đánh Giá Bác Sĩ</Data></Cell>\r\n' +
+'   </Row>';
+
+            if (endocrine.length === 0) {
+                xml += '\r\n   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellCenter"><Data ss:Type="Number">1</Data></Cell><Cell><Data ss:Type="String">(Chưa có dữ liệu xét nghiệm nội tiết)</Data></Cell></Row>';
+            } else {
+                endocrine.forEach((e, idx) => {
+                    xml += '\r\n   <Row ss:StyleID="Cell">\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="Number">' + (idx + 1) + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(e.date || formatXmlDate(e.createdAt)) + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(e.totalTesto || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(e.freeTesto || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(e.lh || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(e.fsh || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(e.prolactin || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(e.estradiol || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(e.shbg || '') + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(e.notes || e.doctorNote || '') + '</Data></Cell>\r\n' +
+'   </Row>';
+                });
+            }
+            xml += '\r\n  </Table>\r\n </Worksheet>';
+
+            // --- SHEET 5: TINH DỊCH ĐỒ ---
+            xml += '\r\n <Worksheet ss:Name="Tinh Dịch Đồ">\r\n' +
+'  <Table>\r\n' +
+'   <Column ss:Width="40"/>\r\n' +
+'   <Column ss:Width="120"/>\r\n' +
+'   <Column ss:Width="110"/>\r\n' +
+'   <Column ss:Width="130"/>\r\n' +
+'   <Column ss:Width="140"/>\r\n' +
+'   <Column ss:Width="130"/>\r\n' +
+'   <Column ss:Width="130"/>\r\n' +
+'   <Column ss:Width="110"/>\r\n' +
+'   <Column ss:Width="250"/>\r\n' +
+'   <Row ss:StyleID="HeaderEmerald">\r\n' +
+'    <Cell><Data ss:Type="String">STT</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Ngày Xét Nghiệm</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Thể Tích (mL)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Mật Độ (M/mL)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Tổng Số (Triệu)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Di Động PR (%)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Hình Thái Bình Thường (%)</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Số Ngày Kiêng</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">Kết Luận</Data></Cell>\r\n' +
+'   </Row>';
+
+            if (semen.length === 0) {
+                xml += '\r\n   <Row ss:StyleID="Cell"><Cell ss:StyleID="CellCenter"><Data ss:Type="Number">1</Data></Cell><Cell><Data ss:Type="String">(Chưa có dữ liệu tinh dịch đồ)</Data></Cell></Row>';
+            } else {
+                semen.forEach((s, idx) => {
+                    xml += '\r\n   <Row ss:StyleID="Cell">\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="Number">' + (idx + 1) + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(s.date || formatXmlDate(s.createdAt)) + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(s.volume || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(s.concentration || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(s.totalCount || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(s.motilityPr || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(s.morphologyNormal || '') + '</Data></Cell>\r\n' +
+'    <Cell ss:StyleID="CellCenter"><Data ss:Type="String">' + xmlEscape(s.abstinenceDays || '') + '</Data></Cell>\r\n' +
+'    <Cell><Data ss:Type="String">' + xmlEscape(s.conclusion || s.notes || '') + '</Data></Cell>\r\n' +
+'   </Row>';
+                });
+            }
+            xml += '\r\n  </Table>\r\n </Worksheet>';
+
+            xml += '\r\n</Workbook>';
+            return xml;
+        };
+
+        window.exportUserAccountToExcel = async function() {
+            const uid = (typeof currentUserId !== 'undefined' && currentUserId) || 
+                        (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : null);
+            if (!uid) {
+                showToast("Vui lòng đăng nhập Google để xuất dữ liệu tài khoản của bạn.", "warning");
+                return;
+            }
+
+            showToast("Đang gom toàn bộ dữ liệu tài khoản để tạo tệp Excel...", "info");
+
+            try {
+                // 1. Hồ sơ người dùng
+                let profileData = {};
+                try {
+                    const pSnap = await getDoc(doc(db, "profiles", 'profile_' + uid));
+                    if (pSnap.exists()) profileData = pSnap.data();
+                    else {
+                        const uSnap = await getDoc(doc(db, "users", uid));
+                        if (uSnap.exists()) profileData = uSnap.data();
+                    }
+                } catch (_) {}
+
+                // 2. Danh sách đối tác
+                let userPartners = [];
+                try {
+                    const pSnap = await getDocs(query(collection(db, "partners"), where("userId", "==", uid)));
+                    pSnap.forEach(d => userPartners.push({ id: d.id, ...d.data() }));
+                } catch (_) {
+                    userPartners = (window.currentPartners || []).filter(p => !p.userId || p.userId === uid);
+                }
+                if (userPartners.length === 0 && window.currentPartners && window.currentPartners.length > 0) {
+                    userPartners = window.currentPartners.filter(p => !p.userId || p.userId === uid);
+                }
+
+                // 3. Nhật ký giải phóng
+                let userReleases = [];
+                try {
+                    const rSnap = await getDocs(query(collection(db, "release_logs"), where("userId", "==", uid)));
+                    rSnap.forEach(d => userReleases.push({ id: d.id, ...d.data() }));
+                } catch (_) {
+                    userReleases = (window.currentReleaseLogs || []).filter(r => !r.userId || r.userId === uid);
+                }
+                if (userReleases.length === 0 && window.currentReleaseLogs && window.currentReleaseLogs.length > 0) {
+                    userReleases = window.currentReleaseLogs.filter(r => !r.userId || r.userId === uid);
+                }
+
+                // 4. Xét nghiệm nội tiết
+                let userEndo = [];
+                try {
+                    const eSnap = await getDocs(query(collection(db, "endocrine_tests"), where("userId", "==", uid)));
+                    eSnap.forEach(d => userEndo.push({ id: d.id, ...d.data() }));
+                } catch (_) {}
+
+                // 5. Tinh dịch đồ
+                let userSemen = [];
+                try {
+                    const sSnap = await getDocs(query(collection(db, "semen_analyses"), where("userId", "==", uid)));
+                    sSnap.forEach(d => userSemen.push({ id: d.id, ...d.data() }));
+                } catch (_) {}
+
+                const xml = window.buildExcelWorkbookXML({
+                    user: auth.currentUser,
+                    profile: profileData,
+                    partners: userPartners,
+                    releases: userReleases,
+                    endocrine: userEndo,
+                    semen: userSemen
+                });
+
+                const blob = new Blob([xml], { type: "application/vnd.ms-excel;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                const userNameClean = (auth.currentUser?.displayName || 'Aura_User').replace(/[^a-zA-Z0-9_\u00C0-\u1EF9]/g, '_');
+                const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+                a.href = url;
+                a.download = 'Aura_Data_' + userNameClean + '_' + dateStr + '.xls';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showToast('Đã xuất thành công ' + userPartners.length + ' đối tác & ' + userReleases.length + ' nhật ký ra file Excel!', "success");
+            } catch (err) {
+                console.error("Lỗi xuất Excel:", err);
+                showToast("Lỗi khi xuất file Excel: " + err.message, "error");
+            }
+        };
+
+        window.exportUserAccountToCSV = async function() {
+            const uid = (typeof currentUserId !== 'undefined' && currentUserId) || 
+                        (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : null);
+            if (!uid) {
+                showToast("Vui lòng đăng nhập Google để xuất dữ liệu tài khoản của bạn.", "warning");
+                return;
+            }
+
+            try {
+                let userPartners = (window.currentPartners || []).filter(p => !p.userId || p.userId === uid);
+                if (userPartners.length === 0) {
+                    try {
+                        const pSnap = await getDocs(query(collection(db, "partners"), where("userId", "==", uid)));
+                        pSnap.forEach(d => userPartners.push({ id: d.id, ...d.data() }));
+                    } catch (_) {}
+                }
+
+                let csv = "\uFEFFSTT,Tên Đối Tác,Mối Quan Hệ,Phân Loại,Tuổi,Số Điện Thoại,Mạng Xã Hội,Ngày Bắt Đầu,Tần Suất,Mức Thân Thiết,Ghi Chú,Link Drive\n";
+                userPartners.forEach((p, idx) => {
+                    const row = [
+                        idx + 1,
+                        '"' + (p.name || '').replace(/"/g, '""') + '"',
+                        '"' + (p.relation || '').replace(/"/g, '""') + '"',
+                        '"' + (p.category || p.group || 'Bạn Đồng Hành').replace(/"/g, '""') + '"',
+                        '"' + (p.age || '').replace(/"/g, '""') + '"',
+                        '"' + (p.phone || '').replace(/"/g, '""') + '"',
+                        '"' + (p.social || '').replace(/"/g, '""') + '"',
+                        '"' + (p.firstMet || p.startDate || '').replace(/"/g, '""') + '"',
+                        '"' + (p.frequency || '').replace(/"/g, '""') + '"',
+                        '"' + (p.intimacy || p.rating || '').replace(/"/g, '""') + '"',
+                        '"' + (p.notes || '').replace(/"/g, '""') + '"',
+                        '"' + (p.driveUrl || '').replace(/"/g, '""') + '"'
+                    ];
+                    csv += row.join(",") + "\n";
+                });
+
+                const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                const userNameClean = (auth.currentUser?.displayName || 'Aura_User').replace(/[^a-zA-Z0-9_\u00C0-\u1EF9]/g, '_');
+                const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+                a.href = url;
+                a.download = 'Aura_Partners_' + userNameClean + '_' + dateStr + '.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showToast('Đã xuất ' + userPartners.length + ' đối tác ra tệp CSV thành công!', "success");
+            } catch (err) {
+                console.error("Lỗi xuất CSV:", err);
+                showToast("Lỗi khi xuất file CSV: " + err.message, "error");
+            }
+        };
+
+
         window.exportAllDataJson = async function() {
+            const MASTER_UID = window.MASTER_UID || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+            const activeUid = (typeof currentUserId !== 'undefined' && currentUserId) || 
+                              (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : null);
+            if (activeUid !== MASTER_UID) {
+                showToast("Tính năng này chỉ dành riêng cho tài khoản quản trị Master.", "error");
+                return;
+            }
             showToast("Đang gom và sao lưu toàn bộ cơ sở dữ liệu...", "info");
             try {
                 const [profileSnap, endocrineSnap, semenSnap, releaseSnap, partnerSnap, nutritionSnap, workoutsSnap, kegelSnap] = await Promise.all([
@@ -21487,6 +22082,15 @@
         };
 
         window.importDataJson = async function(e) {
+            // GUARD_IMPORT
+            const MASTER_UID = window.MASTER_UID || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+            const activeUid = (typeof currentUserId !== 'undefined' && currentUserId) || 
+                              (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : null);
+            if (activeUid !== MASTER_UID) {
+                showToast("Tính năng này chỉ dành riêng cho tài khoản quản trị Master.", "error");
+                return;
+            }
+
             const file = e.target.files && e.target.files[0];
             if (!file) return;
 
@@ -21629,6 +22233,15 @@
         };
 
         window.confirmResetAllData = async function() {
+            // GUARD_RESET
+            const MASTER_UID = window.MASTER_UID || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+            const activeUid = (typeof currentUserId !== 'undefined' && currentUserId) || 
+                              (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : null);
+            if (activeUid !== MASTER_UID) {
+                showToast("Tính năng này chỉ dành riêng cho tài khoản quản trị Master.", "error");
+                return;
+            }
+
             if (!confirm("Hành động này sẽ thiết lập lại toàn bộ dữ liệu trên Firestore về trạng thái chuẩn ban đầu. Bạn có chắc không?")) return;
             await window.seedInitialData();
         };
