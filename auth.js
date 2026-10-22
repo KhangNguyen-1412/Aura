@@ -147,16 +147,20 @@ function renderLoggedInCornerHTML(user) {
                 <span style="color: #FFFFFF !important;">Đi tới Bảng Điều Khiển</span>
             </a>
             
-            <div class="flex items-center space-x-2 pl-2 border-l border-[#D1CCC5]">
-                <a href="ca-nhan.html" class="flex items-center space-x-2 group cursor-pointer hover:opacity-90" title="Bấm vào Avatar để Cập nhật Hồ Sơ Cá Nhân & Chỉ Số Cơ Thể">
-                    <img src="${avatar}" 
-                         alt="${name}" 
-                         class="w-9 h-9 rounded-full object-cover border-2 border-[#007BA7] group-hover:border-[#D73B3E] shadow-xs transition-colors" 
-                         title="Xem hồ sơ cá nhân của bạn">
-                    <span class="text-xs font-bold text-[#1A1A1A] group-hover:text-[#007BA7] hidden md:inline max-w-[110px] truncate">${name}</span>
+            <div class="flex items-center space-x-2.5 pl-2.5 border-l border-[#D1CCC5]">
+                <a href="ca-nhan.html" class="inline-flex items-center justify-center group cursor-pointer hover:opacity-90" title="Bấm vào Avatar để xem Hồ Sơ Cá Nhân">
+                    <div class="relative shrink-0">
+                        <img src="${avatar}" 
+                             alt="${name}" 
+                             class="w-9 h-9 rounded-full object-cover border-2 border-[#007BA7] group-hover:border-[#D73B3E] shadow-xs transition-all group-hover:scale-105" 
+                             title="Xem hồ sơ cá nhân của bạn">
+                        <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" title="Trực tuyến"></span>
+                    </div>
                 </a>
-                <button type="button" id="btn-header-logout" class="text-xs text-[#D73B3E] hover:underline font-bold cursor-pointer px-1 py-0.5 ml-1" title="Đăng xuất tài khoản">
-                    Đăng xuất
+                <button type="button" id="btn-header-logout" class="w-8 h-8 rounded-full border border-stone-300 hover:border-[#D73B3E] bg-white hover:bg-[#D73B3E]/10 text-stone-500 hover:text-[#D73B3E] flex items-center justify-center transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95 shrink-0" title="Đăng xuất tài khoản">
+                    <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H3" />
+                    </svg>
                 </button>
             </div>
         </div>
