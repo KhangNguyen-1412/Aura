@@ -1048,15 +1048,16 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // API: Khởi tạo thư mục riêng cho đối tác mới trên Media cục bộ
+    // API: Khởi tạo thư mục riêng cho đối tác mới trên Media cục bộ và Google Drive
     if (pathname === '/api/ensure-folder' && req.method === 'POST') {
         const chunks = [];
         req.on('data', c => chunks.push(c));
-        req.on('end', () => {
+        req.on('end', async () => {
             try {
                 const body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
                 let subDir = sanitizeSubDir(body.folder || '');
                 const uid = sanitizeFilename(body.userId || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2');
+                let createdSubs = [];
                 if (subDir) {
                     const segments = subDir.split(/[/\\]+/).filter(Boolean);
                     if (segments.length > 0 && segments[0] !== uid) {
@@ -1064,10 +1065,42 @@ const server = http.createServer(async (req, res) => {
                     }
                     const localPath = path.join(MEDIA_DIR, subDir);
                     if (!fs.existsSync(localPath)) fs.mkdirSync(localPath, { recursive: true });
-                    console.log(`[Aura Folder] ✓ Đã khởi tạo thư mục riêng: ${subDir}`);
+
+                    // Tạo 3 thư mục con: Nóng, Thường, Video Call nếu là thư mục đối tác/creator
+                    const normalizedSegments = subDir.split(/[/\\]+/).filter(Boolean);
+                    const isPartnerPersonFolder = Boolean(body.createSubfolders) || (
+                        normalizedSegments.length >= 3 &&
+                        (normalizedSegments[1] === 'Bạn Đồng Hành' || normalizedSegments[1] === 'Trai OnlyFans')
+                    );
+
+                    if (isPartnerPersonFolder) {
+                        const subcategories = ['Nóng', 'Thường', 'Video Call'];
+                        for (const sub of subcategories) {
+                            const subLocalPath = path.join(localPath, sub);
+                            if (!fs.existsSync(subLocalPath)) fs.mkdirSync(subLocalPath, { recursive: true });
+                        }
+                        createdSubs = subcategories;
+
+                        if (driveEngine.getStatus().enabled) {
+                            for (const sub of subcategories) {
+                                const driveSubPath = `${subDir.replace(/\\/g, '/')}/${sub}`;
+                                driveEngine.getOrCreateFolder(driveSubPath).catch(err => {
+                                    console.warn(`[Drive Engine] Không thể khởi tạo thư mục con ${driveSubPath}:`, err.message);
+                                });
+                            }
+                        }
+                    } else if (driveEngine.getStatus().enabled) {
+                        driveEngine.getOrCreateFolder(subDir.replace(/\\/g, '/')).catch(() => {});
+                    }
+
+                    console.log(`[Aura Folder] ✓ Đã khởi tạo thư mục riêng: ${subDir}${createdSubs.length ? ' (+ 3 thư mục con: ' + createdSubs.join(', ') + ')' : ''}`);
                 }
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: true, folder: subDir.replace(/\\/g, '/') }));
+                res.end(JSON.stringify({ 
+                    success: true, 
+                    folder: subDir.replace(/\\/g, '/'),
+                    subfolders: createdSubs
+                }));
             } catch (err) {
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ success: false, error: err.message }));

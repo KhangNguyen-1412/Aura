@@ -13040,7 +13040,7 @@
                     const res = await saveFileToProjectMedia(file, (pct) => {
                         if (barEl) barEl.style.width = `${pct}%`;
                         if (pctEl) pctEl.innerText = `${pct}%`;
-                    });
+                    }, { folder: getCurrentPartnerFolder('Video Call') });
                     p.videoCalls.push({
                         url: res.url,
                         filename: file.name,
@@ -13100,7 +13100,7 @@
             showToast("Đang tải tệp đi làm...", "info");
             for (let i = 0; i < files.length; i++) {
                 try {
-                    const result = await saveFileToProjectMedia(files[i]);
+                    const result = await saveFileToProjectMedia(files[i], null, { folder: getCurrentPartnerFolder('Thường') });
                     const isVid = (files[i].type && files[i].type.startsWith('video/')) || ['.mp4', '.m4v', '.webm', '.mov', '.ogg'].some(ext => files[i].name.toLowerCase().endsWith(ext));
                     const item = { 
                         url: result.url, 
@@ -16161,7 +16161,7 @@
         }
         window.compressImageBeforeUpload = compressImageBeforeUpload;
 
-        function getCurrentPartnerFolder() {
+        function getCurrentPartnerFolder(subCategory = '') {
             const isOF = (typeof currentPartnerType !== 'undefined' && currentPartnerType === 'onlyfan') ||
                          (typeof currentPartnerMode !== 'undefined' && currentPartnerMode === 'onlyfan');
             const typeLabel = isOF ? 'Trai OnlyFans' : 'Bạn Đồng Hành';
@@ -16189,7 +16189,8 @@
             const uid = (typeof currentUserId !== 'undefined' && currentUserId) ||
                         (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : 'odRSfSMD1ZaoglEFBkeIKhLCusZ2');
 
-            return `${uid}/${typeLabel}/${personName}`;
+            const base = `${uid}/${typeLabel}/${personName}`;
+            return subCategory ? `${base}/${subCategory}` : base;
         }
         window.getCurrentPartnerFolder = getCurrentPartnerFolder;
 
@@ -16428,7 +16429,7 @@
                         const result = await saveFileToProjectMedia(file, (pct) => {
                             if (percentEl) percentEl.innerText = `${pct}%`;
                             if (barEl) barEl.style.width = `${pct}%`;
-                        });
+                        }, { folder: getCurrentPartnerFolder('Nóng') });
 
                         const mediaItem = {
                             url: result.url,
@@ -16582,7 +16583,7 @@
             showToast("Đang kiểm tra và tải tệp về hệ thống...", "info");
 
             // Thử tải URL về lưu trữ nội bộ
-            const downloaded = await saveUrlToProjectMedia(url);
+            const downloaded = await saveUrlToProjectMedia(url, null, { folder: getCurrentPartnerFolder('Nóng') });
             if (downloaded && downloaded.success) {
                 currentPartnerGallery.push({
                     url: downloaded.url, // e.g. "media/filename.jpg"
@@ -16708,7 +16709,7 @@
             let item = null;
             if (typeof saveUrlToProjectMedia === 'function') {
                 try {
-                    const downloaded = await saveUrlToProjectMedia(url);
+                    const downloaded = await saveUrlToProjectMedia(url, null, { folder: getCurrentPartnerFolder('Thường') });
                     if (downloaded && downloaded.success) {
                         item = {
                             url: downloaded.url,
@@ -19383,7 +19384,7 @@
                     const res = await saveFileToProjectMedia(file, (pct) => {
                         if (barEl) barEl.style.width = `${pct}%`;
                         if (pctEl) pctEl.innerText = `${pct}%`;
-                    });
+                    }, { folder: getCurrentPartnerFolder('Video Call') });
                     const exists = currentPartnerVideoCalls.some(x => x && (x.url === res.url || x.filename === file.name));
                     if (!exists) {
                         currentPartnerVideoCalls.push({
@@ -20014,7 +20015,7 @@
                     fetch('/api/ensure-folder', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ folder: folderPath })
+                        body: JSON.stringify({ folder: folderPath, createSubfolders: true })
                     }).catch(() => {});
                 } catch (_) {}
             }
