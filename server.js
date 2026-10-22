@@ -130,6 +130,28 @@ driveEngine.initDrive().catch(err => {
 
 
 
+// Tự động dọn dẹp các mảnh upload dở dang (bỏ dở quá 2 giờ)
+function cleanStaleUploadChunks() {
+    try {
+        const chunksRoot = path.join(MEDIA_DIR, '.chunks');
+        if (!fs.existsSync(chunksRoot)) return;
+        const now = Date.now();
+        const MAX_AGE = 2 * 60 * 60 * 1000;
+        const entries = fs.readdirSync(chunksRoot, { withFileTypes: true });
+        for (const ent of entries) {
+            if (ent.isDirectory()) {
+                const p = path.join(chunksRoot, ent.name);
+                const stat = fs.statSync(p);
+                if (now - stat.mtimeMs > MAX_AGE) {
+                    fs.rmSync(p, { recursive: true, force: true });
+                }
+            }
+        }
+    } catch (_) {}
+}
+setInterval(cleanStaleUploadChunks, 30 * 60 * 1000);
+cleanStaleUploadChunks();
+
 function getUniqueFilename(targetDir, desiredName, bufferSize = 0) {
     const ext = path.extname(desiredName);
     const base = path.basename(desiredName, ext);
@@ -667,7 +689,7 @@ const server = http.createServer(async (req, res) => {
     // CORS headers for all requests (bao gồm đầy đủ header upload x-folder, x-user-id, x-category...)
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, HEAD');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-filename, x-folder, x-user-id, x-category, x-entity-id, x-source, Range');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-filename, x-folder, x-user-id, x-category, x-entity-id, x-source, Range, x-upload-id, x-chunk-index, x-total-chunks, x-total-size');
 
     if (req.method === 'OPTIONS') {
         res.writeHead(204);
@@ -820,6 +842,178 @@ const server = http.createServer(async (req, res) => {
         } catch (err) {
             sendJsonResponse(res, req, 500, { success: false, error: err.message });
         }
+        return;
+    }
+
+    // API: Tải tệp theo từng mảnh (Chunked Upload) — Vượt qua giới hạn 100s của Render & Cloudflare, RAM cố định 64KB
+    if (pathname === '/api/upload-chunk' && req.method === 'POST') {
+        req.setTimeout(0);
+        res.setTimeout(0);
+
+        const uploadId = sanitizeFilename(req.headers['x-upload-id'] || '');
+        const chunkIndex = parseInt(req.headers['x-chunk-index'] || '0', 10);
+        const totalChunks = parseInt(req.headers['x-total-chunks'] || '1', 10);
+        const rawFilename = req.headers['x-filename'] || `file_${Date.now()}`;
+        const sanitized = sanitizeFilename(rawFilename);
+        const reqUserId = sanitizeFilename(req.headers['x-user-id'] || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2');
+        let subDir = sanitizeSubDir(req.headers['x-folder'] || '');
+
+        if (!uploadId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Thiếu x-upload-id' }));
+            return;
+        }
+
+        if (subDir) {
+            const segments = subDir.split(/[/\\]+/).filter(Boolean);
+            if (segments.length > 0 && segments[0] !== reqUserId) {
+                subDir = path.join(reqUserId, subDir);
+            }
+        } else {
+            subDir = path.join(reqUserId);
+        }
+
+        const chunkDir = path.join(MEDIA_DIR, '.chunks', uploadId);
+        if (!fs.existsSync(chunkDir)) {
+            fs.mkdirSync(chunkDir, { recursive: true });
+        }
+
+        const chunkPath = path.join(chunkDir, `part_${chunkIndex}`);
+        const chunkStream = fs.createWriteStream(chunkPath, { highWaterMark: 128 * 1024 });
+
+        req.pipe(chunkStream);
+
+        chunkStream.on('error', (err) => {
+            console.error(`[Chunk Upload Error] UploadId: ${uploadId}, Part: ${chunkIndex}:`, err);
+            if (!res.headersSent) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: err.message }));
+            }
+        });
+
+        chunkStream.on('finish', async () => {
+            // Nếu chưa phải chunk cuối cùng: phản hồi thành công ngay lập tức để client gửi tiếp
+            if (chunkIndex < totalChunks - 1) {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    uploadId,
+                    chunkIndex,
+                    totalChunks,
+                    completed: false
+                }));
+                return;
+            }
+
+            // CHUNK CUỐI CÙNG: GHÉP CÁC MẢNH LẠI THÀNH FILE HOÀN CHỈNH
+            try {
+                const targetDir = subDir ? path.join(MEDIA_DIR, subDir) : MEDIA_DIR;
+                if (!fs.existsSync(targetDir)) {
+                    fs.mkdirSync(targetDir, { recursive: true });
+                }
+
+                // Tính tổng kích thước của tất cả các chunk
+                let totalSize = 0;
+                for (let i = 0; i < totalChunks; i++) {
+                    const p = path.join(chunkDir, `part_${i}`);
+                    if (!fs.existsSync(p)) {
+                        throw new Error(`Mảnh tải lên part_${i} bị thiếu, vui lòng thử lại!`);
+                    }
+                    totalSize += fs.statSync(p).size;
+                }
+
+                const uniqueName = getUniqueFilename(targetDir, sanitized, totalSize);
+                const targetPath = path.join(targetDir, uniqueName);
+                const ext = path.extname(uniqueName).toLowerCase();
+                const isVideo = ['.mp4', '.m4v', '.webm', '.mov', '.ogg'].includes(ext);
+
+                // Ghép các chunk vào targetPath qua stream nối file tuần tự (RAM tiêu thụ cực thấp < 1MB)
+                const finalWriteStream = fs.createWriteStream(targetPath, { flags: 'w', highWaterMark: 256 * 1024 });
+                for (let i = 0; i < totalChunks; i++) {
+                    const p = path.join(chunkDir, `part_${i}`);
+                    await new Promise((resolvePipe, rejectPipe) => {
+                        const readPart = fs.createReadStream(p, { highWaterMark: 256 * 1024 });
+                        readPart.pipe(finalWriteStream, { end: false });
+                        readPart.on('end', resolvePipe);
+                        readPart.on('error', rejectPipe);
+                    });
+                }
+                finalWriteStream.end();
+
+                await new Promise((resolveClose) => finalWriteStream.on('finish', resolveClose));
+
+                // Dọn dẹp các mảnh tạm thời
+                for (let i = 0; i < totalChunks; i++) {
+                    try { fs.unlinkSync(path.join(chunkDir, `part_${i}`)); } catch (_) {}
+                }
+                try { fs.rmdirSync(chunkDir); } catch (_) {}
+
+                // Vá MP4 moov atom nếu có
+                if (ext === '.mp4' || ext === '.m4v') {
+                    fixMp4FileOnDisk(targetPath);
+                }
+
+                mediaFileIndex.set(uniqueName.toLowerCase(), targetPath);
+                const webUrl = (subDir ? `media/${subDir.replace(/\\/g, '/')}/${encodeURIComponent(uniqueName)}` : `media/${encodeURIComponent(uniqueName)}`);
+                console.log(`[Aura Media Chunk] ✓ Đã ghép xong tệp: ${webUrl} (${(totalSize / (1024 * 1024)).toFixed(2)} MB, ${totalChunks} chunks)`);
+
+                // NẾU GOOGLE DRIVE ĐÃ KẾT NỐI: TẢI TRỰC TIẾP LÊN DRIVE
+                if (driveEngine.getStatus().authenticated && driveEngine.config.enabled) {
+                    try {
+                        const driveMime = isVideo ? (ext === '.webm' ? 'video/webm' : 'video/mp4') : (ext === '.png' ? 'image/png' : (ext === '.webp' ? 'image/webp' : 'image/jpeg'));
+                        const driveReadStream = fs.createReadStream(targetPath);
+                        const driveRes = await driveEngine.uploadToDriveStream({
+                            stream: driveReadStream,
+                            filename: uniqueName,
+                            mimeType: driveMime,
+                            size: totalSize,
+                            folderPath: subDir.replace(/\\/g, '/')
+                        });
+
+                        console.log(`[Aura Drive] 🚀 Tệp Chunked đã lên Google Drive: ${driveRes.driveFileId} -> ${driveRes.url}`);
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({
+                            success: true,
+                            filename: uniqueName,
+                            folder: subDir.replace(/\\/g, '/'),
+                            url: isVideo ? driveRes.streamUrl : driveRes.url,
+                            localUrl: webUrl,
+                            driveFileId: driveRes.driveFileId,
+                            thumbnailUrl: driveRes.thumbnailUrl,
+                            streamUrl: driveRes.streamUrl,
+                            directUrl: driveRes.directUrl,
+                            type: isVideo ? 'video' : 'image',
+                            size: totalSize,
+                            storage: 'google_drive'
+                        }));
+                        return;
+                    } catch (driveErr) {
+                        console.error('[Aura Drive] Lỗi upload Drive cho file chunked, giữ bản lưu cục bộ:', driveErr.message);
+                    }
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    filename: uniqueName,
+                    folder: subDir.replace(/\\/g, '/'),
+                    url: webUrl,
+                    localUrl: webUrl,
+                    type: isVideo ? 'video' : 'image',
+                    size: totalSize,
+                    storage: 'local_media'
+                }));
+            } catch (mergeErr) {
+                console.error('[Aura Media Chunk Merge Error]:', mergeErr);
+                try {
+                    const entries = fs.readdirSync(chunkDir);
+                    for (const e of entries) fs.unlinkSync(path.join(chunkDir, e));
+                    fs.rmdirSync(chunkDir);
+                } catch (_) {}
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: mergeErr.message }));
+            }
+        });
         return;
     }
 
