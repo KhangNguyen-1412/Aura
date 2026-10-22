@@ -542,6 +542,150 @@ function saveConfig(newConfig) {
 }
 
 /**
+ * DỌN DẸP CÁC TỆP TRONG MANIFEST LIÊN QUAN ĐẾN THƯ MỤC BỊ XÓA
+ */
+function cleanManifestForFolder(folderSubPath) {
+    try {
+        if (!fs.existsSync(SYNC_MANIFEST_PATH)) return;
+        const manifest = JSON.parse(fs.readFileSync(SYNC_MANIFEST_PATH, 'utf8'));
+        let modified = false;
+        const normLower = folderSubPath.replace(/\\/g, '/').toLowerCase();
+
+        for (const key of Object.keys(manifest)) {
+            const kLower = key.replace(/\\/g, '/').toLowerCase();
+            if (kLower.startsWith(normLower + '/') || kLower === normLower) {
+                delete manifest[key];
+                modified = true;
+            }
+        }
+
+        if (modified) {
+            fs.writeFileSync(SYNC_MANIFEST_PATH, JSON.stringify(manifest, null, 2), 'utf8');
+            console.log(`[Drive Engine] 🧹 Đã dọn dẹp các mục manifest thuộc thư mục: ${folderSubPath}`);
+        }
+    } catch (e) {
+        console.warn('[Drive Engine] Lỗi dọn manifest:', e.message);
+    }
+}
+
+/**
+ * XÓA THƯ MỤC TRÊN GOOGLE DRIVE (KÈM TOÀN BỘ TỆP BÊN TRONG)
+ * @param {string} subPath - Đường dẫn tương đối dạng: "UID/Bạn Đồng Hành/Tên Người" hoặc "UID/Trai OnlyFans/Tên Người"
+ * @returns {Promise<{ success: boolean, folderId?: string, notFound?: boolean, error?: string }>}
+ */
+async function deleteFolderFromDrive(subPath) {
+    if (!subPath) return { success: false, error: 'Thiếu đường dẫn thư mục' };
+    if (!driveClient) {
+        await initDrive();
+        if (!driveClient) {
+            console.warn('[Drive Engine] Không thể xóa folder trên Drive: Chưa kết nối OAuth.');
+            return { success: false, error: 'Google Drive chưa được kết nối' };
+        }
+    }
+
+    let normalized = subPath.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
+    const DEFAULT_UID = 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+    const rawSegments = normalized.split('/').filter(Boolean);
+    if (rawSegments.length === 0) return { success: false, error: 'Đường dẫn không hợp lệ' };
+
+    const firstLower = rawSegments[0].toLowerCase();
+    const categories = ['bạn đồng hành', 'trai onlyfans', 'cá nhân', 'edging', 'edging_voice', 'chưa phân loại'];
+    if (categories.includes(firstLower)) {
+        if (firstLower === 'edging_voice') rawSegments[0] = 'Edging';
+        normalized = `${DEFAULT_UID}/${rawSegments.join('/')}`;
+    } else if (rawSegments[0] !== DEFAULT_UID && rawSegments[0].length < 20) {
+        normalized = `${DEFAULT_UID}/${rawSegments.join('/')}`;
+    }
+
+    // BẢO VỆ TUYỆT ĐỐI: Không bao giờ được xóa thư mục hệ thống hoặc thư mục cấp cao
+    const forbiddenPaths = new Set([
+        '',
+        '/',
+        DEFAULT_UID.toLowerCase(),
+        `${DEFAULT_UID}/Bạn Đồng Hành`.toLowerCase(),
+        `${DEFAULT_UID}/Trai OnlyFans`.toLowerCase(),
+        `${DEFAULT_UID}/Cá Nhân`.toLowerCase(),
+        `${DEFAULT_UID}/Edging`.toLowerCase()
+    ]);
+
+    if (forbiddenPaths.has(normalized.toLowerCase())) {
+        console.warn(`[Drive Engine] ⚠️ Từ chối xóa thư mục hệ thống: ${normalized}`);
+        return { success: false, error: 'Không thể xóa thư mục hệ thống gốc' };
+    }
+
+    const segments = normalized.split('/').filter(Boolean);
+    if (segments.length < 3) {
+        console.warn(`[Drive Engine] ⚠️ Đường dẫn thư mục cần xóa quá ngắn: ${normalized}`);
+        return { success: false, error: 'Chỉ được phép xóa thư mục của từng đối tác cụ thể' };
+    }
+
+    try {
+        let folderId = null;
+
+        // 1. Kiểm tra cache
+        if (folderCache.has(normalized)) {
+            folderId = folderCache.get(normalized);
+        }
+
+        // 2. Nếu chưa có trong cache, dò tìm theo cây thư mục trên Drive
+        if (!folderId) {
+            let currentParentId = config.rootFolderId;
+            for (let i = 0; i < segments.length; i++) {
+                const seg = segments[i];
+                const safeName = seg.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                const query = `'${currentParentId}' in parents and name = '${safeName}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
+                const listRes = await driveClient.files.list({
+                    q: query,
+                    fields: 'files(id, name)',
+                    pageSize: 1
+                });
+                if (listRes.data.files && listRes.data.files.length > 0) {
+                    currentParentId = listRes.data.files[0].id;
+                    if (i === segments.length - 1) {
+                        folderId = currentParentId;
+                    }
+                } else {
+                    folderId = null;
+                    break;
+                }
+            }
+        }
+
+        if (!folderId) {
+            console.log(`[Drive Engine] Thư mục "${normalized}" không tìm thấy trên Google Drive.`);
+            folderCache.delete(normalized);
+            saveFolderCache();
+            cleanManifestForFolder(normalized);
+            return { success: true, notFound: true, message: 'Thư mục không tồn tại trên Drive' };
+        }
+
+        // 3. Xóa thư mục trên Google Drive (Google Drive API v3: files.delete)
+        await driveClient.files.delete({
+            fileId: folderId
+        });
+        console.log(`[Drive Engine] 🗑️ Đã xóa thư mục trên Google Drive: "${normalized}" [${folderId}]`);
+
+        // 4. Dọn dẹp cache thư mục
+        for (const key of Array.from(folderCache.keys())) {
+            const kLower = key.replace(/\\/g, '/').toLowerCase();
+            const nLower = normalized.toLowerCase();
+            if (kLower === nLower || kLower.startsWith(nLower + '/')) {
+                folderCache.delete(key);
+            }
+        }
+        saveFolderCache();
+
+        // 5. Dọn dẹp manifest
+        cleanManifestForFolder(normalized);
+
+        return { success: true, folderId };
+    } catch (err) {
+        console.error(`[Drive Engine] Lỗi khi xóa thư mục Drive "${normalized}":`, err.message);
+        return { success: false, error: err.message };
+    }
+}
+
+/**
  * Lấy trạng thái hoạt động hiện tại
  */
 function getStatus() {
@@ -564,6 +708,7 @@ module.exports = {
     uploadToDriveStream,
     uploadToDriveBuffer,
     streamFromDrive,
+    deleteFolderFromDrive,
     saveConfig,
     getStatus
 };

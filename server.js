@@ -1213,11 +1213,11 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // API: Xóa tệp hoặc thư mục vật lý khỏi ổ đĩa cục bộ media
+    // API: Xóa tệp hoặc thư mục vật lý khỏi ổ đĩa cục bộ media & Google Drive
     if (pathname === '/api/delete-media' && (req.method === 'POST' || req.method === 'DELETE')) {
         const chunks = [];
         req.on('data', chunk => chunks.push(chunk));
-        req.on('end', () => {
+        req.on('end', async () => {
             try {
                 let body = {};
                 if (chunks.length > 0) {
@@ -1226,10 +1226,22 @@ const server = http.createServer(async (req, res) => {
 
                 let deletedCount = 0;
                 let folderDeleted = false;
+                let driveFolderDeleted = false;
 
-                // 1. Xóa thư mục nếu có yêu cầu
+                // 1. Xóa thư mục nếu có yêu cầu (Xóa cả ổ đĩa cục bộ VÀ Google Drive)
                 if (body.folderPath) {
                     folderDeleted = safelyDeleteMediaFolder(body.folderPath);
+
+                    // Xóa folder trên Google Drive
+                    try {
+                        const driveRes = await driveEngine.deleteFolderFromDrive(body.folderPath);
+                        driveFolderDeleted = Boolean(driveRes && driveRes.success && !driveRes.notFound);
+                        if (driveRes && driveRes.success) {
+                            serverDriveManifestMap = null; // Làm mới bộ đệm tra cứu
+                        }
+                    } catch (eDrive) {
+                        console.warn('[Aura Media] Không thể xóa thư mục trên Google Drive:', eDrive.message);
+                    }
                 }
 
                 // 2. Thu thập danh sách URL / Tệp cần xóa
@@ -1264,7 +1276,8 @@ const server = http.createServer(async (req, res) => {
                     success: true,
                     deletedCount,
                     folderDeleted,
-                    message: `Đã xử lý xóa tệp media khỏi thư mục lưu trữ (đã xóa ${deletedCount} tệp${folderDeleted ? ', đã xóa thư mục' : ''}).`
+                    driveFolderDeleted,
+                    message: `Đã xử lý xóa tệp media khỏi thư mục lưu trữ (đã xóa ${deletedCount} tệp${folderDeleted ? ', đã xóa thư mục cục bộ' : ''}${driveFolderDeleted ? ', đã xóa thư mục Google Drive' : ''}).`
                 }));
             } catch (err) {
                 console.error('[Aura Media Delete Error]:', err);

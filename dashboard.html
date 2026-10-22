@@ -20096,10 +20096,16 @@
                                 (typeof auth !== "undefined" && auth.currentUser ? auth.currentUser.uid : "odRSfSMD1ZaoglEFBkeIKhLCusZ2");
                     const folderPath = personName ? `${uid}/${typeLabel}/${personName}` : null;
 
-                    deleteFileFromProjectMedia({
+                    const delRes = await deleteFileFromProjectMedia({
                         folderPath: folderPath,
                         urls: allUrls.filter(Boolean)
                     });
+                    if (delRes && delRes.driveFolderDeleted) {
+                        showToast(`Đã xóa hồ sơ và thư mục Google Drive của ${personName} thành công`, "info");
+                    } else {
+                        showToast("Đã xóa hồ sơ và dữ liệu liên quan thành công", "info");
+                    }
+                    return;
                 }
                 showToast("Đã xóa hồ sơ và dữ liệu liên quan thành công", "info");
             } catch (err) {
