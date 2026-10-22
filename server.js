@@ -226,6 +226,48 @@ function resolveMediaFile(urlOrPath, folder = '') {
     return null;
 }
 
+// [MỚI] Bộ đệm tra cứu Google Drive Manifest thông minh (0ms) cho Cloud Streaming
+let serverDriveManifestMap = null;
+function getServerDriveManifestMap() {
+    if (!serverDriveManifestMap) {
+        serverDriveManifestMap = new Map();
+        try {
+            const manifestPath = path.join(__dirname, 'drive-sync-manifest.json');
+            if (fs.existsSync(manifestPath)) {
+                const raw = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+                for (const [key, val] of Object.entries(raw)) {
+                    if (val && val.driveFileId) {
+                        const normalizedKey = key.replace(/\\/g, '/').toLowerCase();
+                        serverDriveManifestMap.set(normalizedKey, val);
+                        const base = path.basename(key).toLowerCase();
+                        if (!serverDriveManifestMap.has(base)) {
+                            serverDriveManifestMap.set(base, val);
+                        }
+                    }
+                }
+            }
+        } catch (_) {}
+    }
+    return serverDriveManifestMap;
+}
+
+function resolveFileFromDriveManifest(targetPath) {
+    if (!targetPath) return null;
+    const map = getServerDriveManifestMap();
+    if (!map || map.size === 0) return null;
+
+    let clean = targetPath.replace(/^[/\\]+/, '').replace(/^media[/\\]/i, '').replace(/\\/g, '/').toLowerCase();
+    try { clean = decodeURIComponent(clean); } catch (_) {}
+
+    if (map.has(clean)) return map.get(clean);
+    const UID_DEF = 'odRSfSMD1ZaoglEFBkeIKhLCusZ2'.toLowerCase();
+    if (map.has(`${UID_DEF}/${clean}`)) return map.get(`${UID_DEF}/${clean}`);
+    const base = path.basename(clean).toLowerCase();
+    if (map.has(base)) return map.get(base);
+
+    return null;
+}
+
 // Xóa an toàn một tệp media vật lý khỏi ổ đĩa
 function safelyDeleteMediaFile(targetPath) {
     if (!targetPath || typeof targetPath !== 'string') return false;
@@ -1530,6 +1572,27 @@ const server = http.createServer(async (req, res) => {
                         resolvedFilePath = indexedPath;
                     }
                 } catch (_) {}
+            }
+        }
+
+        // [MỚI] Google Drive Cloud Fallback: Khi tệp media không tồn tại cục bộ (đặc biệt trên Render / Cloud hosting)
+        if (!fs.existsSync(resolvedFilePath)) {
+            const driveMatch = resolveFileFromDriveManifest(cleanSafe);
+            if (driveMatch && driveMatch.driveFileId) {
+                const ext = path.extname(cleanSafe).toLowerCase();
+                const isVideoOrAudio = ['.mp4', '.m4v', '.webm', '.mov', '.mp3', '.wav', '.ogg'].includes(ext);
+                if (isVideoOrAudio) {
+                    driveEngine.streamFromDrive(driveMatch.driveFileId, req, res);
+                    return;
+                } else {
+                    res.writeHead(302, {
+                        'Location': driveMatch.url || `https://lh3.googleusercontent.com/d/${driveMatch.driveFileId}`,
+                        'Cache-Control': 'public, max-age=86400',
+                        'Access-Control-Allow-Origin': '*'
+                    });
+                    res.end();
+                    return;
+                }
             }
         }
     }
