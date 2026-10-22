@@ -1453,25 +1453,32 @@
 
                 let driveId = item.driveFileId || '';
                 if (!driveId && typeof item.url === 'string') {
-                    const m = item.url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:.*&)?id=|thumbnail\?(?:.*&)?id=)([a-zA-Z0-9_-]+)/);
+                    const m = item.url.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:.*&)?id=|thumbnail\?(?:.*&)?id=)|lh3\.googleusercontent\.com\/d\/|\/api\/drive-stream\/)([a-zA-Z0-9_-]+)/);
                     if (m) driveId = m[1];
                 }
 
                 const cleanItemUrl = normalizeMediaUrl(item.url || '');
                 const cleanLocalPath = normalizeMediaUrl(item.localUrl || '');
-                const rawPlayUrl = cleanLocalPath || cleanItemUrl;
-                const mainPlayUrl = rawPlayUrl.startsWith('http') ? rawPlayUrl : encodeURI(rawPlayUrl);
-                let thumbSrc = mainPlayUrl;
-                if (driveId && (!cleanLocalPath || cleanLocalPath.startsWith('http'))) {
-                    thumbSrc = `https://lh3.googleusercontent.com/d/${driveId}=w600`;
-                }
                 const fallbackLocal = cleanLocalPath ? (cleanLocalPath.startsWith('http') ? cleanLocalPath : encodeURI(cleanLocalPath)) : '';
+
+                // KHI ĐÃ CÓ GOOGLE DRIVE: LUÔN ƯU TIÊN GOOGLE DRIVE CDN CHO TỐC ĐỘ CAO & HIỂN THỊ TRỰC TUYẾN
+                let thumbSrc = '';
+                let mainPlayUrl = '';
+
+                if (driveId) {
+                    thumbSrc = `https://lh3.googleusercontent.com/d/${driveId}=w600`;
+                    mainPlayUrl = isVideo ? `/api/drive-stream/${driveId}` : `https://lh3.googleusercontent.com/d/${driveId}=w1600`;
+                } else {
+                    const rawPlayUrl = cleanItemUrl || cleanLocalPath;
+                    mainPlayUrl = rawPlayUrl.startsWith('http') ? rawPlayUrl : encodeURI(rawPlayUrl);
+                    thumbSrc = mainPlayUrl;
+                }
 
                 return `
                     <div class="media-card relative group rounded-xl overflow-hidden aspect-square border border-[#D1CCC5] bg-stone-900 cursor-pointer shadow-xs hover:shadow-lg transition-all"
                          onclick="window.openLightbox('${mainPlayUrl}', ${isVideo}, '${cleanTitle}', '${fallbackLocal}', '${driveId}')">
                         ${isVideo ? (
-                            driveId && (!cleanLocalPath || cleanLocalPath.startsWith('http')) ? `
+                            driveId ? `
                                 <img src="${thumbSrc}" referrerpolicy="no-referrer" loading="lazy" class="w-full h-full object-cover transition-transform group-hover:scale-105" alt="${cleanTitle}" data-local="${fallbackLocal}">
                                 <div class="absolute inset-0 bg-black/25 flex items-center justify-center pointer-events-none group-hover:bg-black/10 transition-colors">
                                     <span class="w-10 h-10 rounded-full bg-black/60 backdrop-blur-xs text-white flex items-center justify-center text-base shadow-lg">▶</span>
@@ -1969,26 +1976,24 @@
             const dlLink = document.getElementById('lightbox-download-link');
             if (!box || !content) return;
 
-            // 1. Luôn ưu tiên tệp cục bộ (localUrl hoặc url local) để tải ngay lập tức trong vài mili-giây
-            const isLocal = (u) => u && typeof u === 'string' && !u.startsWith('http://') && !u.startsWith('https://') && !u.startsWith('data:');
-            let targetUrl = '';
-            if (isLocal(localUrl)) {
-                targetUrl = encodeURI(localUrl);
-            } else if (isLocal(url)) {
-                targetUrl = encodeURI(url);
-            } else if (localUrl && !localUrl.includes('drive.google.com')) {
-                targetUrl = localUrl;
-            } else if (url && !url.includes('drive.google.com')) {
-                targetUrl = url;
-            } else {
-                targetUrl = localUrl || url || '';
-            }
-
-            // Trích xuất driveId nếu là link Google Drive
+            // Trích xuất driveId từ driveFileId, url hoặc localUrl
             let driveId = driveFileId || '';
-            if (!driveId && typeof targetUrl === 'string' && targetUrl.includes('drive.google.com')) {
-                const m = targetUrl.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:.*&)?id=|thumbnail\?(?:.*&)?id=)([a-zA-Z0-9_-]+)/);
-                if (m) driveId = m[1];
+            const extractDriveId = (str) => {
+                if (!str || typeof str !== 'string') return '';
+                const m = str.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:.*&)?id=|thumbnail\?(?:.*&)?id=)|lh3\.googleusercontent\.com\/d\/|\/api\/drive-stream\/)([a-zA-Z0-9_-]+)/);
+                return m ? m[1] : '';
+            };
+            if (!driveId) driveId = extractDriveId(url) || extractDriveId(localUrl);
+
+            let targetUrl = '';
+            if (driveId) {
+                targetUrl = isVideo ? `/api/drive-stream/${driveId}` : `https://lh3.googleusercontent.com/d/${driveId}=w1600`;
+            } else if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:'))) {
+                targetUrl = url;
+            } else if (localUrl) {
+                targetUrl = encodeURI(localUrl);
+            } else {
+                targetUrl = encodeURI(url || '');
             }
 
             const mediaTitle = title || (isVideo ? 'Video Clip Toàn Cảnh' : 'Hình Ảnh Toàn Cảnh');
@@ -2000,7 +2005,7 @@
             }
             if (titleEl) titleEl.innerText = mediaTitle;
             if (dlLink) {
-                dlLink.href = targetUrl || url;
+                dlLink.href = driveId ? `https://drive.google.com/uc?id=${driveId}&export=download` : (targetUrl || url);
                 dlLink.download = mediaTitle;
             }
 
@@ -2013,50 +2018,27 @@
             `;
 
             if (isVideo) {
-                if (targetUrl && !targetUrl.includes('drive.google.com')) {
-                    content.innerHTML = `
-                        <div class="relative w-full h-full flex items-center justify-center">
-                            ${spinnerHtml}
-                            <video src="${targetUrl}" controls autoplay loop playsinline preload="auto"
-                                   oncanplay="document.getElementById('lightbox-spinner')?.remove(); this.classList.remove('opacity-0')"
-                                   class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain border border-stone-800 bg-black opacity-0 transition-opacity duration-300">
-                            </video>
-                        </div>
-                    `;
-                } else if (driveId) {
-                    content.innerHTML = `
-                        <div class="relative w-full h-full flex items-center justify-center">
-                            ${spinnerHtml}
-                            <iframe src="https://drive.google.com/file/d/${driveId}/preview" 
-                                    onload="document.getElementById('lightbox-spinner')?.remove()"
-                                    class="w-[90vw] max-w-4xl h-[70vh] rounded-2xl shadow-2xl border border-stone-800 bg-black" 
-                                    allow="autoplay; fullscreen" allowfullscreen>
-                            </iframe>
-                        </div>
-                    `;
-                } else {
-                    content.innerHTML = `
-                        <div class="relative w-full h-full flex items-center justify-center">
-                            ${spinnerHtml}
-                            <video src="${targetUrl}" controls autoplay loop playsinline preload="auto"
-                                   oncanplay="document.getElementById('lightbox-spinner')?.remove(); this.classList.remove('opacity-0')"
-                                   class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain border border-stone-800 bg-black opacity-0 transition-opacity duration-300">
-                            </video>
-                        </div>
-                    `;
-                }
+                const videoSrc = driveId ? `/api/drive-stream/${driveId}` : targetUrl;
+                content.innerHTML = `
+                    <div class="relative w-full h-full flex items-center justify-center">
+                        ${spinnerHtml}
+                        <video src="${videoSrc}" controls autoplay loop playsinline preload="auto"
+                               oncanplay="document.getElementById('lightbox-spinner')?.remove(); this.classList.remove('opacity-0')"
+                               onerror="if ('${driveId}') { this.parentElement.innerHTML = '<iframe src=\"https://drive.google.com/file/d/${driveId}/preview\" class=\"w-[90vw] max-w-4xl h-[70vh] rounded-2xl shadow-2xl border border-stone-800 bg-black\" allow=\"autoplay; fullscreen\" allowfullscreen></iframe>'; }"
+                               class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain border border-stone-800 bg-black opacity-0 transition-opacity duration-300">
+                        </video>
+                    </div>
+                `;
             } else {
-                let imgSource = targetUrl;
-                if (driveId && targetUrl.includes('drive.google.com')) {
-                    imgSource = `https://lh3.googleusercontent.com/d/${driveId}=w1600`;
-                }
+                const imgSource = driveId ? `https://lh3.googleusercontent.com/d/${driveId}=w1600` : targetUrl;
                 content.innerHTML = `
                     <div class="relative w-full h-full flex items-center justify-center">
                         ${spinnerHtml}
                         <img src="${imgSource}" referrerpolicy="no-referrer" decoding="async"
+                             data-fallback="${encodeURI(localUrl || '')}"
                              onload="document.getElementById('lightbox-spinner')?.remove(); this.classList.remove('opacity-0')"
-                             onerror="document.getElementById('lightbox-spinner')?.remove(); this.classList.remove('opacity-0')"
-                             class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain border border-stone-800 opacity-0 transition-opacity duration-300" 
+                             onerror="if (this.dataset.fallback && this.src !== this.dataset.fallback) { this.src = this.dataset.fallback; } else { document.getElementById('lightbox-spinner')?.remove(); this.classList.remove('opacity-0'); }"
+                             class="max-w-full max-h-[85vh] rounded-2xl shadow-2xl object-contain border border-stone-800 opacity-0 transition-opacity duration-300" 
                              alt="${mediaTitle}">
                     </div>
                 `;
@@ -2441,22 +2423,30 @@
             const penisPhotoImg = document.getElementById('view-penis-photo');
             const penisPhotoPlaceholder = document.getElementById('view-penis-photo-placeholder');
             if (penisPhotoImg && penisPhotoPlaceholder) {
+                let pUrl = '';
+                let pDriveId = '';
                 if (data.penisPhoto && data.penisPhoto.trim()) {
-                    const pUrl = normalizeMediaUrl(data.penisPhoto.trim());
-                    penisPhotoImg.src = pUrl.startsWith('http') ? pUrl : encodeURI(pUrl);
-                    penisPhotoImg.classList.remove('hidden');
-                    penisPhotoPlaceholder.classList.add('hidden');
+                    pUrl = data.penisPhoto.trim();
                 } else if (Array.isArray(data.hotGallery) && data.hotGallery.length > 0) {
                     const firstHot = data.hotGallery[0];
-                    const pUrl = normalizeMediaUrl(firstHot.url || firstHot.localUrl || '');
-                    if (pUrl) {
-                        penisPhotoImg.src = pUrl.startsWith('http') ? pUrl : encodeURI(pUrl);
-                        penisPhotoImg.classList.remove('hidden');
-                        penisPhotoPlaceholder.classList.add('hidden');
-                    } else {
-                        penisPhotoImg.classList.add('hidden');
-                        penisPhotoPlaceholder.classList.remove('hidden');
-                    }
+                    pDriveId = firstHot.driveFileId || '';
+                    pUrl = firstHot.url || firstHot.localUrl || '';
+                }
+
+                if (!pDriveId && pUrl) {
+                    const m = pUrl.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:.*&)?id=|thumbnail\?(?:.*&)?id=)|lh3\.googleusercontent\.com\/d\/|\/api\/drive-stream\/)([a-zA-Z0-9_-]+)/);
+                    if (m) pDriveId = m[1];
+                }
+
+                if (pDriveId) {
+                    penisPhotoImg.src = `https://lh3.googleusercontent.com/d/${pDriveId}=w800`;
+                    penisPhotoImg.classList.remove('hidden');
+                    penisPhotoPlaceholder.classList.add('hidden');
+                } else if (pUrl) {
+                    const cleanPUrl = normalizeMediaUrl(pUrl);
+                    penisPhotoImg.src = cleanPUrl.startsWith('http') ? cleanPUrl : encodeURI(cleanPUrl);
+                    penisPhotoImg.classList.remove('hidden');
+                    penisPhotoPlaceholder.classList.add('hidden');
                 } else {
                     penisPhotoImg.classList.add('hidden');
                     penisPhotoPlaceholder.classList.remove('hidden');

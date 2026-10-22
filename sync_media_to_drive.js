@@ -316,44 +316,69 @@ async function updateFirestoreFromManifest() {
         }
     }
 
-    // 2. Cập nhật hồ sơ cá nhân profiles
-    const profilesData = await firestoreFetch('profiles');
-    for (const doc of (profilesData.documents || [])) {
-        const id = doc.name.split('/').pop();
-        const fields = doc.fields || {};
-        let modified = false;
-        const newFields = {};
-        const masks = [];
+    // 2. Cập nhật hồ sơ cá nhân trong cả hai collection users và profiles
+    for (const col of ['users', 'profiles']) {
+        try {
+            const colData = await firestoreFetch(col);
+            for (const doc of (colData.documents || [])) {
+                const id = doc.name.split('/').pop();
+                const fields = doc.fields || {};
+                let modified = false;
+                const newFields = {};
+                const masks = [];
 
-        ['dailyGallery', 'hotGallery'].forEach(sec => {
-            if (fields[sec]?.arrayValue?.values) {
-                let secMod = false;
-                const newValues = fields[sec].arrayValue.values.map(item => {
-                    const u = item.mapValue?.fields?.url?.stringValue || item.stringValue;
-                    const match = findDriveMatch(u);
-                    if (match) {
-                        secMod = true;
-                        if (item.mapValue) {
-                            item.mapValue.fields.url = { stringValue: match.streamUrl || match.url };
-                            item.mapValue.fields.driveFileId = { stringValue: match.driveFileId };
-                            item.mapValue.fields.thumbnailUrl = { stringValue: match.thumbnailUrl };
+                ['dailyGallery', 'hotGallery'].forEach(sec => {
+                    if (fields[sec]?.arrayValue?.values) {
+                        let secMod = false;
+                        const newValues = fields[sec].arrayValue.values.map(item => {
+                            const u = item.mapValue?.fields?.url?.stringValue || item.stringValue || '';
+                            const match = findDriveMatch(u);
+                            if (match) {
+                                secMod = true;
+                                if (item.mapValue) {
+                                    item.mapValue.fields.url = { stringValue: match.streamUrl || match.url };
+                                    item.mapValue.fields.driveFileId = { stringValue: match.driveFileId };
+                                    item.mapValue.fields.thumbnailUrl = { stringValue: match.thumbnailUrl };
+                                    return item;
+                                } else {
+                                    return {
+                                        mapValue: {
+                                            fields: {
+                                                url: { stringValue: match.streamUrl || match.url },
+                                                driveFileId: { stringValue: match.driveFileId },
+                                                thumbnailUrl: { stringValue: match.thumbnailUrl }
+                                            }
+                                        }
+                                    };
+                                }
+                            }
                             return item;
+                        });
+
+                        if (secMod) {
+                            newFields[sec] = { arrayValue: { values: newValues } };
+                            masks.push(sec);
+                            modified = true;
                         }
                     }
-                    return item;
                 });
 
-                if (secMod) {
-                    newFields[sec] = { arrayValue: { values: newValues } };
-                    masks.push(sec);
-                    modified = true;
+                if (fields.coverURL?.stringValue) {
+                    const match = findDriveMatch(fields.coverURL.stringValue);
+                    if (match) {
+                        newFields.coverURL = { stringValue: match.thumbnailUrl || match.url };
+                        masks.push('coverURL');
+                        modified = true;
+                    }
+                }
+
+                if (modified) {
+                    await firestorePatch(`${col}/${id}`, newFields, masks);
+                    console.log(`[Firestore] ✓ Đã cập nhật ${col}/${id}`);
                 }
             }
-        });
-
-        if (modified) {
-            await firestorePatch(`profiles/${id}`, newFields, masks);
-            console.log(`[Firestore] ✓ Đã cập nhật hồ sơ cá nhân: ${id}`);
+        } catch (e) {
+            console.error(`[Firestore Error ${col}]:`, e.message);
         }
     }
 }
