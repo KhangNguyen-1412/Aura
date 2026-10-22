@@ -1027,6 +1027,19 @@
                         <span class="sidebar-tooltip">Thiết Lập Bảo Mật</span>
                     </button>
                 </li>
+                <!-- MỤC QUẢN LÝ NGƯỜI DÙNG (DÀNH RIÊNG CHO MASTER ACCOUNT) -->
+                <li id="nav-item-admin-users" style="display: none;">
+                    <button onclick="nav('module-admin-users')" id="nav-module-admin-users" class="nav-btn w-full text-left pl-6 pr-4 py-2.5 text-base font-playfair hover:text-cerulean transition-colors flex items-center justify-between group relative" data-title="Quản Lý Người Dùng">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <svg class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110 text-cerulean" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                            </svg>
+                            <span class="nav-text truncate text-cerulean font-bold">Quản Lý Người Dùng</span>
+                        </div>
+                        <span class="nav-badge text-[9px] px-2 py-0.5 rounded-full bg-cerulean text-white font-mono font-bold uppercase tracking-wider shadow-2xs shrink-0 ml-1">Admin</span>
+                        <span class="sidebar-tooltip">Quản Lý Người Dùng</span>
+                    </button>
+                </li>
             </ul>
         </div>
         
@@ -4257,9 +4270,412 @@
                 </div>
             </section>
 
+            <!-- ==================== MODULE ADMIN: QUẢN LÝ NGƯỜI DÙNG (READ-ONLY) ==================== -->
+            <section id="module-admin-users" class="module-content hidden max-w-7xl 2xl:max-w-[1560px] mx-auto p-4 sm:p-6 md:p-8 pb-24 w-full">
+                <!-- Header Đẳng Cấp Phong Cách Tạp Chí Y Khoa (Aura Editorial Header) -->
+                <header class="mb-6 border-b-2 border-ink pb-5 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-cerulean/10 text-cerulean border border-cerulean/30 text-[10px] font-mono font-bold tracking-widest uppercase rounded-full mb-2.5 shadow-2xs">
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                            </svg>
+                            <span>QUẢN TRỊ VIÊN HỆ THỐNG • CHẾ ĐỘ GIÁM SÁT TOÀN DIỆN (READ-ONLY)</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-cerulean animate-pulse"></span>
+                            <h2 class="font-playfair text-2xl md:text-3xl lg:text-4xl font-black text-ink tracking-tight uppercase">Quản Lý & Giám Sát Người Dùng</h2>
+                        </div>
+                        <p class="text-xs md:text-sm italic text-ink-light mt-1">Chế độ xem độc quyền dành riêng cho Master Account (odRSfSMD1ZaoglEFBkeIKhLCusZ2). Giám sát toàn diện danh sách tài khoản, hồ sơ sinh lý, kho hình ảnh/video tải lên, bạn đồng hành và các phiên giải phóng trong toàn bộ hệ thống.</p>
+                    </div>
+                    
+                    <div class="flex items-center gap-2.5 shrink-0">
+                        <span class="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-mono font-bold uppercase flex items-center gap-1.5 shadow-2xs">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                            <span>Chỉ Xem (Read-Only)</span>
+                        </span>
+                        <button type="button" id="btn-admin-users-refresh" onclick="window.loadAdminUsersList()" class="px-4 py-2 bg-cerulean hover:bg-cerulean-dark text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-xs transition-all flex items-center gap-2 cursor-pointer" title="Nạp lại danh sách tài khoản">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            <span>Làm Mới</span>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Thông báo bảo vệ dữ liệu chỉ đọc -->
+                <div class="mb-6 p-4 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-950 text-xs flex items-start gap-3 shadow-2xs">
+                    <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <div>
+                        <b class="font-bold uppercase tracking-wider text-[11px] block">Lưu Ý Về Quyền Quản Trị Giám Sát:</b>
+                        <span class="text-amber-900/90 leading-relaxed">Mục quản lý này cho phép Master Account xem toàn bộ hình ảnh, bạn đồng hành, nhật ký giải phóng và hồ sơ sinh lý của mọi tài khoản đăng ký. Mọi tác vụ tại đây đều được thiết lập ở <b>chế độ chỉ đọc (Read-Only)</b>, đảm bảo tính bảo mật và toàn vẹn của dữ liệu người dùng.</span>
+                    </div>
+                </div>
+
+                <!-- Thống kê tổng quan nhanh (KPI Metric Cards) -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="editorial-border bg-white p-4 rounded-xl shadow-2xs">
+                        <span class="text-[10px] uppercase font-mono tracking-wider text-ink-light block">Tổng Tài Khoản</span>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span id="stat-admin-total-users" class="font-playfair text-2xl md:text-3xl font-black text-cerulean">0</span>
+                            <span class="text-xs text-ink-light font-sans">người dùng</span>
+                        </div>
+                    </div>
+                    <div class="editorial-border bg-white p-4 rounded-xl shadow-2xs">
+                        <span class="text-[10px] uppercase font-mono tracking-wider text-ink-light block">Bạn Đồng Hành &amp; OF</span>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span id="stat-admin-total-partners" class="font-playfair text-2xl md:text-3xl font-black text-ink">0</span>
+                            <span class="text-xs text-ink-light font-sans">đối tác</span>
+                        </div>
+                    </div>
+                    <div class="editorial-border bg-white p-4 rounded-xl shadow-2xs">
+                        <span class="text-[10px] uppercase font-mono tracking-wider text-ink-light block">Phiên Giải Phóng</span>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span id="stat-admin-total-releases" class="font-playfair text-2xl md:text-3xl font-black text-jasper">0</span>
+                            <span class="text-xs text-ink-light font-sans">bản ghi</span>
+                        </div>
+                    </div>
+                    <div class="editorial-border bg-white p-4 rounded-xl shadow-2xs">
+                        <span class="text-[10px] uppercase font-mono tracking-wider text-ink-light block">Hồ Sơ Xét Nghiệm Y Khoa</span>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span id="stat-admin-total-tests" class="font-playfair text-2xl md:text-3xl font-black text-emerald-700">0</span>
+                            <span class="text-xs text-ink-light font-sans">kết quả</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== GIAO DIỆN 1: DANH SÁCH NGƯỜI DÙNG ==================== -->
+                <div id="admin-users-list-view" class="space-y-6">
+                    <!-- Thanh tìm kiếm & bộ lọc -->
+                    <div class="editorial-border bg-white p-4 rounded-xl shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="relative w-full sm:w-96">
+                            <svg class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <input type="text" id="admin-users-search-input" oninput="window.filterAdminUsersList()" placeholder="Tìm kiếm theo Tên, Email hoặc Firebase UID..." class="w-full pl-9 pr-4 py-2 border border-stone-200 rounded-lg text-xs font-sans focus:outline-none focus:border-cerulean focus:ring-1 focus:ring-cerulean transition-all bg-stone-50/50">
+                        </div>
+                        <div class="flex items-center gap-1.5 self-start sm:self-auto text-xs font-mono text-ink-light">
+                            <span class="text-[11px]">Hiển thị danh bạ tài khoản thời gian thực</span>
+                        </div>
+                    </div>
+
+                    <!-- Lưới hiển thị danh thiếp tài khoản người dùng -->
+                    <div id="admin-users-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div class="col-span-full py-16 text-center">
+                            <div class="inline-block w-8 h-8 border-3 border-cerulean border-t-transparent rounded-full animate-spin"></div>
+                            <p class="text-xs font-mono text-ink-light mt-3">Đang kết nối Firestore &amp; đồng bộ tài khoản...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== GIAO DIỆN 2: THANH TRA CHI TIẾT TÀI KHOẢN (INSPECTOR) ==================== -->
+                <div id="admin-user-detail-view" class="hidden space-y-6">
+                    <!-- Thanh điều hướng quay lại & Danh tính người dùng -->
+                    <div class="editorial-border bg-white rounded-2xl p-5 shadow-xs">
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-5 border-b border-line">
+                            <button type="button" onclick="window.backToAdminUserList()" class="px-4 py-2 border border-stone-300 hover:border-cerulean text-xs font-bold text-ink hover:text-cerulean rounded-xl bg-stone-50 hover:bg-white shadow-2xs transition-all flex items-center gap-2 cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                <span>Trở Lại Danh Sách Tài Khoản</span>
+                            </button>
+                            <span class="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-cerulean/10 text-cerulean border border-cerulean/30 shadow-2xs">
+                                🔍 ĐANG GIÁM SÁT CHI TIẾT TÀI KHOẢN (READ-ONLY)
+                            </span>
+                        </div>
+
+                        <!-- Card thông tin người dùng được thanh tra -->
+                        <div class="pt-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+                            <div class="flex items-center gap-4 min-w-0">
+                                <div class="relative shrink-0">
+                                    <img id="admin-detail-avatar" src="" alt="Avatar" class="w-16 h-16 rounded-full object-cover border-2 border-cerulean shadow-xs">
+                                    <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white" title="Trực tuyến"></span>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h3 id="admin-detail-name" class="font-playfair text-xl md:text-2xl font-black text-ink truncate">-</h3>
+                                        <span id="admin-detail-badge" class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase bg-stone-100 text-stone-700 border border-stone-200">USER</span>
+                                    </div>
+                                    <p id="admin-detail-email" class="text-xs text-ink-light font-mono truncate mt-0.5">-</p>
+                                    <div class="mt-2 flex items-center gap-1.5 flex-wrap">
+                                        <span class="font-mono text-[10px] text-stone-500 bg-stone-100 px-2 py-0.5 rounded border border-stone-200">UID: <span id="admin-detail-uid" class="font-bold text-ink">-</span></span>
+                                        <button type="button" onclick="window.copyInspectedUID()" class="p-1 hover:bg-stone-200 rounded text-stone-500 hover:text-ink transition-colors cursor-pointer" title="Sao chép UID này">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+                                        </button>
+                                        <span id="admin-detail-lastlogin" class="text-[11px] text-ink-light italic ml-2">Đăng nhập: -</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Huy hiệu tóm tắt nhanh -->
+                            <div class="flex items-center gap-2 text-xs font-mono self-stretch md:self-auto justify-between md:justify-end">
+                                <div class="px-3 py-2 bg-stone-50 rounded-xl border border-stone-200 text-center">
+                                    <span class="block text-[9px] text-ink-light uppercase">Đối Tác</span>
+                                    <span id="admin-detail-count-partners" class="font-bold text-sm text-cerulean">0</span>
+                                </div>
+                                <div class="px-3 py-2 bg-stone-50 rounded-xl border border-stone-200 text-center">
+                                    <span class="block text-[9px] text-ink-light uppercase">Giải Phóng</span>
+                                    <span id="admin-detail-count-releases" class="font-bold text-sm text-jasper">0</span>
+                                </div>
+                                <div class="px-3 py-2 bg-stone-50 rounded-xl border border-stone-200 text-center">
+                                    <span class="block text-[9px] text-ink-light uppercase">Ảnh &amp; Clip</span>
+                                    <span id="admin-detail-count-media" class="font-bold text-sm text-ink">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Menu chuyển các Tab Chi Tiết -->
+                        <div class="mt-6 pt-4 border-t border-line flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
+                            <button type="button" id="admin-tab-btn-profile" onclick="window.switchAdminUserTab('profile')" class="px-4 py-2 font-bold text-xs rounded-xl cursor-pointer transition-all flex items-center gap-2 shrink-0 bg-cerulean text-white shadow-xs">
+                                <span>📋 Hồ Sơ &amp; Y Tế</span>
+                            </button>
+                            <button type="button" id="admin-tab-btn-media" onclick="window.switchAdminUserTab('media')" class="px-4 py-2 font-medium text-xs rounded-xl cursor-pointer transition-all flex items-center gap-2 shrink-0 bg-stone-100 hover:bg-stone-200 text-ink">
+                                <span>🖼️ Kho Ảnh &amp; Media (<span id="admin-tab-count-media">0</span>)</span>
+                            </button>
+                            <button type="button" id="admin-tab-btn-partners" onclick="window.switchAdminUserTab('partners')" class="px-4 py-2 font-medium text-xs rounded-xl cursor-pointer transition-all flex items-center gap-2 shrink-0 bg-stone-100 hover:bg-stone-200 text-ink">
+                                <span>👥 Bạn Đồng Hành &amp; OF (<span id="admin-tab-count-partners">0</span>)</span>
+                            </button>
+                            <button type="button" id="admin-tab-btn-releases" onclick="window.switchAdminUserTab('releases')" class="px-4 py-2 font-medium text-xs rounded-xl cursor-pointer transition-all flex items-center gap-2 shrink-0 bg-stone-100 hover:bg-stone-200 text-ink">
+                                <span>💧 Nhật Ký Giải Phóng (<span id="admin-tab-count-releases">0</span>)</span>
+                            </button>
+                            <button type="button" id="admin-tab-btn-libido" onclick="window.switchAdminUserTab('libido')" class="px-4 py-2 font-medium text-xs rounded-xl cursor-pointer transition-all flex items-center gap-2 shrink-0 bg-stone-100 hover:bg-stone-200 text-ink">
+                                <span>⚡ Libido &amp; Trigger</span>
+                            </button>
+                            <button type="button" id="admin-tab-btn-raw" onclick="window.switchAdminUserTab('raw')" class="px-4 py-2 font-medium text-xs rounded-xl cursor-pointer transition-all flex items-center gap-2 shrink-0 bg-stone-100 hover:bg-stone-200 text-ink">
+                                <span>💻 JSON Thuần</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Vùng tải dữ liệu của user đang inspect -->
+                    <div id="admin-inspect-loading" class="py-16 text-center">
+                        <div class="inline-block w-8 h-8 border-3 border-cerulean border-t-transparent rounded-full animate-spin"></div>
+                        <p class="text-xs font-mono text-ink-light mt-3">Đang trích xuất toàn bộ hồ sơ &amp; kho media của tài khoản...</p>
+                    </div>
+
+                    <div id="admin-inspect-content" class="space-y-6 hidden">
+                        <!-- SUB-PANEL 1: HỒ SƠ Y TẾ & THỂ CHẤT -->
+                        <div id="admin-subpanel-profile" class="space-y-6">
+                            <!-- Nhân trắc học -->
+                            <div class="editorial-border bg-white rounded-2xl p-6 shadow-xs">
+                                <h4 class="font-playfair text-lg font-bold text-ink mb-4 flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-cerulean"></span>
+                                    <span>Chỉ Số Thể Chất &amp; Nhân Trắc Học</span>
+                                </h4>
+                                <div id="admin-profile-metrics-grid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 text-center">
+                                    <!-- Dynamic metrics inserted by JS -->
+                                </div>
+                                <div id="admin-profile-lifestyle-box" class="mt-4 p-4 rounded-xl bg-stone-50 border border-stone-200/80 text-xs text-ink-light space-y-1.5">
+                                    <!-- Lifestyle & goals inserted by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Bảng xét nghiệm máu nội tiết -->
+                            <div class="editorial-border bg-white rounded-2xl p-6 shadow-xs">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="font-playfair text-lg font-bold text-ink flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-cerulean"></span>
+                                        <span>Lịch Sử Xét Nghiệm Nội Tiết Tố (Testosterone &amp; Tuyến Yên)</span>
+                                    </h4>
+                                    <span id="admin-profile-endo-count" class="text-xs font-mono text-ink-light">0 kết quả</span>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs text-left">
+                                        <thead class="bg-stone-50 font-mono text-ink-light border-b border-line uppercase text-[10px]">
+                                            <tr>
+                                                <th class="p-3">Thời gian</th>
+                                                <th class="p-3">Total Testo</th>
+                                                <th class="p-3">Free Testo</th>
+                                                <th class="p-3">FSH</th>
+                                                <th class="p-3">LH</th>
+                                                <th class="p-3">SHBG</th>
+                                                <th class="p-3">Estradiol (E2)</th>
+                                                <th class="p-3">Prolactin</th>
+                                                <th class="p-3">Ghi chú</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="admin-profile-endo-tbody" class="divide-y divide-line">
+                                            <tr><td colspan="9" class="p-4 text-center italic text-ink-light">Chưa có bản ghi xét nghiệm máu nào.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Bảng tinh dịch đồ -->
+                            <div class="editorial-border bg-white rounded-2xl p-6 shadow-xs">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="font-playfair text-lg font-bold text-ink flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-cerulean"></span>
+                                        <span>Lịch Sử Phân Tích Tinh Dịch Đồ</span>
+                                    </h4>
+                                    <span id="admin-profile-semen-count" class="text-xs font-mono text-ink-light">0 kết quả</span>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs text-left">
+                                        <thead class="bg-stone-50 font-mono text-ink-light border-b border-line uppercase text-[10px]">
+                                            <tr>
+                                                <th class="p-3">Ngày xét nghiệm</th>
+                                                <th class="p-3">Thể tích (ml)</th>
+                                                <th class="p-3">Mật độ (triệu/ml)</th>
+                                                <th class="p-3">Độ di động (%)</th>
+                                                <th class="p-3">Hình thái chuẩn (%)</th>
+                                                <th class="p-3">Ghi chú lâm sàng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="admin-profile-semen-tbody" class="divide-y divide-line">
+                                            <tr><td colspan="6" class="p-4 text-center italic text-ink-light">Chưa có dữ liệu tinh dịch đồ nào.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUB-PANEL 2: KHO ẢNH & MEDIA TẢI LÊN -->
+                        <div id="admin-subpanel-media" class="space-y-6 hidden">
+                            <div class="editorial-border bg-white rounded-2xl p-6 shadow-xs">
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+                                    <div>
+                                        <h4 class="font-playfair text-lg font-bold text-ink flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-cerulean"></span>
+                                            <span>Toàn Bộ Kho Hình Ảnh &amp; Video Đã Tải Lên</span>
+                                        </h4>
+                                        <p class="text-xs text-ink-light mt-0.5">Bao gồm ảnh đại diện, ảnh đối tác, bộ sưu tập đi dạy (Teaching Gallery) &amp; video các phiên giải phóng.</p>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 flex-wrap text-xs">
+                                        <button type="button" onclick="window.filterAdminMediaGallery('all')" id="btn-admin-media-filter-all" class="px-3 py-1 bg-cerulean text-white rounded-full font-bold uppercase text-[10px] cursor-pointer">Tất Cả</button>
+                                        <button type="button" onclick="window.filterAdminMediaGallery('teaching')" id="btn-admin-media-filter-teaching" class="px-3 py-1 bg-stone-100 hover:bg-stone-200 text-ink rounded-full font-bold uppercase text-[10px] cursor-pointer">Ảnh Đi Dạy</button>
+                                        <button type="button" onclick="window.filterAdminMediaGallery('video')" id="btn-admin-media-filter-video" class="px-3 py-1 bg-stone-100 hover:bg-stone-200 text-ink rounded-full font-bold uppercase text-[10px] cursor-pointer">Video / Clip</button>
+                                        <button type="button" onclick="window.filterAdminMediaGallery('avatar')" id="btn-admin-media-filter-avatar" class="px-3 py-1 bg-stone-100 hover:bg-stone-200 text-ink rounded-full font-bold uppercase text-[10px] cursor-pointer">Avatar</button>
+                                    </div>
+                                </div>
+
+                                <div id="admin-media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                    <!-- Dynamic media items inserted by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUB-PANEL 3: BẠN ĐỒNG HÀNH & TRAI ONLYFANS -->
+                        <div id="admin-subpanel-partners" class="space-y-6 hidden">
+                            <div class="editorial-border bg-white rounded-2xl p-6 shadow-xs">
+                                <div class="flex items-center justify-between mb-6">
+                                    <div>
+                                        <h4 class="font-playfair text-lg font-bold text-ink flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-cerulean"></span>
+                                            <span>Danh Sách Bạn Đồng Hành &amp; Creator Của Tài Khoản ("Những Người Của Họ")</span>
+                                        </h4>
+                                        <p class="text-xs text-ink-light mt-0.5">Dữ liệu hồ sơ riêng tư, đặc điểm thể chất &amp; trạng thái an toàn được lưu trữ bởi người dùng này.</p>
+                                    </div>
+                                    <span id="admin-partners-count-badge" class="px-3 py-1 bg-cerulean/10 text-cerulean rounded-full font-mono text-xs font-bold">0 đối tác</span>
+                                </div>
+
+                                <div id="admin-partners-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                    <!-- Dynamic partner cards inserted by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUB-PANEL 4: NHẬT KÝ GIẢI PHÓNG -->
+                        <div id="admin-subpanel-releases" class="space-y-6 hidden">
+                            <div class="editorial-border bg-white rounded-2xl p-6 shadow-xs">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="font-playfair text-lg font-bold text-ink flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-jasper"></span>
+                                            <span>Nhật Ký Giải Phóng Của Tài Khoản ("Những Phiên Của Họ")</span>
+                                        </h4>
+                                        <p class="text-xs text-ink-light mt-0.5">Tần suất xuất tinh, độ cứng EQ, thời lượng phiên và video thực chứng (nếu có).</p>
+                                    </div>
+                                    <span id="admin-releases-count-badge" class="px-3 py-1 bg-jasper/10 text-jasper rounded-full font-mono text-xs font-bold">0 phiên</span>
+                                </div>
+
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-xs text-left">
+                                        <thead class="bg-stone-50 font-mono text-ink-light border-b border-line uppercase text-[10px]">
+                                            <tr>
+                                                <th class="p-3">Thời gian</th>
+                                                <th class="p-3">Hình thức</th>
+                                                <th class="p-3">Xuất tinh?</th>
+                                                <th class="p-3">Độ cứng EQ</th>
+                                                <th class="p-3">Thời lượng</th>
+                                                <th class="p-3">Clip / Video</th>
+                                                <th class="p-3">Ghi chú &amp; Bối cảnh</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="admin-releases-tbody" class="divide-y divide-line">
+                                            <tr><td colspan="7" class="p-4 text-center italic text-ink-light">Chưa có phiên giải phóng nào được ghi nhận.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUB-PANEL 5: LIBIDO & MA TRẬN TRIGGER -->
+                        <div id="admin-subpanel-libido" class="space-y-6 hidden">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <!-- Triggers -->
+                                <div class="editorial-border bg-white rounded-2xl p-6 shadow-xs">
+                                    <h4 class="font-playfair text-lg font-bold text-ink mb-4 flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-jasper"></span>
+                                        <span>Ma Trận Yếu Tố Kích Thích (Trigger Factors)</span>
+                                    </h4>
+                                    <div id="admin-triggers-container" class="space-y-2.5">
+                                        <p class="text-xs italic text-ink-light">Chưa có yếu tố kích thích nào.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Libido checkins -->
+                                <div class="editorial-border bg-white rounded-2xl p-6 shadow-xs">
+                                    <h4 class="font-playfair text-lg font-bold text-ink mb-4 flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-cerulean"></span>
+                                        <span>Lịch Sử Check-in Nhịp Ham Muốn (Libido Logs)</span>
+                                    </h4>
+                                    <div id="admin-libido-container" class="space-y-2 max-h-96 overflow-y-auto">
+                                        <p class="text-xs italic text-ink-light">Chưa có bản ghi check-in libido nào.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUB-PANEL 6: JSON THUẦN (RAW JSON INSPECTOR) -->
+                        <div id="admin-subpanel-raw" class="space-y-6 hidden">
+                            <div class="editorial-border bg-white rounded-2xl p-6 shadow-xs">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h4 class="font-playfair text-lg font-bold text-ink flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-stone-700"></span>
+                                            <span>Trình Thanh Tra Dữ Liệu Gốc (Raw JSON Inspector)</span>
+                                        </h4>
+                                        <p class="text-xs text-ink-light mt-0.5">Toàn bộ schema Firestore của tài khoản này ở dạng JSON thuần.</p>
+                                    </div>
+                                    <button type="button" onclick="window.copyInspectedRawJSON()" class="px-4 py-2 bg-stone-800 hover:bg-black text-white rounded-xl text-xs font-mono font-bold uppercase tracking-wider shadow-xs transition-all flex items-center gap-2 cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+                                        <span>Sao Chép JSON</span>
+                                    </button>
+                                </div>
+                                <pre id="admin-raw-json-code" class="p-5 bg-stone-900 text-emerald-400 font-mono text-xs rounded-xl overflow-x-auto max-h-[600px] leading-relaxed border border-stone-800 shadow-inner">Đang nạp dữ liệu...</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
                             </main>
 
     <!-- ==================== MODALS (TỐI ƯU TẦM NHÌN NGANG LAPTOP / LANDSCAPE) ==================== -->
+
+    <!-- MODAL LIGHTBOX XEM PHÓNG TO HÌNH ẢNH / CLIP CỦA ADMIN -->
+    <div id="modal-admin-lightbox" onclick="if(event.target === this) window.closeAdminLightbox()" class="modal-overlay hidden fixed inset-0 bg-black/85 backdrop-blur-md z-[250] flex items-center justify-center p-4">
+        <div class="relative max-w-5xl w-full max-h-[92vh] flex flex-col items-center justify-center">
+            <!-- Nút đóng -->
+            <button type="button" onclick="window.closeAdminLightbox()" class="absolute -top-10 right-0 text-white/80 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors cursor-pointer" title="Đóng cửa sổ">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="mb-3 text-center">
+                <p id="admin-lightbox-title" class="text-sm md:text-base font-playfair font-bold text-white tracking-wide truncate max-w-2xl mx-auto"></p>
+                <p id="admin-lightbox-meta" class="text-xs font-mono text-stone-400 mt-0.5"></p>
+            </div>
+            <!-- Khung trình chiếu -->
+            <div class="w-full flex items-center justify-center bg-stone-950 rounded-2xl overflow-hidden border border-white/10 shadow-2xl max-h-[80vh]">
+                <img id="admin-lightbox-img" src="" alt="Preview" class="max-w-full max-h-[80vh] object-contain hidden select-none">
+                <video id="admin-lightbox-video" src="" controls autoplay playsinline class="max-w-full max-h-[80vh] object-contain hidden"></video>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal 1: Hồ Sơ Y Tế -->
     <!-- Modal 1: Hồ Sơ Y Tế & Trục Nội Tiết (2 Tabs) -->
     <div id="modal-profile" onclick="if(event.target === this) window.closeProfileModal()" class="modal-overlay hidden fixed inset-0 bg-ink/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 md:p-6">
@@ -7070,10 +7486,13 @@
             'module8': { path: '/thu-thach-edging', title: 'Thử Thách Edging | Aura', desc: 'Trò chơi kiểm soát cực khoái và rèn luyện ý chí.' },
             'module9': { path: '/thiet-lap-bao-mat', title: 'Thiết Lập Bảo Mật | Aura', desc: 'Cấu hình kết nối Google Drive và sao lưu dữ liệu.' },
             'module10': { path: '/onlyfan', title: 'Trai OnlyFan | Aura', desc: 'Lưu trữ thông tin và media của các creator OnlyFan nam.' },
-            'module-workout': { path: '/virtual-pt', title: 'Luyện Tập & Virtual PT | Aura', desc: 'Huấn luyện viên cá nhân ảo, giáo án Testosterone và cơ sàn chậu chuyên sâu.' }
+            'module-workout': { path: '/virtual-pt', title: 'Luyện Tập & Virtual PT | Aura', desc: 'Huấn luyện viên cá nhân ảo, giáo án Testosterone và cơ sàn chậu chuyên sâu.' },
+            'module-admin-users': { path: '/quan-ly-nguoi-dung', title: 'Quản Lý Người Dùng Hệ Thống | Aura Admin', desc: 'Bảng điều khiển quản lý và giám sát tài khoản, hồ sơ và hình ảnh người dùng ở chế độ chỉ xem.' }
         };
 
         const routeAliasMap = {
+            '/quan-ly-nguoi-dung': 'module-admin-users',
+            '/admin-users': 'module-admin-users',
             '/ban-dong-hanh': 'module4',
             '/trai-ngon': 'module4',
             '/trai-onlyfans': 'module10',
@@ -7222,7 +7641,7 @@
                 navTransitionTimer = null;
             }
 
-            const moduleOrder = ['module1', 'module2', 'module3', 'module4', 'module10', 'module5', 'module-workout', 'module6', 'module7', 'module8', 'module9'];
+            const moduleOrder = ['module1', 'module2', 'module3', 'module4', 'module10', 'module5', 'module-workout', 'module6', 'module7', 'module8', 'module9', 'module-admin-users'];
             const prevIdx = moduleOrder.indexOf(currentModuleId) !== -1 ? moduleOrder.indexOf(currentModuleId) : 0;
             const nextIdx = moduleOrder.indexOf(targetId) !== -1 ? moduleOrder.indexOf(targetId) : 0;
             const isGoingDown = nextIdx > prevIdx;
@@ -7271,6 +7690,18 @@
                     btn.classList.add('text-jasper', 'font-bold', 'italic', 'active-nav');
                 } else {
                     btn.classList.add('text-cerulean', 'font-bold', 'italic', 'active-nav');
+                }
+            }
+
+            if (targetId === 'module-admin-users') {
+                const activeId = currentUserId || (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : null);
+                if (activeId !== 'odRSfSMD1ZaoglEFBkeIKhLCusZ2') {
+                    if (typeof showToast === 'function') showToast("Quyền truy cập bị từ chối: Chỉ Master UID mới được xem mục này.", "error");
+                    nav('module1');
+                    return;
+                }
+                if (typeof window.loadAdminUsersList === 'function') {
+                    window.loadAdminUsersList();
                 }
             }
 
@@ -21565,6 +21996,13 @@
                     if (avatarEl && user && user.photoURL) avatarEl.src = user.photoURL;
                 }
             }
+
+            // 7. Menu Quản Lý Người Dùng (Chỉ tài khoản Master mới xem được)
+            const adminNav = document.getElementById('nav-item-admin-users');
+            if (adminNav) adminNav.style.display = isMaster ? '' : 'none';
+            if (!isMaster && typeof currentModuleId !== 'undefined' && currentModuleId === 'module-admin-users') {
+                if (typeof nav === 'function') nav('module1');
+            }
         };
 
         function xmlEscape(val) {
@@ -22454,6 +22892,900 @@
         } catch (e) {
             handleFirestoreError(e, "Khởi động Firestore");
         }
+
+        // ==================== AURA ADMIN: QUẢN LÝ NGƯỜI DÙNG CHO MASTER ACCOUNT (READ-ONLY) ====================
+        let adminUsersCache = [];
+        let adminCurrentInspectedUid = null;
+        let adminCurrentInspectedData = null;
+        let adminMediaFilterType = 'all';
+
+        window.loadAdminUsersList = async function() {
+            const MASTER_UID = window.MASTER_UID || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+            const activeUid = (typeof currentUserId !== 'undefined' && currentUserId) || 
+                              (typeof auth !== 'undefined' && auth.currentUser ? auth.currentUser.uid : null);
+            if (activeUid !== MASTER_UID) {
+                if (typeof showToast === 'function') showToast("Quyền truy cập bị từ chối: Chỉ Master UID mới được xem mục này.", "error");
+                if (typeof nav === 'function') nav('module1');
+                return;
+            }
+
+            const gridEl = document.getElementById('admin-users-grid');
+            const refreshBtn = document.getElementById('btn-admin-users-refresh');
+            if (refreshBtn) refreshBtn.classList.add('animate-spin');
+
+            if (gridEl) {
+                gridEl.innerHTML = '<div class="col-span-full py-16 text-center"><div class="inline-block w-8 h-8 border-3 border-cerulean border-t-transparent rounded-full animate-spin"></div><p class="text-xs font-mono text-ink-light mt-3">Đang quét danh sách tài khoản &amp; tổng hợp dữ liệu thời gian thực...</p></div>';
+            }
+
+            try {
+                // 1. Tải toàn bộ tài khoản từ collection "users"
+                const usersSnap = await getDocs(collection(db, "users"));
+                const usersMap = new Map();
+                
+                usersSnap.forEach(d => {
+                    const data = d.data();
+                    usersMap.set(d.id, {
+                        uid: d.id,
+                        displayName: data.displayName || 'Tài khoản Aura',
+                        email: data.email || 'Chưa cung cấp email',
+                        photoURL: data.photoURL || '',
+                        lastLoginAt: data.lastLoginAt ? (data.lastLoginAt.toDate ? data.lastLoginAt.toDate() : new Date(data.lastLoginAt)) : null,
+                        createdAt: data.createdAt ? (data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt)) : null,
+                        partnerCount: 0,
+                        releaseCount: 0,
+                        testCount: 0,
+                        hasProfile: false
+                    });
+                });
+
+                // Đảm bảo Master UID luôn có mặt
+                if (!usersMap.has(MASTER_UID)) {
+                    usersMap.set(MASTER_UID, {
+                        uid: MASTER_UID,
+                        displayName: (typeof auth !== 'undefined' && auth.currentUser?.uid === MASTER_UID ? auth.currentUser.displayName : 'Master Admin (Khang Nguyen)'),
+                        email: (typeof auth !== 'undefined' && auth.currentUser?.uid === MASTER_UID ? auth.currentUser.email : 'kn076268@gmail.com'),
+                        photoURL: (typeof auth !== 'undefined' && auth.currentUser?.uid === MASTER_UID ? auth.currentUser.photoURL : ''),
+                        lastLoginAt: new Date(),
+                        partnerCount: 0,
+                        releaseCount: 0,
+                        testCount: 0,
+                        hasProfile: true
+                    });
+                }
+
+                // 2. Quét thống kê từ các collection: partners, release_logs, endocrine_tests, semen_analyses
+                const [partnersSnap, releasesSnap, endoSnap, semenSnap, profilesSnap] = await Promise.all([
+                    getDocs(collection(db, "partners")).catch(() => ({ docs: [] })),
+                    getDocs(collection(db, "release_logs")).catch(() => ({ docs: [] })),
+                    getDocs(collection(db, "endocrine_tests")).catch(() => ({ docs: [] })),
+                    getDocs(collection(db, "semen_analyses")).catch(() => ({ docs: [] })),
+                    getDocs(collection(db, "profiles")).catch(() => ({ docs: [] }))
+                ]);
+
+                let totalPartners = 0;
+                let totalReleases = 0;
+                let totalTests = 0;
+
+                partnersSnap.docs.forEach(d => {
+                    totalPartners++;
+                    const p = d.data();
+                    const uId = p.userId || MASTER_UID;
+                    if (usersMap.has(uId)) {
+                        usersMap.get(uId).partnerCount++;
+                    }
+                });
+
+                releasesSnap.docs.forEach(d => {
+                    totalReleases++;
+                    const r = d.data();
+                    const uId = r.userId || MASTER_UID;
+                    if (usersMap.has(uId)) {
+                        usersMap.get(uId).releaseCount++;
+                    }
+                });
+
+                endoSnap.docs.forEach(d => {
+                    totalTests++;
+                    const t = d.data();
+                    const uId = t.userId || MASTER_UID;
+                    if (usersMap.has(uId)) {
+                        usersMap.get(uId).testCount++;
+                    }
+                });
+
+                semenSnap.docs.forEach(d => {
+                    totalTests++;
+                    const s = d.data();
+                    const uId = s.userId || MASTER_UID;
+                    if (usersMap.has(uId)) {
+                        usersMap.get(uId).testCount++;
+                    }
+                });
+
+                profilesSnap.docs.forEach(d => {
+                    const data = d.data();
+                    const uId = data.userId || (d.id.startsWith('profile_') ? d.id.replace('profile_', '') : MASTER_UID);
+                    if (usersMap.has(uId)) {
+                        usersMap.get(uId).hasProfile = true;
+                        if (!usersMap.get(uId).displayName || usersMap.get(uId).displayName === 'Tài khoản Aura') {
+                            if (data.name) usersMap.get(uId).displayName = data.name;
+                        }
+                    }
+                });
+
+                adminUsersCache = Array.from(usersMap.values()).sort((a, b) => {
+                    if (a.uid === MASTER_UID) return -1;
+                    if (b.uid === MASTER_UID) return 1;
+                    const tA = a.lastLoginAt ? a.lastLoginAt.getTime() : 0;
+                    const tB = b.lastLoginAt ? b.lastLoginAt.getTime() : 0;
+                    return tB - tA;
+                });
+
+                // Cập nhật các thẻ KPI trên cùng
+                const statUsers = document.getElementById('stat-admin-total-users');
+                const statPartners = document.getElementById('stat-admin-total-partners');
+                const statReleases = document.getElementById('stat-admin-total-releases');
+                const statTests = document.getElementById('stat-admin-total-tests');
+                if (statUsers) statUsers.innerText = adminUsersCache.length;
+                if (statPartners) statPartners.innerText = totalPartners;
+                if (statReleases) statReleases.innerText = totalReleases;
+                if (statTests) statTests.innerText = totalTests;
+
+                renderAdminUsersGrid(adminUsersCache);
+            } catch (err) {
+                console.error("Lỗi nạp danh sách admin users:", err);
+                if (gridEl) {
+                    gridEl.innerHTML = '<div class="col-span-full py-12 text-center text-jasper"><p class="font-bold">Không thể tải danh sách tài khoản: ' + err.message + '</p><button onclick="window.loadAdminUsersList()" class="mt-3 px-4 py-2 bg-cerulean text-white rounded-lg text-xs font-bold uppercase">Thử lại</button></div>';
+                }
+            } finally {
+                if (refreshBtn) refreshBtn.classList.remove('animate-spin');
+            }
+        };
+
+        function renderAdminUsersGrid(users) {
+            const gridEl = document.getElementById('admin-users-grid');
+            if (!gridEl) return;
+
+            if (!users || users.length === 0) {
+                gridEl.innerHTML = '<div class="col-span-full py-16 text-center text-ink-light italic border border-dashed border-line rounded-xl bg-white/50">Không tìm thấy tài khoản người dùng nào phù hợp với bộ lọc tìm kiếm.</div>';
+                return;
+            }
+
+            const MASTER_UID = window.MASTER_UID || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+
+            gridEl.innerHTML = users.map(u => {
+                const isMaster = (u.uid === MASTER_UID);
+                const avatarUrl = u.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80';
+                const lastLoginStr = u.lastLoginAt ? u.lastLoginAt.toLocaleString('vi-VN') : 'Chưa có thông tin';
+
+                return '<div class="editorial-border bg-white rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group relative ' + (isMaster ? 'border-cerulean/60 bg-gradient-to-b from-cerulean/5 to-white' : '') + '">' +
+                    '<div>' +
+                        '<div class="flex items-start gap-3.5 mb-4">' +
+                            '<div class="relative shrink-0">' +
+                                '<img src="' + avatarUrl + '" alt="' + xmlEscape(u.displayName) + '" class="w-12 h-12 rounded-full object-cover border-2 ' + (isMaster ? 'border-cerulean shadow-xs' : 'border-stone-200') + '" onerror="this.src=\'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80\'">' +
+                                '<span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full ' + (isMaster ? 'bg-cerulean' : 'bg-emerald-500') + ' border-2 border-white" title="' + (isMaster ? 'Tài Khoản Master' : 'Tài Khoản Thành Viên') + '"></span>' +
+                            '</div>' +
+                            '<div class="min-w-0 flex-1">' +
+                                '<div class="flex items-center gap-1.5 flex-wrap">' +
+                                    '<h3 class="font-playfair font-bold text-base text-ink truncate group-hover:text-cerulean transition-colors">' + xmlEscape(u.displayName) + '</h3>' +
+                                    (isMaster 
+                                        ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase bg-cerulean text-white shrink-0 shadow-2xs">Master UID</span>'
+                                        : '<span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase bg-stone-100 text-ink-light border border-stone-200 shrink-0">User</span>') +
+                                '</div>' +
+                                '<p class="text-xs text-ink-light font-mono truncate mt-0.5">' + xmlEscape(u.email) + '</p>' +
+                                '<div class="mt-1.5 flex items-center gap-1">' +
+                                    '<span class="font-mono text-[10px] text-stone-500 bg-stone-100 px-2 py-0.5 rounded border border-stone-200 truncate max-w-[170px]" title="' + u.uid + '">UID: ' + u.uid + '</span>' +
+                                    '<button type="button" onclick="window.copyTextToClipboard(\'' + u.uid + '\', \'Đã sao chép UID người dùng!\')" class="p-1 hover:bg-stone-200 rounded text-stone-500 hover:text-ink transition-colors cursor-pointer" title="Sao chép UID">' +
+                                        '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>' +
+                                    '</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="grid grid-cols-3 gap-2 p-2.5 bg-stone-50 rounded-xl border border-stone-200/80 text-center mb-4 text-xs font-mono">' +
+                            '<div class="p-1.5 bg-white rounded-lg border border-stone-200/50 shadow-2xs">' +
+                                '<span class="block text-[10px] text-ink-light uppercase">Đối tác</span>' +
+                                '<span class="font-bold text-sm text-cerulean">' + u.partnerCount + '</span>' +
+                            '</div>' +
+                            '<div class="p-1.5 bg-white rounded-lg border border-stone-200/50 shadow-2xs">' +
+                                '<span class="block text-[10px] text-ink-light uppercase">Giải phóng</span>' +
+                                '<span class="font-bold text-sm text-jasper">' + u.releaseCount + '</span>' +
+                            '</div>' +
+                            '<div class="p-1.5 bg-white rounded-lg border border-stone-200/50 shadow-2xs">' +
+                                '<span class="block text-[10px] text-ink-light uppercase">Xét nghiệm</span>' +
+                                '<span class="font-bold text-sm text-ink">' + u.testCount + '</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="text-[11px] text-ink-light italic flex items-center justify-between mb-4 px-1">' +
+                            '<span>Đăng nhập gần nhất:</span>' +
+                            '<span class="font-mono text-stone-600 font-medium">' + lastLoginStr + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div>' +
+                        '<button type="button" onclick="window.inspectAdminUser(\'' + u.uid + '\')" class="w-full py-2.5 px-4 bg-paper hover:bg-cerulean text-ink hover:text-white border border-line hover:border-cerulean font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer group-hover:bg-cerulean group-hover:text-white group-hover:border-cerulean">' +
+                            '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>' +
+                            '<span>Xem Dữ Liệu &amp; Kho Ảnh (Read-Only)</span>' +
+                        '</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        window.filterAdminUsersList = function() {
+            const input = document.getElementById('admin-users-search-input');
+            const q = (input ? input.value : '').toLowerCase().trim();
+            if (!q) {
+                renderAdminUsersGrid(adminUsersCache);
+                return;
+            }
+            const filtered = adminUsersCache.filter(u => {
+                return (u.displayName && u.displayName.toLowerCase().includes(q)) ||
+                       (u.email && u.email.toLowerCase().includes(q)) ||
+                       (u.uid && u.uid.toLowerCase().includes(q));
+            });
+            renderAdminUsersGrid(filtered);
+        };
+
+        window.backToAdminUserList = function() {
+            adminCurrentInspectedUid = null;
+            adminCurrentInspectedData = null;
+            const listView = document.getElementById('admin-users-list-view');
+            const detailView = document.getElementById('admin-user-detail-view');
+            if (listView) listView.classList.remove('hidden');
+            if (detailView) detailView.classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.copyInspectedUID = function() {
+            if (adminCurrentInspectedUid) {
+                window.copyTextToClipboard(adminCurrentInspectedUid, "Đã sao chép UID: " + adminCurrentInspectedUid);
+            }
+        };
+
+        window.copyInspectedRawJSON = function() {
+            if (!adminCurrentInspectedData) return;
+            const jsonStr = JSON.stringify(adminCurrentInspectedData, null, 2);
+            window.copyTextToClipboard(jsonStr, "Đã sao chép toàn bộ dữ liệu JSON của tài khoản!");
+        };
+
+        window.copyTextToClipboard = function(text, successMsg) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    if (typeof showToast === 'function') showToast(successMsg || "Đã sao chép vào bộ nhớ tạm!", "success");
+                }).catch(() => fallbackCopy(text, successMsg));
+            } else {
+                fallbackCopy(text, successMsg);
+            }
+        };
+
+        function fallbackCopy(text, successMsg) {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand("copy");
+                if (typeof showToast === 'function') showToast(successMsg || "Đã sao chép vào bộ nhớ tạm!", "success");
+            } catch (_) {}
+            document.body.removeChild(ta);
+        }
+
+        window.switchAdminUserTab = function(tabKey) {
+            const tabs = ['profile', 'media', 'partners', 'releases', 'libido', 'raw'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('admin-tab-btn-' + t);
+                const panel = document.getElementById('admin-subpanel-' + t);
+                if (t === tabKey) {
+                    if (btn) {
+                        btn.className = "px-4 py-2 font-bold text-xs rounded-xl cursor-pointer transition-all flex items-center gap-2 shrink-0 bg-cerulean text-white shadow-xs";
+                    }
+                    if (panel) panel.classList.remove('hidden');
+                } else {
+                    if (btn) {
+                        btn.className = "px-4 py-2 font-medium text-xs rounded-xl cursor-pointer transition-all flex items-center gap-2 shrink-0 bg-stone-100 hover:bg-stone-200 text-ink";
+                    }
+                    if (panel) panel.classList.add('hidden');
+                }
+            });
+        };
+
+        window.inspectAdminUser = async function(targetUid) {
+            adminCurrentInspectedUid = targetUid;
+            const MASTER_UID = window.MASTER_UID || 'odRSfSMD1ZaoglEFBkeIKhLCusZ2';
+
+            const listView = document.getElementById('admin-users-list-view');
+            const detailView = document.getElementById('admin-user-detail-view');
+            if (listView) listView.classList.add('hidden');
+            if (detailView) detailView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const loadingEl = document.getElementById('admin-inspect-loading');
+            const contentEl = document.getElementById('admin-inspect-content');
+            if (loadingEl) loadingEl.classList.remove('hidden');
+            if (contentEl) contentEl.classList.add('hidden');
+
+            try {
+                const isMaster = (targetUid === MASTER_UID);
+
+                // 1. Profile & User
+                const profileDocId = 'profile_' + targetUid;
+                const [profileSnap, userSnap] = await Promise.all([
+                    getDoc(doc(db, "profiles", profileDocId)).catch(() => null),
+                    getDoc(doc(db, "users", targetUid)).catch(() => null)
+                ]);
+
+                let profileData = (profileSnap && profileSnap.exists()) ? profileSnap.data() : null;
+                if (!profileData && isMaster) {
+                    const masterOldProfile = await getDoc(doc(db, "profiles", "user_profile")).catch(() => null);
+                    if (masterOldProfile && masterOldProfile.exists()) profileData = masterOldProfile.data();
+                }
+                const userData = (userSnap && userSnap.exists()) ? userSnap.data() : null;
+
+                // 2. Partners
+                const partnersSnap = await getDocs(collection(db, "partners")).catch(() => ({ docs: [] }));
+                const userPartners = [];
+                partnersSnap.docs.forEach(d => {
+                    const p = d.data();
+                    if (p.userId === targetUid || (!p.userId && isMaster)) {
+                        userPartners.push({ id: d.id, ...p });
+                    }
+                });
+
+                // 3. Release Logs
+                const releaseSnap = await getDocs(collection(db, "release_logs")).catch(() => ({ docs: [] }));
+                const userReleases = [];
+                releaseSnap.docs.forEach(d => {
+                    const r = d.data();
+                    if (r.userId === targetUid || (!r.userId && isMaster)) {
+                        userReleases.push({ id: d.id, ...r });
+                    }
+                });
+                userReleases.sort((a, b) => new Date(b.datetime || b.createdAt || 0) - new Date(a.datetime || a.createdAt || 0));
+
+                // 4. Endocrine Tests
+                const endoSnap = await getDocs(collection(db, "endocrine_tests")).catch(() => ({ docs: [] }));
+                const userEndo = [];
+                endoSnap.docs.forEach(d => {
+                    const t = d.data();
+                    if (t.userId === targetUid || (!t.userId && isMaster)) {
+                        userEndo.push({ id: d.id, ...t });
+                    }
+                });
+                userEndo.sort((a, b) => new Date(b.date || b.createdAt || 0) - new Date(a.date || a.createdAt || 0));
+
+                // 5. Semen Analyses
+                const semenSnap = await getDocs(collection(db, "semen_analyses")).catch(() => ({ docs: [] }));
+                const userSemen = [];
+                semenSnap.docs.forEach(d => {
+                    const s = d.data();
+                    if (s.userId === targetUid || (!s.userId && isMaster)) {
+                        userSemen.push({ id: d.id, ...s });
+                    }
+                });
+                userSemen.sort((a, b) => new Date(b.date || b.createdAt || 0) - new Date(a.date || a.createdAt || 0));
+
+                // 6. Libido Logs
+                const libidoSnap = await getDocs(collection(db, "libido_logs")).catch(() => ({ docs: [] }));
+                const userLibido = [];
+                libidoSnap.docs.forEach(d => {
+                    const l = d.data();
+                    if (l.userId === targetUid || (!l.userId && isMaster)) {
+                        userLibido.push({ id: d.id, ...l });
+                    }
+                });
+                userLibido.sort((a, b) => new Date(b.date || b.createdAt || 0) - new Date(a.date || a.createdAt || 0));
+
+                // 7. Trigger Factors
+                const triggersSnap = await getDocs(collection(db, "trigger_factors")).catch(() => ({ docs: [] }));
+                const userTriggers = [];
+                triggersSnap.docs.forEach(d => {
+                    const tr = d.data();
+                    if (tr.userId === targetUid || (!tr.userId && isMaster)) {
+                        userTriggers.push({ id: d.id, ...tr });
+                    }
+                });
+
+                // 8. Tập hợp toàn bộ Media (Ảnh & Video) của user này
+                const userMediaList = [];
+
+                if (userData?.photoURL) {
+                    userMediaList.push({
+                        url: userData.photoURL,
+                        type: 'image',
+                        title: 'Ảnh đại diện Google',
+                        category: 'Avatar',
+                        partnerName: '',
+                        date: userData.lastLoginAt
+                    });
+                }
+
+                userPartners.forEach(p => {
+                    if (p.avatar) {
+                        userMediaList.push({
+                            url: p.avatar,
+                            type: 'image',
+                            title: 'Avatar: ' + (p.name || 'Đối tác'),
+                            partnerName: p.name || 'Bạn đồng hành',
+                            category: 'Avatar',
+                            date: p.updatedAt || p.createdAt
+                        });
+                    }
+                    if (Array.isArray(p.teachingGallery)) {
+                        p.teachingGallery.forEach((item, idx) => {
+                            const itm = (typeof item === 'string') ? { url: item, type: 'image' } : (item || {});
+                            const itemUrl = itm.url || itm.localUrl || '';
+                            if (itemUrl || itm.driveFileId) {
+                                const isVid = itm.type === 'video' || (typeof itemUrl === 'string' && /\.(mp4|webm|mov|ogg|m4v)(\?.*)?$/i.test(itemUrl));
+                                userMediaList.push({
+                                    ...itm,
+                                    url: itemUrl,
+                                    type: isVid ? 'video' : 'image',
+                                    title: itm.caption || ('Ảnh đi dạy #' + (idx + 1) + ' của ' + (p.name || 'Đối tác')),
+                                    partnerName: p.name || 'Bạn đồng hành',
+                                    category: 'Ảnh Đi Dạy',
+                                    date: itm.createdAt || p.updatedAt
+                                });
+                            }
+                        });
+                    }
+                    if (Array.isArray(p.videoCalls)) {
+                        p.videoCalls.forEach((vc, idx) => {
+                            const vcUrl = vc.url || vc.localUrl || '';
+                            if (vcUrl || vc.driveFileId) {
+                                userMediaList.push({
+                                    ...vc,
+                                    url: vcUrl,
+                                    type: 'video',
+                                    title: vc.caption || ('Video call #' + (idx + 1) + ' với ' + (p.name || 'Đối tác')),
+                                    partnerName: p.name || 'Bạn đồng hành',
+                                    category: 'Video Call',
+                                    date: vc.createdAt
+                                });
+                            }
+                        });
+                    }
+                });
+
+                userReleases.forEach((r, idx) => {
+                    if (r.hasVideo && (r.videoUrl || r.videoFileName)) {
+                        userMediaList.push({
+                            url: r.videoUrl || (r.videoFileName ? '/media/' + r.videoFileName : ''),
+                            fileName: r.videoFileName || '',
+                            type: 'video',
+                            title: 'Bản ghi hình: ' + (r.type || 'Phiên giải phóng') + ' (' + (r.dateFormatted || '') + ')',
+                            partnerName: r.type || 'Giải phóng',
+                            category: 'Video Phiên',
+                            releaseId: r.id,
+                            duration: r.videoDuration || r.duration,
+                            date: r.datetime || r.createdAt
+                        });
+                    }
+                });
+
+                adminCurrentInspectedData = {
+                    uid: targetUid,
+                    isMaster,
+                    user: userData,
+                    profile: profileData,
+                    partners: userPartners,
+                    releases: userReleases,
+                    endocrine: userEndo,
+                    semen: userSemen,
+                    libido: userLibido,
+                    triggers: userTriggers,
+                    media: userMediaList
+                };
+
+                // Render dữ liệu
+                renderAdminUserHeader(adminCurrentInspectedData);
+                renderAdminUserProfileTab(adminCurrentInspectedData);
+                renderAdminUserMediaTab(adminCurrentInspectedData);
+                renderAdminUserPartnersTab(adminCurrentInspectedData);
+                renderAdminUserReleasesTab(adminCurrentInspectedData);
+                renderAdminUserLibidoTab(adminCurrentInspectedData);
+                renderAdminUserRawTab(adminCurrentInspectedData);
+
+                window.switchAdminUserTab('profile');
+
+                if (loadingEl) loadingEl.classList.add('hidden');
+                if (contentEl) contentEl.classList.remove('hidden');
+            } catch (err) {
+                console.error("Lỗi inspect admin user:", err);
+                if (typeof showToast === 'function') showToast("Không thể tải chi tiết: " + err.message, "error");
+                window.backToAdminUserList();
+            }
+        };
+
+        function renderAdminUserHeader(data) {
+            const avatarEl = document.getElementById('admin-detail-avatar');
+            const nameEl = document.getElementById('admin-detail-name');
+            const emailEl = document.getElementById('admin-detail-email');
+            const uidEl = document.getElementById('admin-detail-uid');
+            const badgeEl = document.getElementById('admin-detail-badge');
+            const lastLoginEl = document.getElementById('admin-detail-lastlogin');
+
+            const countPartners = document.getElementById('admin-detail-count-partners');
+            const countReleases = document.getElementById('admin-detail-count-releases');
+            const countMedia = document.getElementById('admin-detail-count-media');
+
+            const tabCountMedia = document.getElementById('admin-tab-count-media');
+            const tabCountPartners = document.getElementById('admin-tab-count-partners');
+            const tabCountReleases = document.getElementById('admin-tab-count-releases');
+
+            const displayName = data.user?.displayName || data.profile?.name || (data.isMaster ? 'Master Admin (Khang Nguyen)' : 'Tài khoản Aura');
+            const email = data.user?.email || data.profile?.email || (data.isMaster ? 'kn076268@gmail.com' : 'Chưa có email');
+            const avatarUrl = data.user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80';
+
+            if (avatarEl) avatarEl.src = avatarUrl;
+            if (nameEl) nameEl.innerText = displayName;
+            if (emailEl) emailEl.innerText = email;
+            if (uidEl) uidEl.innerText = data.uid;
+            if (badgeEl) {
+                badgeEl.innerText = data.isMaster ? 'MASTER UID' : 'USER';
+                badgeEl.className = data.isMaster 
+                    ? 'px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase bg-cerulean text-white shadow-2xs' 
+                    : 'px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase bg-stone-100 text-stone-700 border border-stone-200';
+            }
+            if (lastLoginEl) {
+                const ll = data.user?.lastLoginAt;
+                const d = ll ? (ll.toDate ? ll.toDate() : new Date(ll)) : null;
+                lastLoginEl.innerText = 'Đăng nhập: ' + (d ? d.toLocaleString('vi-VN') : 'Gần đây');
+            }
+
+            if (countPartners) countPartners.innerText = data.partners.length;
+            if (countReleases) countReleases.innerText = data.releases.length;
+            if (countMedia) countMedia.innerText = data.media.length;
+
+            if (tabCountMedia) tabCountMedia.innerText = data.media.length;
+            if (tabCountPartners) tabCountPartners.innerText = data.partners.length;
+            if (tabCountReleases) tabCountReleases.innerText = data.releases.length;
+        }
+
+        function renderAdminUserProfileTab(data) {
+            const gridEl = document.getElementById('admin-profile-metrics-grid');
+            const p = data.profile || {};
+            const height = p.height || '--';
+            const weight = p.weight || '--';
+            const age = p.age || '--';
+            const bodyFat = p.bodyFat ? (p.bodyFat + '%') : '--';
+            const waist = p.waist ? (p.waist + ' cm') : '--';
+            const bp = (p.bpSystolic && p.bpDiastolic) ? (p.bpSystolic + '/' + p.bpDiastolic) : '--';
+            const rhr = p.rhr ? (p.rhr + ' bpm') : '--';
+            
+            let bmi = '--';
+            if (p.height && p.weight) {
+                const hM = Number(p.height) / 100;
+                bmi = (Number(p.weight) / (hM * hM)).toFixed(1);
+            }
+
+            if (gridEl) {
+                gridEl.innerHTML = [
+                    { label: 'Tuổi', val: age },
+                    { label: 'Chiều cao', val: height + ' cm' },
+                    { label: 'Cân nặng', val: weight + ' kg' },
+                    { label: 'Chỉ số BMI', val: bmi },
+                    { label: '% Mỡ cơ thể', val: bodyFat },
+                    { label: 'Vòng eo', val: waist },
+                    { label: 'Huyết áp', val: bp },
+                    { label: 'Nhịp tim tĩnh', val: rhr }
+                ].map(m => '<div class="p-3 bg-stone-50 rounded-xl border border-stone-200/60 shadow-2xs">' +
+                    '<span class="block text-[10px] uppercase font-mono text-ink-light">' + m.label + '</span>' +
+                    '<span class="font-bold text-base text-ink font-mono mt-0.5 block">' + m.val + '</span>' +
+                '</div>').join('');
+            }
+
+            const lifestyleBox = document.getElementById('admin-profile-lifestyle-box');
+            if (lifestyleBox) {
+                lifestyleBox.innerHTML = '<div class="flex items-center gap-4 flex-wrap">' +
+                    '<span>Hút thuốc: <b>' + (p.smoking ? 'Có' : 'Không') + '</b></span>' +
+                    '<span>Uống rượu bia: <b>' + (p.alcohol ? 'Có' : 'Không') + '</b></span>' +
+                    '<span>Bệnh mãn tính: <b>' + (p.chronic ? 'Có' : 'Không') + '</b></span>' +
+                '</div>' +
+                (p.goal ? '<div class="pt-2 border-t border-stone-200 mt-2">Mục tiêu sinh lý: <b class="text-cerulean font-serif italic">' + xmlEscape(p.goal) + '</b></div>' : '');
+            }
+
+            // Endocrine tests table
+            const endoCount = document.getElementById('admin-profile-endo-count');
+            const endoTbody = document.getElementById('admin-profile-endo-tbody');
+            if (endoCount) endoCount.innerText = data.endocrine.length + ' kết quả';
+            if (endoTbody) {
+                if (data.endocrine.length === 0) {
+                    endoTbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center italic text-ink-light">Chưa có kết quả xét nghiệm máu nội tiết nào.</td></tr>';
+                } else {
+                    endoTbody.innerHTML = data.endocrine.map(t => {
+                        return '<tr class="hover:bg-stone-50 font-mono text-xs">' +
+                            '<td class="p-3 font-bold text-ink">' + (t.date || 'N/A') + '</td>' +
+                            '<td class="p-3 text-cerulean font-bold">' + (t.testoTotal != null ? t.testoTotal + ' ng/dL' : '-') + '</td>' +
+                            '<td class="p-3 text-cerulean">' + (t.testoFree != null ? t.testoFree + ' pg/mL' : '-') + '</td>' +
+                            '<td class="p-3">' + (t.fsh != null ? t.fsh + ' mIU/mL' : '-') + '</td>' +
+                            '<td class="p-3">' + (t.lh != null ? t.lh + ' mIU/mL' : '-') + '</td>' +
+                            '<td class="p-3">' + (t.shbg != null ? t.shbg + ' nmol/L' : '-') + '</td>' +
+                            '<td class="p-3">' + (t.estradiol != null ? t.estradiol + ' pg/mL' : '-') + '</td>' +
+                            '<td class="p-3">' + (t.prolactin != null ? t.prolactin + ' ng/mL' : '-') + '</td>' +
+                            '<td class="p-3 font-sans italic text-ink-light truncate max-w-[200px]" title="' + xmlEscape(t.notes || '') + '">' + xmlEscape(t.notes || '-') + '</td>' +
+                        '</tr>';
+                    }).join('');
+                }
+            }
+
+            // Semen analyses table
+            const semenCount = document.getElementById('admin-profile-semen-count');
+            const semenTbody = document.getElementById('admin-profile-semen-tbody');
+            if (semenCount) semenCount.innerText = data.semen.length + ' kết quả';
+            if (semenTbody) {
+                if (data.semen.length === 0) {
+                    semenTbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center italic text-ink-light">Chưa có dữ liệu tinh dịch đồ nào.</td></tr>';
+                } else {
+                    semenTbody.innerHTML = data.semen.map(s => {
+                        return '<tr class="hover:bg-stone-50 font-mono text-xs">' +
+                            '<td class="p-3 font-bold text-ink">' + (s.date || 'N/A') + '</td>' +
+                            '<td class="p-3 font-bold text-cyan-700">' + (s.volume != null ? s.volume + ' ml' : '-') + '</td>' +
+                            '<td class="p-3 font-bold text-cerulean">' + (s.density != null ? s.density + ' tr/ml' : '-') + '</td>' +
+                            '<td class="p-3">' + (s.motility != null ? s.motility + '%' : '-') + '</td>' +
+                            '<td class="p-3">' + (s.morphology != null ? s.morphology + '%' : '-') + '</td>' +
+                            '<td class="p-3 font-sans italic text-ink-light truncate max-w-[200px]" title="' + xmlEscape(s.notes || '') + '">' + xmlEscape(s.notes || '-') + '</td>' +
+                        '</tr>';
+                    }).join('');
+                }
+            }
+        }
+
+        window.filterAdminMediaGallery = function(type) {
+            adminMediaFilterType = type;
+            ['all', 'teaching', 'video', 'avatar'].forEach(t => {
+                const btn = document.getElementById('btn-admin-media-filter-' + t);
+                if (btn) {
+                    if (t === type) {
+                        btn.className = "px-3 py-1 bg-cerulean text-white rounded-full font-bold uppercase text-[10px] cursor-pointer shadow-2xs";
+                    } else {
+                        btn.className = "px-3 py-1 bg-stone-100 hover:bg-stone-200 text-ink rounded-full font-bold uppercase text-[10px] cursor-pointer";
+                    }
+                }
+            });
+            if (adminCurrentInspectedData) {
+                renderAdminUserMediaTab(adminCurrentInspectedData);
+            }
+        };
+
+        function renderAdminUserMediaTab(data) {
+            const gridEl = document.getElementById('admin-media-grid');
+            if (!gridEl) return;
+
+            let list = data.media || [];
+            if (adminMediaFilterType === 'teaching') {
+                list = list.filter(m => m.category === 'Ảnh Đi Dạy');
+            } else if (adminMediaFilterType === 'video') {
+                list = list.filter(m => m.type === 'video');
+            } else if (adminMediaFilterType === 'avatar') {
+                list = list.filter(m => m.category === 'Avatar');
+            }
+
+            if (list.length === 0) {
+                gridEl.innerHTML = '<div class="col-span-full py-16 text-center italic text-ink-light border border-dashed border-line rounded-xl bg-paper">Không tìm thấy hình ảnh hoặc video nào trong danh mục này.</div>';
+                return;
+            }
+
+            gridEl.innerHTML = list.map((item, idx) => {
+                const isVid = (item.type === 'video');
+                const titleStr = xmlEscape(item.title || 'Media');
+                const catStr = xmlEscape(item.category || 'Media');
+                const partnerStr = item.partnerName ? xmlEscape(item.partnerName) : '';
+
+                // Thumbnail rendering
+                let mediaElem = '';
+                if (typeof renderAuraMediaThumbnail === 'function') {
+                    mediaElem = renderAuraMediaThumbnail(item, 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none');
+                } else if (isVid) {
+                    mediaElem = '<div class="w-full h-full bg-stone-900 flex items-center justify-center text-white"><svg class="w-10 h-10 text-jasper" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg></div>';
+                } else {
+                    mediaElem = '<img src="' + (item.url || '') + '" alt="' + titleStr + '" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none">';
+                }
+
+                return '<div onclick="window.openAdminLightboxFromIndex(' + idx + ')" class="group relative aspect-square editorial-border bg-stone-900 overflow-hidden rounded-xl cursor-pointer shadow-xs hover:shadow-lg transition-all">' +
+                    mediaElem +
+                    (isVid ? '<div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center pointer-events-none"><span class="w-10 h-10 rounded-full bg-jasper/90 text-white flex items-center justify-center shadow-md"><svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg></span></div>' : '') +
+                    '<div class="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-white pointer-events-none">' +
+                        '<div class="flex items-center gap-1.5 mb-0.5">' +
+                            '<span class="text-[8px] font-mono uppercase px-1.5 py-0.5 rounded bg-cerulean font-bold">' + catStr + '</span>' +
+                            (partnerStr ? '<span class="text-[9px] font-sans font-bold text-stone-200 truncate">' + partnerStr + '</span>' : '') +
+                        '</div>' +
+                        '<p class="text-[11px] font-sans font-medium text-white truncate">' + titleStr + '</p>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        window.openAdminLightboxFromIndex = function(idx) {
+            if (!adminCurrentInspectedData || !adminCurrentInspectedData.media) return;
+            let list = adminCurrentInspectedData.media;
+            if (adminMediaFilterType === 'teaching') list = list.filter(m => m.category === 'Ảnh Đi Dạy');
+            else if (adminMediaFilterType === 'video') list = list.filter(m => m.type === 'video');
+            else if (adminMediaFilterType === 'avatar') list = list.filter(m => m.category === 'Avatar');
+
+            const item = list[idx];
+            if (!item) return;
+
+            const isVid = (item.type === 'video');
+            const mediaUrl = item.url || (item.driveFileId ? ('/api/drive-image?fileId=' + item.driveFileId) : '');
+            window.openAdminLightbox(mediaUrl, item.title || 'Media', isVid, item.category);
+        };
+
+        window.openAdminLightbox = function(url, title, isVideo, metaStr) {
+            const modal = document.getElementById('modal-admin-lightbox');
+            const imgEl = document.getElementById('admin-lightbox-img');
+            const videoEl = document.getElementById('admin-lightbox-video');
+            const titleEl = document.getElementById('admin-lightbox-title');
+            const metaEl = document.getElementById('admin-lightbox-meta');
+
+            if (titleEl) titleEl.innerText = title || 'Chi Tiết Media';
+            if (metaEl) metaEl.innerText = metaStr || (isVideo ? 'Video Clip • Chế Độ Xem Bảo Mật' : 'Hình Ảnh • Chế Độ Xem Bảo Mật');
+
+            if (isVideo) {
+                if (imgEl) { imgEl.src = ''; imgEl.classList.add('hidden'); }
+                if (videoEl) {
+                    videoEl.src = url;
+                    videoEl.classList.remove('hidden');
+                    videoEl.play().catch(() => {});
+                }
+            } else {
+                if (videoEl) {
+                    videoEl.pause();
+                    videoEl.src = '';
+                    videoEl.classList.add('hidden');
+                }
+                if (imgEl) {
+                    imgEl.src = url;
+                    imgEl.classList.remove('hidden');
+                }
+            }
+
+            if (modal) modal.classList.remove('hidden');
+        };
+
+        window.closeAdminLightbox = function() {
+            const modal = document.getElementById('modal-admin-lightbox');
+            const videoEl = document.getElementById('admin-lightbox-video');
+            const imgEl = document.getElementById('admin-lightbox-img');
+            if (videoEl) {
+                videoEl.pause();
+                videoEl.src = '';
+            }
+            if (imgEl) imgEl.src = '';
+            if (modal) modal.classList.add('hidden');
+        };
+
+        function renderAdminUserPartnersTab(data) {
+            const gridEl = document.getElementById('admin-partners-grid');
+            const badgeEl = document.getElementById('admin-partners-count-badge');
+            if (badgeEl) badgeEl.innerText = data.partners.length + ' đối tác';
+            if (!gridEl) return;
+
+            if (data.partners.length === 0) {
+                gridEl.innerHTML = '<div class="col-span-full py-16 text-center italic text-ink-light border border-dashed border-line rounded-xl bg-paper">Người dùng này chưa tạo bất kỳ hồ sơ bạn đồng hành nào.</div>';
+                return;
+            }
+
+            gridEl.innerHTML = data.partners.map(p => {
+                const avatar = p.avatar || 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&auto=format&fit=crop&q=80';
+                const teachingCount = Array.isArray(p.teachingGallery) ? p.teachingGallery.length : 0;
+                const videoCount = Array.isArray(p.videoCalls) ? p.videoCalls.length : 0;
+                const isOF = !!p.isOnlyFans;
+
+                return '<div class="editorial-border bg-white rounded-2xl p-5 shadow-xs flex flex-col justify-between group hover:shadow-md transition-all">' +
+                    '<div>' +
+                        '<div class="flex items-start gap-3.5 mb-4">' +
+                            '<div class="relative shrink-0">' +
+                                '<img src="' + avatar + '" alt="' + xmlEscape(p.name || 'Đối tác') + '" class="w-14 h-14 rounded-full object-cover border-2 border-stone-200 shadow-xs cursor-pointer hover:scale-105 transition-transform" onclick="window.openAdminLightbox(\'' + avatar + '\', \'Avatar: ' + xmlEscape(p.name || '') + '\', false, \'Avatar Bạn Đồng Hành\')">' +
+                                (isOF ? '<span class="absolute -bottom-1 -right-1 px-1.5 py-0.2 bg-jasper text-white text-[8px] font-mono font-bold uppercase rounded-full">OF</span>' : '') +
+                            '</div>' +
+                            '<div class="min-w-0 flex-1">' +
+                                '<h4 class="font-playfair font-bold text-lg text-ink truncate">' + xmlEscape(p.name || 'Chưa đặt tên') + '</h4>' +
+                                '<p class="text-xs text-cerulean font-medium truncate">' + xmlEscape(p.relation || 'Bạn tình') + ' • ' + (p.role || 'Vers') + '</p>' +
+                                '<div class="mt-1 flex items-center gap-1.5 text-[11px] font-mono text-ink-light">' +
+                                    (p.age ? '<span>' + p.age + ' tuổi</span> • ' : '') +
+                                    '<span class="text-emerald-700 font-bold">' + xmlEscape(p.stiStatus || 'Đã kiểm tra an toàn') + '</span>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+
+                        '<div class="grid grid-cols-2 gap-2 text-center text-xs font-mono mb-4">' +
+                            '<div class="p-2 bg-stone-50 rounded-xl border border-stone-200/60">' +
+                                '<span class="block text-[9px] uppercase text-ink-light">Ảnh đi dạy</span>' +
+                                '<span class="font-bold text-sm text-cerulean">' + teachingCount + '</span>' +
+                            '</div>' +
+                            '<div class="p-2 bg-stone-50 rounded-xl border border-stone-200/60">' +
+                                '<span class="block text-[9px] uppercase text-ink-light">Video call</span>' +
+                                '<span class="font-bold text-sm text-jasper">' + videoCount + '</span>' +
+                            '</div>' +
+                        '</div>' +
+
+                        (p.notes ? '<p class="text-xs italic text-ink-light bg-stone-50/60 p-2.5 rounded-lg border border-stone-200/50 mb-3 line-clamp-3">"' + xmlEscape(p.notes) + '"</p>' : '') +
+                    '</div>' +
+
+                    '<div class="pt-3 border-t border-line text-[10px] font-mono text-ink-light flex items-center justify-between">' +
+                        '<span>Chế độ: <b>Chỉ xem</b></span>' +
+                        '<span class="text-cerulean font-bold">ID: ' + p.id.slice(0, 8) + '...</span>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function renderAdminUserReleasesTab(data) {
+            const tbody = document.getElementById('admin-releases-tbody');
+            const badge = document.getElementById('admin-releases-count-badge');
+            if (badge) badge.innerText = data.releases.length + ' phiên';
+            if (!tbody) return;
+
+            if (data.releases.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center italic text-ink-light">Người dùng này chưa lưu phiên giải phóng nào.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.releases.map(r => {
+                const hasVid = !!(r.hasVideo && (r.videoUrl || r.videoFileName));
+                const vidUrl = r.videoUrl || (r.videoFileName ? '/media/' + r.videoFileName : '');
+
+                return '<tr class="hover:bg-stone-50 font-mono text-xs">' +
+                    '<td class="p-3 font-bold text-ink whitespace-nowrap">' + (r.dateFormatted || (r.datetime ? new Date(r.datetime).toLocaleDateString('vi-VN') : 'N/A')) + '</td>' +
+                    '<td class="p-3 font-sans font-bold text-cerulean">' + xmlEscape(r.type || 'Giải phóng') + '</td>' +
+                    '<td class="p-3">' + (r.didEjaculate !== false ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-jasper/10 text-jasper">CUM (Có)</span>' : '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-stone-100 text-stone-600">Không</span>') + '</td>' +
+                    '<td class="p-3 font-bold text-cerulean">' + (r.hardness != null ? (r.hardness + '/10') : '-') + '</td>' +
+                    '<td class="p-3">' + (r.duration != null ? (r.duration + ' phút') : '-') + '</td>' +
+                    '<td class="p-3">' +
+                        (hasVid 
+                            ? '<button type="button" onclick="window.openAdminLightbox(\'' + vidUrl + '\', \'Bản ghi hình phiên ' + xmlEscape(r.type || '') + '\', true, \'Video Thực Chứng Giải Phóng\')" class="px-2.5 py-1 bg-jasper hover:bg-jasper-dark text-white rounded-lg font-bold text-[10px] uppercase tracking-wider shadow-2xs flex items-center gap-1 cursor-pointer">▶ Xem Clip</button>'
+                            : '<span class="text-stone-400 italic">Không có</span>') +
+                    '</td>' +
+                    '<td class="p-3 font-sans italic text-ink-light truncate max-w-[280px]" title="' + xmlEscape(r.notes || '') + '">' + xmlEscape(r.notes || '-') + '</td>' +
+                '</tr>';
+            }).join('');
+        }
+
+        function renderAdminUserLibidoTab(data) {
+            const trigContainer = document.getElementById('admin-triggers-container');
+            const libidoContainer = document.getElementById('admin-libido-container');
+
+            if (trigContainer) {
+                if (data.triggers.length === 0) {
+                    trigContainer.innerHTML = '<p class="text-xs italic text-ink-light">Tài khoản này chưa thiết lập yếu tố kích thích nào.</p>';
+                } else {
+                    trigContainer.innerHTML = data.triggers.map(t => {
+                        return '<div class="p-3 bg-stone-50 rounded-xl border border-stone-200/80 flex items-center justify-between text-xs">' +
+                            '<div>' +
+                                '<h5 class="font-bold text-ink">' + xmlEscape(t.name) + '</h5>' +
+                                '<span class="text-[10px] font-mono text-ink-light">' + xmlEscape(t.category || 'Chung') + (t.partnerName ? ' • ' + xmlEscape(t.partnerName) : '') + '</span>' +
+                            '</div>' +
+                            '<span class="font-mono font-bold text-jasper">Tác động: +' + (t.impact || 0) + '</span>' +
+                        '</div>';
+                    }).join('');
+                }
+            }
+
+            if (libidoContainer) {
+                if (data.libido.length === 0) {
+                    libidoContainer.innerHTML = '<p class="text-xs italic text-ink-light">Chưa có bản ghi check-in ham muốn nào.</p>';
+                } else {
+                    libidoContainer.innerHTML = data.libido.map(l => {
+                        return '<div class="p-2.5 bg-stone-50 rounded-lg border border-stone-200/60 flex items-center justify-between text-xs font-mono">' +
+                            '<div>' +
+                                '<span class="font-bold text-ink">' + (l.date || 'Hôm nay') + ' (' + (l.slot || 'Ngày') + ')</span>' +
+                                (l.partner ? '<span class="block text-[10px] font-sans text-cerulean truncate">Đối tác: ' + xmlEscape(l.partner) + '</span>' : '') +
+                            '</div>' +
+                            '<span class="font-bold text-cerulean text-sm">' + (l.level != null ? (Math.round(l.level) + '/10') : '-') + '</span>' +
+                        '</div>';
+                    }).join('');
+                }
+            }
+        }
+
+        function renderAdminUserRawTab(data) {
+            const codeEl = document.getElementById('admin-raw-json-code');
+            if (codeEl) {
+                codeEl.innerText = JSON.stringify(data, null, 2);
+            }
+        }
+
         // ==================== AURA CUSTOM SELECT INIT ====================
         function initAuraCustomSelects() {
             document.querySelectorAll('select.editorial-select').forEach(select => {
