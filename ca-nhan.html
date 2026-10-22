@@ -1492,7 +1492,7 @@
                         if (blob && blob.size < file.size) {
                             // Tạo File mới với tên gốc để server nhận đúng filename
                             const compressed = new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() });
-                            console.log(`[Aura Compress] ${file.name}: ${(file.size/1024/1024).toFixed(1)}MB → ${(compressed.size/1024/1024).toFixed(1)}MB (−${Math.round((1 - compressed.size/file.size)*100)}%)`);
+
                             resolve(compressed);
                         } else {
                             resolve(file); // Nén không hiệu quả, giữ nguyên
@@ -1713,7 +1713,7 @@
                         }
                     }
                 } catch (e) {
-                    console.log("Giữ nguyên URL gốc:", e);
+
                 }
             }
 
@@ -1822,11 +1822,11 @@
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    console.log("[Aura Vault] Đồng bộ dữ liệu hoàn tất:", data);
+
                     return data;
                 }
             } catch (e) {
-                console.warn("Không thể xóa tệp vật lý khỏi thư mục media:", e);
+                console.warn("Không thể hoàn tất tác vụ xóa:", e);
             }
             return null;
         }
@@ -2115,7 +2115,6 @@
                 }
                 throw new Error(data.error || "Máy chủ không thể lưu tệp bìa");
             } catch (err) {
-                console.warn("Upload server local thất bại, chuyển sang FileReader DataURL:", err);
                 const reader = new FileReader();
                 reader.onload = function(evt) {
                     const dataUrl = evt.target.result;

@@ -74,7 +74,6 @@ export async function loginWithGoogle() {
         return { success: true, user };
     } catch (error) {
         if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
-            console.log("[Aura Auth] Người dùng đã đóng cửa sổ đăng nhập.");
             return { success: false, cancelled: true };
         }
         console.error("[Aura Auth] Lỗi đăng nhập Google:", error);
